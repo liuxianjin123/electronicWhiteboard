@@ -1,0 +1,164 @@
+<template>
+  <div class="container" :style="[{pointerEvents:($store.state.isjj==true?'auto':'none')}]">
+    <a-form-model :model="form" :label-col="labelCol" :wrapper-col="wrapperCol" >
+      <div class="tops">
+        <div class="tops-left">
+          <a-icon type="user-add" style="color: cornflowerblue" />
+        </div>
+        <div class="tops-item" v-if="isEdit">
+          <ul>
+            <li>
+              <b style="font-size:16px;">{{ form.bedNumber }}床</b>
+              <span style="margin-left: 20px">
+                <br-icon ref="mychild"></br-icon>
+              </span>
+            </li>
+            <li style="justify-content: space-between">
+              <span>
+                <span>{{ form.brxb }}</span>
+                <span style="margin-left: 20px">{{ form.patientName }}</span>
+                <span style="margin-left: 20px">{{ form.zyh }}</span>
+              </span>
+              <a-tooltip placement="left">
+                <template slot="title">
+                  <span>增加到白板显示</span>
+                </template>
+                <a-switch default-checked v-model="form.whiteboardDisplay"/>
+              </a-tooltip>
+            </li>
+            <li>
+              <label for=""
+                >新入时间:
+                <a-date-picker
+                  v-model="form.admissionTime"
+                  show-time
+                  :format="dateFormat"
+                  @change="(i, v) => dataChanges(i, v, 'admissionTime')"
+                />
+              </label>
+            </li>
+          </ul>
+        </div>
+        <div class="tops-item tops-item-last" @click="xzhzAll(1,7,'')" v-else>
+          <!---->
+          <a-button>选择患者</a-button>
+        </div>
+      </div>
+      <a-form-model-item label="入院诊断">
+        <a-input v-model="form.diagnosis" />
+      </a-form-model-item>
+      <a-form-model-item label="转入时间">
+        <a-date-picker
+          v-model="form.transferTime"
+          show-time
+          :format="dateFormat"
+          @change="(i, v) => dataChanges(i, v, 'transferTime')"
+        />
+      </a-form-model-item>
+      <a-form-model-item label="入院方式">
+        <a-select v-model="form.method">
+          <a-select-option value="抱入">抱入</a-select-option>
+          <a-select-option value="步行">步行</a-select-option>
+          <a-select-option value="轮椅">轮椅</a-select-option>
+          <a-select-option value="平车">平车</a-select-option>
+        </a-select>
+      </a-form-model-item>
+      <div class="tprbm" @dblclick="xzhzAll(0,7,form.zyh)">
+        T：<label><a-input type="number" v-model="form.t" /></label> 
+        P：<label><a-input type="number" v-model="form.p"/></label>
+        R：<label><a-input type="number" v-model="form.r" /></label>
+        BP：<label><a-input type="text" v-model="form.bp"/></label>
+      </div>
+      <a-form-model-item label="护理级别">
+        <a-select v-model="form.levelOfCare">
+          <a-select-option value="一级护理">一级护理</a-select-option>
+          <a-select-option value="二级护理">二级护理</a-select-option>
+          <a-select-option value="三级护理">三级护理</a-select-option>
+          <a-select-option value="特级护理">特级护理</a-select-option>
+        </a-select>
+      </a-form-model-item>
+      <a-form-model-item label="白班病情">
+        <a-input v-model="form.dayShiftCondition" type="textarea" />
+      </a-form-model-item>
+      <a-form-model-item label="上夜病情">
+        <a-input v-model="form.lastNightCondition" type="textarea" />
+      </a-form-model-item>
+      <a-form-model-item label="下夜病情">
+        <a-input v-model="form.nextNightCondition" type="textarea" />
+      </a-form-model-item>
+    </a-form-model>
+  </div>
+</template>
+<script>
+import brIcon from "./brIcon";
+import obj from "../../../../../static/js/jjbEdit";
+export default {
+  data() {
+    return {
+      dateFormat: "YYYY-MM-DD HH:mm:ss",
+      labelCol: { span: 5 },
+      wrapperCol: { span: 19 },
+      form:{
+        type: "hlShioverNewPatientDtos",
+        title: "新入患者",
+        id: null,
+        tmh: null,
+        zyh: null,
+        brxb:null,
+        orderOfClassesId:localStorage.orderOfClassesId,
+        handoverTime: localStorage.handoverTime,
+        confirmTheShiftTime: null,
+        succeedTime: null,
+        isHandover:false,
+        isSucceed:false,
+        bedNumber: null,
+        patientName: null,
+        diagnosis: null,
+        admissionTime: null,
+        transferTime: null,
+        method: null,
+        levelOfCare: null,
+        t: null,
+        p: null,
+        r: null,
+        bp: null,
+        dayShiftCondition: null,
+        lastNightCondition: null,
+        nextNightCondition: null,
+        whiteboardDisplay: false,
+        whetherToGenerate: false,
+        idBeforeGeneration: null,
+      }
+    }
+  },
+  props:obj.props,
+  watch:obj.watch,
+  mounted() {
+    if(this.isEdit) {
+      this.form = JSON.parse(JSON.stringify(this.editRowData));
+      this.zyh = this.form.zyh;
+    }
+  },
+  methods: {
+    onSubmit() {
+      this.$emit("ruquestData", this.form);
+    },
+    dataChanges(i, v, r) {
+      this.form[r] = v;
+    },
+    //7.8胖纸
+    xzhzAll(type,dataType,zyh){
+      this.$emit('openxrbr',type,dataType,zyh);
+    },
+    esdd(val){
+      this.$refs.mychild.parentHandleclick(val);
+    }
+  },
+  components: {
+    brIcon,
+  }
+};
+</script>
+<style scoped>
+@import url("../../../../../static/css/jjbModel.css");
+</style>

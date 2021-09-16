@@ -1,0 +1,1236 @@
+<template>
+  <div class="box">
+    <header>
+      <div class="heads">
+        <span>
+          {{$store.state.dataType==1?"全部":"本人"}}
+        </span>
+        <ul class="itemBox">
+          <template>
+            <li
+              class="topDataItem"
+              v-for="(item, index) in topDataList"
+              :key="index"
+              :style="{
+                border:
+                  $store.state.dataType == '1'
+                    ? '2px dotted #f59a23'
+                    : '2px dotted #1e9fff',
+              }"
+            >
+              <p>
+                <span>{{ item.name }}</span>
+              </p>
+              <p>{{ item.num }}人</p>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </header>
+    <section>
+      <div class="tableBox" ref="questionnaireBox">
+        <ul
+          class="questionnaireBox"
+          ref="questionnaireBox"
+          style="height: 100%"
+        >
+          <li
+            v-for="(item, index) in showItem"
+            :key="index"
+            class="lis"
+            :id="item.name"
+          >
+            <div class="titles">
+              <div>
+                <i></i>
+                <span
+                  ><b>{{ item.title }}</b></span
+                >
+              </div>
+              <div class="title-btn">
+                <a-button
+                  v-if="$store.state.isjj"
+                  type="danger"
+                  style="background: orange; border-color: orange"
+                  :data-type="item.name"
+                  @click="addRowData(item.name, item.title, index)"
+                >
+                  增加{{ item.title }}
+                </a-button>
+                <a-button
+                  type="primary"
+                  :data-type="item.name"
+                  :disabled="!hasGroupName(item.name)"
+                  @click="submintClass(item.name,'',1)"
+                >
+                  {{$store.state.isjj?'批量交班':'批量接班'}}</a-button
+                >
+                <a-popover trigger="hover" placement="bottomRight">
+                  <template slot="content">
+                    <span v-for="item in showItem" :key="item.name">
+                      <a :href="'#' + item.name">{{ item.title }}</a>
+                      <a-divider type="vertical" />
+                    </span>
+                  </template>
+                  <a-button type="primary" ghost icon="more"></a-button>
+                </a-popover>
+              </div>
+            </div>
+            <template>
+              <a-table
+                :columns="isColumns(item.columns).column"
+                :data-source="isColumns(item.columns).datas"
+                bordered
+                :pagination="false"
+                :customRow="rowClick"
+                size="small"
+                :scroll="{ x: '100%', y: 'calc(100vh - 338px)' }"
+                :rowKey="
+                  (record, index) => {
+                    return index;
+                  }
+                "
+                :row-selection="{
+                  selectedRowKeys: isColumns(item.columns).selectA,
+                  onChange: isColumns(item.columns).selectChange,
+                  columnWidth: 40,
+                }"
+              >
+                <!-- <span slot="assessScoreLower" slot-scope="text, record">
+                  {{ record.ssy }}/{{ record.szy }}
+                </span> -->
+                <template slot="address" slot-scope="text, record">
+                  <a
+                    @click.stop="submintClass(item.name,record,0)"
+                    ><a-icon type="interaction" />{{$store.state.isjj?'交班':'接班'}}</a
+                  >
+                  <template v-if="$store.state.isjj">
+                    |
+                    <template>
+                      <a-popconfirm title="确认删除?" ok-text="确认" cancel-text="取消" @confirm="deleteClass(record)">
+                        <a
+                          style="color: red"
+                          @click.stop=""
+                          >
+                        <a-icon type="delete" theme="filled" /> 刪除</a
+                        >
+                      </a-popconfirm>
+                    </template>
+                  </template>
+                </template>
+              </a-table>
+            </template>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <a-drawer
+      :title="!isEdit ? '新增' + editItemText : '编辑' + editItemText"
+      placement="right"
+      :closable="false"
+      :visible="drawerVisible"
+      @close="onDrawerClose"
+      :width="450"
+      style="height: 100%;z-index=800"
+    >
+      <div
+        style="height: calc(100% - 60px); overflow-y: auto; overflow-x: hidden"
+      >
+        <xrbr-form
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'hlShioverNewPatientDtos'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="hlShioverNewPatientDtos"
+        ></xrbr-form>
+        <cybr-form
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'hlShioverDischargedPatientDtos'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="hlShioverDischargedPatientDtos"
+        ></cybr-form>
+        <ssbr-form 
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'hlShioverSurgicalPatientDtos'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="hlShioverSurgicalPatientDtos"
+        ></ssbr-form>
+        <bwbr-form 
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'hlShioverCriticallyIllPatientDtos'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="hlShioverCriticallyIllPatientDtos"
+        ></bwbr-form>
+        <bzbr-form 
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'hlShioverSeriouslyIllPatientDtos'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="hlShioverSeriouslyIllPatientDtos"
+        ></bzbr-form>
+        <tsbr-form
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'hlShioverSpecialPatientDtos'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="hlShioverSpecialPatientDtos"
+        ></tsbr-form>
+        <yjbr-form
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'hlShioverFirstLevelNursingDtos'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="hlShioverFirstLevelNursingDtos"
+        ></yjbr-form>
+      </div>
+      <div style="height: 60px; line-height: 60px; text-align: center" v-if="$store.state.isjj">
+        <a-button type="primary" @click="mounitChildrenData">确认</a-button>
+        <a-button type="danger" ghost @click="drawerVisible = false"
+          >取消</a-button
+        >
+      </div>
+    </a-drawer>
+    <!-- 7.8胖纸 -->
+    <a-modal
+      class="xzhzkuang"
+      style="edit_kuang"
+      v-model="xrbrvisible"
+      width="94%"
+      :title="'选择' + showItem[iszxhzindex].title"
+      @ok="handleOk"
+    >
+      <nexreJbSelect
+        :showItem="showItem[iszxhzindex]"
+        :iszxhzcolumns="isColumns(showItem[iszxhzindex].columns).column"
+        v-on:closexrbr="closexrbr"
+      ></nexreJbSelect>
+    </a-modal>
+  </div>
+</template>
+<script>
+import { post, get, potdelete}from '../../../request/request';
+import xrbrForm from "../../views/ChangeShifts/jjbModel/xrbrForm";
+import cybrForm from "../../views/ChangeShifts/jjbModel/cybrForm";
+import ssbrForm from "../../views/ChangeShifts/jjbModel/ssbrForm";
+import bwbrForm from "../../views/ChangeShifts/jjbModel/bwbrForm";
+import bzbrForm from "../../views/ChangeShifts/jjbModel/bzbrForm";
+import tsbrForm from "../../views/ChangeShifts/jjbModel/tsbrForm";
+import yjbrForm from "../../views/ChangeShifts/jjbModel/yjbrForm";
+import nexreJbSelect from "../../views/ChangeShifts/jjbModel/nexreJb_Select";
+const colxrhz = [
+  {
+    title: "床号",
+    dataIndex: "bedNumber",
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    align:'center',
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "patientName",
+    align:'center',
+    width: "70px",
+  },
+  {
+    title: "入院诊断",
+    dataIndex: "diagnosis",
+    align:'center',
+    width: "270px",
+  },
+  {
+    title: "时间",
+    align:'center',
+    children: [
+      {
+        title: "新入",
+        dataIndex: "admissionTime",
+        align:'center',
+        width: 100,
+      },
+      {
+        title: "转入",
+        dataIndex: "transferTime",
+        align:'center',
+        width: 100,
+      },
+    ],
+  },
+  {
+    title: "入院方式",
+    dataIndex: "method",
+    align:'center',
+    width: "50px",
+  },
+  {
+    title: "护理级别",
+    dataIndex: "levelOfCare",
+    align:'center',
+    width: "80px",
+  },
+  {
+    title: "T(℃)",
+    dataIndex: "t",
+    align:'center',
+    width: "60px",
+  },
+  {
+    title: "P(次分)",
+    dataIndex: "p",
+    align:'center',
+    width: "70px",
+  },
+  {
+    title: "R(次分)",
+    dataIndex: "r",
+    align:'center',
+    width: "70px",
+  },
+  {
+    title: "BP(mmHg)",
+    dataIndex: "bp",
+    align:'center',
+    width: "120px",
+   
+  },
+  {
+    title: "白班病情",
+    dataIndex: "dayShiftCondition",
+    align:'center',
+    width: "150px",
+  },
+  {
+    title: "上夜病情",
+    dataIndex: "lastNightCondition",
+    align:'center',
+    width: "150px",
+  },
+  {
+    title: "下夜病情",
+    dataIndex: "nextNightCondition",
+    align:'center',
+    width: "150px",
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+const colcyhz = [
+  {
+    title: "床号",
+    dataIndex: "bedNumber",
+    align:'center',
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "patientName",
+    align:'center',
+    width: "70px",
+  },
+  {
+    title: "出院诊断",
+    align:'center',
+    dataIndex: "diagnosis",
+  },
+  {
+    title: "时间",
+    align:'center',
+    children: [
+      {
+        title: "出院",
+        align:'center',
+        dataIndex: "dischargeTime",
+        width: 150,
+      },
+      {
+        title: "转科",
+        align:'center',
+        dataIndex: "transferTime",
+        width: 140,
+      },
+      {
+        title: "死亡",
+        align:'center',
+        dataIndex: "timeOfDeath",
+        width: 140,
+      },
+    ],
+  },
+  {
+    title: "转往科室",
+    align:'center',
+    dataIndex: "transferInDepartmentId",
+    width: 140,
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+const colbzhz = [
+  {
+    title: "床号",
+    dataIndex: "bedNumber",
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "patientName",
+    width: "70px",
+  },
+  {
+    title: "T(℃)",
+    dataIndex: "t",
+    width: "60px",
+  },
+  {
+    title: "P(次分)",
+    dataIndex: "p",
+    width: "70px",
+  },
+  {
+    title: "R(次分)",
+    dataIndex: "r",
+    width: "70px",
+  },
+  {
+    title: "BP(mmHg)",
+    width: "120px",
+    dataIndex: "bp",
+  },
+  {
+    title: "SPO2",
+    dataIndex: "oxygenSaturation",
+    width: "70px",
+  },
+  {
+    title: "白班病情",
+    dataIndex: "dayShiftCondition",
+    align:'center',
+    width: "150px",
+  },
+  {
+    title: "上夜病情",
+    dataIndex: "lastNightCondition",
+    align:'center',
+    width: "150px",
+  },
+  {
+    title: "下夜病情",
+    dataIndex: "nextNightCondition",
+    align:'center',
+    width: "150px",
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+const colbwhz = [
+  {
+    title: "床号",
+    dataIndex: "bedNumber",
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "patientName",
+    width: "70px",
+  },
+  {
+    title: "T(℃)",
+    dataIndex: "t",
+    width: "60px",
+  },
+  {
+    title: "P(次分)",
+    dataIndex: "p",
+    width: "70px",
+  },
+  {
+    title: "R(次分)",
+    dataIndex: "r",
+    width: "70px",
+  },
+  {
+    title: "BP(mmHg)",
+    dataIndex: "bp",
+    width: "120px",
+   
+  },
+  {
+    title: "SPO2",
+    dataIndex: "oxygenSaturation",
+    width: "70px",
+  },
+  {
+    title: "白板病情",
+    dataIndex: "dayShiftCondition",
+    align:'center',
+    width: "150px",
+  },
+  {
+    title: "上夜病情",
+    dataIndex: "lastNightCondition",
+    align:'center',
+    width: "150px",
+  },
+  {
+    title: "下夜病情",
+    dataIndex: "nextNightCondition",
+    align:'center',
+    width: "150px",
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+const coltshz = [
+  {
+    title: "床号",
+    dataIndex: "bedNumber",
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "patientName",
+    width: "70px",
+  },
+  {
+    title: "T(℃)",
+    dataIndex: "t",
+    align:'center',
+    width: "60px",
+  },
+  {
+    title: "P(次分)",
+    dataIndex: "p",
+    align:'center',
+    width: "70px",
+  },
+  {
+    title: "R(次分)",
+    dataIndex: "r",
+    align:'center',
+    width: "70px",
+  },
+  {
+    title: "BP(mmHg)",
+    align:'center',
+    dataIndex: "bp",
+    width: "120px",
+   
+  },
+  {
+    title: "诊断",
+    dataIndex: "diagnosis",
+  },
+  {
+    title: "护理级别",
+    dataIndex: "levelOfCare",
+  }, 
+  {
+    title: "特殊属性",
+    dataIndex: "specialProperty",
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+const colsshz = [
+  {
+    title: "床号",
+    dataIndex: "bedNumber",
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "patientName",
+    width: "70px",
+  },
+  {
+    title: "T(℃)",
+    dataIndex: "t",
+    width: "60px",
+  },
+  {
+    title: "P(次分)",
+    dataIndex: "p",
+    width: "70px",
+  },
+  {
+    title: "R(次分)",
+    dataIndex: "r",
+    width: "70px",
+  },
+  {
+    title: "BP(mmHg)",
+    dataIndex: "bp",
+    width: "90px",
+   
+  },
+  {
+    title: "主要诊断",
+    dataIndex: "diagnosis",
+    width: "120px",
+  },
+  {
+    title: "手术名称",
+    dataIndex: "surgeryName",
+    width: "120px",
+  },
+  {
+    title: "时间",
+    children: [
+      {
+        title: "手术时间",
+        dataIndex: "surgeryTime",
+        width: 100,
+      },
+      {
+        title: "送回病房时间",
+        dataIndex: "returnTime",
+        width: 100,
+      },
+    ],
+  },
+  {
+    title: "麻醉方式",
+    dataIndex: "anesthesia",
+    width: "120px",
+  },
+  {
+    title: "白班病情",
+    dataIndex: "dayShiftCondition",
+    width: "120px",
+  },
+  {
+    title: "上夜病情",
+    dataIndex: "lastNightCondition",
+    width: "120px",
+  },
+  {
+    title: "下夜病情",
+    dataIndex: "nextNightCondition",
+    width: "120px",
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+const colyjhz = [
+  {
+    title: "床号",
+    dataIndex: "bedNumber",
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "patientName",
+    width: "70px",
+  },
+  {
+    title: "T(℃)",
+    dataIndex: "t",
+    width: "60px",
+  },
+  {
+    title: "P(次分)",
+    dataIndex: "p",
+    width: "70px",
+  },
+  {
+    title: "R(次分)",
+    dataIndex: "r",
+    width: "70px",
+  },
+  {
+    title: "BP(mmHg)",
+    dataIndex: "bp",
+    width: "120px",
+   
+  },
+  {
+    title: "SPO2",
+    dataIndex: "oxygenSaturation",
+    width: "70px",
+  },
+  {
+    title: "白板病情",
+    dataIndex: "dayShiftCondition",
+    align:'center',
+    width: "150px",
+  },
+  {
+    title: "上夜病情",
+    dataIndex: "lastNightCondition",
+    align:'center',
+    width: "150px",
+  },
+  {
+    title: "下夜病情",
+    dataIndex: "nextNightCondition",
+    align:'center',
+    width: "150px",
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+export default {
+  name: "nexreJb",
+  data() {
+    let topDataList = [
+      //顶部数据的集合
+      { name: "病人总数", num: "456" },
+      { name: "新入患者", num: "2" },
+      { name: "转入", num: "3" },
+      { name: "出院", num: "4" },
+      { name: "转出", num: "4556" },
+      { name: "死亡", num: "6456" },
+      { name: "一级护理", num: "4567" },
+      { name: "手术", num: "8" },
+      { name: "分娩", num: "4956" },
+      { name: "病重", num: "3" },
+      { name: "病危", num: "1" },
+      { name: "特殊", num: "4526" },
+    ];
+  
+    let showItem = [
+      //读取过来护士选中那些项目需要展示
+      { name: "hlShioverNewPatientDtos", columns: "colxrhz", title: "新入患者" },
+      { name: "hlShioverDischargedPatientDtos", columns: "colcyhz", title: "出院患者" },
+      { name: "hlShioverSeriouslyIllPatientDtos", columns: "colbzhz", title: "病重患者" },
+      { name: "hlShioverCriticallyIllPatientDtos", columns: "colbwhz", title: "病危患者" },
+      { name: "hlShioverFirstLevelNursingDtos", columns: "colyjhz", title: "一级护理" },
+      { name: "hlShioverSurgicalPatientDtos", columns: "colsshz", title: "手术患者" },
+      { name: "hlShioverSpecialPatientDtos", columns: "coltshz", title: "特殊患者" },
+    ];
+    return {
+      drawerVisible: false, //抽屉显示与隐藏
+      topDataList, //顶部显示的所有项目数据
+      showItem, //护士选择了那些项目需要显示
+      isEdit: false, //判断点击的新增按钮还是点击的tr编辑
+      editItem: null, //编辑或者新增的哪一个项目，新入，病危，病重。。。
+      editItemText: null, //
+      editIndex: null, //编辑了数据的哪一条数据
+      editRowData: null, //编辑哪一行数据具体内容
+      visible: false,
+      title1: "白班",
+      title2: "夜班",
+      dataType: "全科",
+      showOption: false, //显示电梯
+      //table对应的数据源JSON
+      hlShioverNewPatientDtos:null,
+      hlShioverDischargedPatientDtos:null,
+      hlShioverSeriouslyIllPatientDtos:null,
+      hlShioverCriticallyIllPatientDtos:null,
+      hlShioverSpecialPatientDtos:null,
+      hlShioverSurgicalPatientDtos:null,
+      hlShioverFirstLevelNursingDtos:null,
+      //table对应的数据表头JSON
+      colxrhz,
+      colcyhz,
+      colbzhz,
+      colbwhz,
+      coltshz,
+      colsshz,
+      colyjhz,
+      //各个表格复选框对应的复选框选中的数据
+      hlShioverNewPatientDtosRowKeys: [],
+      hlShioverDischargedPatientDtosRowKeys: [],
+      hlShioverSeriouslyIllPatientDtosRowKeys: [],
+      hlShioverCriticallyIllPatientDtosRowKeys: [],
+      hlShioverSpecialPatientDtosRowKeys: [],
+      hlShioverSurgicalPatientDtosRowKeys: [],
+      hlShioverFirstLevelNursingDtosRowKeys: [],
+      // 7.8胖纸
+      iszxhzindex: "0", //点击增加患者的index
+      xrbrvisible: false, //选择患者是否弹出对话框
+    };
+  },
+  methods: {
+    //获取顶部小框的各个类型的数据
+    async getTopItemData(type){
+      const res = await get('/han/HandoverProc/GetPatientNumber/'+type);
+      console.log(res)
+      if(res){
+        
+      }else{
+        this.$message.error('获取失败');
+      }
+    },
+    //获取交班的数据
+    async getAlldeptData(){
+      const res = await get('/han/HandoverProc/GetHandoverPatients?handoverTime=2021-07-25&orderOfClassesId=1a23');
+      console.log(res)
+      if(res.result){
+        this.hlShioverNewPatientDtos = this.filterJbData(res.result.hlShioverNewPatientDtos);
+        this.hlShioverDischargedPatientDtos = res.result.hlShioverDischargedPatientDtos;
+        this.hlShioverSeriouslyIllPatientDtos = res.result.hlShioverSeriouslyIllPatientDtos;
+        this.hlShioverCriticallyIllPatientDtos = res.result.hlShioverCriticallyIllPatientDtos;
+        this.hlShioverSpecialPatientDtos = res.result.hlShioverSpecialPatientDtos;
+        this.hlShioverSurgicalPatientDtos = res.result.hlShioverSurgicalPatientDtos;
+        this.hlShioverFirstLevelNursingDtos = res.result.hlShioverFirstLevelNursingDtos;
+        this.addField();
+      }else{
+        this.$message.error('获取失败');
+      }
+    },
+    //判断当前是交班还是接班，返回对应的JSON数据
+    filterJbData(data){
+      var newArr=[];
+      for(var i in data){
+        console.log('单掐那状态：'+this.$store.state.isjj,data[i].isHandover)
+        if(this.$store.state.isjj && !data[i].isHandover){
+          newArr.push(data[i]);  
+        }
+        if(!this.$store.state.isjj && data[i].isHandover){
+          newArr.push(data[i]); 
+        }
+      }
+      return newArr;
+    },
+    //循环添加两个属性
+    addField(){
+      var arr=  [
+        {name:this.hlShioverNewPatientDtos,type:'hlShioverNewPatientDtos',title:'新入患者'},
+        {name:this.hlShioverDischargedPatientDtos,type:'hlShioverDischargedPatientDtos',title:'出院患者'},
+        {name:this.hlShioverSeriouslyIllPatientDtos,type:'hlShioverSeriouslyIllPatientDtos',title:'病重患者'},
+        {name:this.hlShioverCriticallyIllPatientDtos,type:'hlShioverCriticallyIllPatientDtos',title:'病危患者'},
+        {name:this.hlShioverSpecialPatientDtos,type:'hlShioverSpecialPatientDtos',title:'特殊患者'},
+        {name:this.hlShioverSurgicalPatientDtos,type:'hlShioverSurgicalPatientDtos',title:'手术患者'},
+        {name:this.hlShioverFirstLevelNursingDtos,type:'hlShioverFirstLevelNursingDtos',title:'一级患者'}
+        ]
+      
+      for(let i = 0; i < arr.length; i++){
+        for(let y = 0;y<arr[i].name.length;y++){
+          arr[i].name[y].type =arr[i].type;
+          arr[i].name[y].title =arr[i].title;
+        }
+      }
+    },
+    //监听新增数据
+    addRowData(i, y, index) {
+      //点击增加患者的下标
+      //新增某某项目时方法
+      this.isEdit = false; //表示新增
+      this.editItem = i;
+      this.editItemText = y;
+      this.editIndex = null;
+      this.drawerVisible = true;
+      this.iszxhzindex = index;
+      // console.log(this.iszxhzindex);
+    },
+    //监听对话框
+    onDrawerClose() {
+      this.drawerVisible = !this.drawerVisible;
+    },
+    //更新全局数据
+    updateGroupData() {
+      this.$message.success("厉害了");
+    },
+    rowClick(record, index) {
+      //点击编辑行时方法
+      return {
+        on: {
+          // 鼠标单击行
+          click: (event) => {
+            this.drawerVisible = true;
+            this.isEdit = true; //表示新增
+            this.editItem = record.type;
+            this.editItemText = record.title;
+            this.editIndex = index;
+            this.editRowData = record;
+            console.log("当前点击的是:" + index, "赋值的是" + this.editIndex,this.editRowData);
+          },
+        },
+      };
+    },
+    mounitChildrenData() {
+      var _thisEdit = this.editItem;
+      console.log("当前编辑的项目是：" + _thisEdit);
+      this.$refs[_thisEdit].onSubmit();
+    },
+    //触发新增
+    ruquestData(obj) {
+      this.insertItemData('jbDate','Bid',obj)
+    },
+    //新增
+    async insertItemData(jbDate,Bid,vals){//交班时间，班次,修改&新增的数据
+      var obj = {}
+      var datas  =vals.type;//获取数据的type当做变量当做数组容器
+      var title= vals.type;//获取数据的type当做变量当做数组名称
+      datas=[];//更改变量类型为Array
+      datas.push(vals);//装数据
+      obj[title] = datas;//为objs对象的键/值
+      const res = await post('/han/HandoverProc/SaveHandoverPatients?handoverTime=2021-07-26 07:50:22&orderOfClassesId=123', obj);
+      console.log(res)
+      if(res.result){
+        this.$message.success(res.msg);
+        this.getAlldeptData()
+        this.drawerVisible = false;
+      }else{
+        this.$message.success(res.msg)
+      }
+    },
+    //提交数据&批量交班
+    async submintClass(type,rowData,isPl){
+      var obj = {};
+      var datas =type;
+      var title= type;
+      var checkIndex=this[type+'RowKeys'];
+      datas=[];
+      if(isPl==1){
+        for(var t in checkIndex){
+          datas.push(this[type][t])
+        }
+        obj[title] = datas;
+      }else{
+        datas.push(rowData)
+        obj[title] = datas;
+      }
+      console.log(obj)
+
+      const res = await post('/han/HandoverProc/BatchShift', obj);
+      console.log(res)
+      if(res.result){
+        this.$message.success(res.msg);
+        this.getAlldeptData('全科')
+      }else{
+        this.$message.success(res.msg)
+      }
+    },
+    //删除数据
+    async deleteClass(rowData){
+      console.log(rowData)
+      var obj = {}
+      var datas  =rowData.type;//获取数据的type当做变量当做数组容器
+      var title= rowData.type;//获取数据的type当做变量当做数组名称
+      datas=[];//更改变量类型为Array
+      datas.push(rowData);//装数据
+      obj[title] = datas;//为obj对象的键/值
+      console.log(obj);
+      const res = await potdelete('/han/HandoverProc/DeleteHandoverPatients', obj);
+      console.log(res)
+      if(res.result){
+        this.$message.success(res.msg);
+        this.getAlldeptData()
+      }else{
+        this.$message.success(res.msg)
+      }
+    },
+    isColumns(i) {
+      //判断分组名，返回对应的表头
+      var str = null;
+      var dataList = null;
+      var selectAyy = null;
+      var selectChange = null;
+      switch (i) {
+        case "colxrhz":
+          str = this.colxrhz;
+          dataList = this.hlShioverNewPatientDtos;
+          selectAyy = this.hlShioverNewPatientDtosRowKeys;
+          selectChange = this.hlShioverNewPatientDtosChange;
+          break;
+        case "colcyhz":
+          str = this.colcyhz;
+          dataList = this.hlShioverDischargedPatientDtos;
+          selectAyy = this.hlShioverDischargedPatientDtosRowKeys;
+          selectChange = this.hlShioverDischargedPatientDtosChange;
+          break;
+        case "colbzhz":
+          str = this.colbzhz;
+          dataList = this.hlShioverSeriouslyIllPatientDtos;
+          selectAyy = this.hlShioverSeriouslyIllPatientDtosRowKeys;
+          selectChange = this.hlShioverSeriouslyIllPatientDtosChange;
+          break;
+        case "colbwhz":
+          str = this.colbwhz;
+          dataList = this.hlShioverCriticallyIllPatientDtos;
+          selectAyy = this.hlShioverCriticallyIllPatientDtosRowKeys;
+          selectChange = this.hlShioverCriticallyIllPatientDtosChange;
+          break;
+        case "coltshz":
+          str = this.coltshz;
+          dataList = this.hlShioverSpecialPatientDtos;
+          selectAyy = this.hlShioverSpecialPatientDtosRowKeys;
+          selectChange = this.hlShioverSpecialPatientDtosChange;
+          break;
+        case "colsshz":
+          str = this.colsshz;
+          dataList = this.hlShioverSurgicalPatientDtos;
+          selectAyy = this.hlShioverSurgicalPatientDtosRowKeys;
+          selectChange = this.hlShioverSurgicalPatientDtosChange;
+          break;
+        case "colyjhz":
+          str = this.colyjhz;
+          dataList = this.hlShioverFirstLevelNursingDtos;
+          selectAyy = this.hlShioverFirstLevelNursingDtosRowKeys;
+          selectChange = this.hlShioverFirstLevelNursingDtosChange;
+          break;
+        default:
+          break;
+      }
+      return {
+        column: str,
+        datas: dataList,
+        selectA: selectAyy,
+        selectChange: selectChange,
+      };
+    },
+    hasGroupName(name) {
+      return this[name+'RowKeys'].length > 0;
+    },
+    hlShioverNewPatientDtosChange(selectedRowKeys, selectedRows) {
+      this.hlShioverNewPatientDtosRowKeys = selectedRowKeys;
+    },
+    hlShioverDischargedPatientDtosChange(selectedRowKeys, selectedRows) {
+      this.hlShioverDischargedPatientDtosRowKeys = selectedRowKeys;
+    },
+    bhlShioverSeriouslyIllPatientDtosChange(selectedRowKeys, selectedRows) {
+      this.hlShioverSeriouslyIllPatientDtosRowKeys = selectedRowKeys;
+    },
+    hlShioverCriticallyIllPatientDtosChange(selectedRowKeys, selectedRows) {
+      this.hlShioverCriticallyIllPatientDtosRowKeys = selectedRowKeys;
+    },
+    hlShioverSpecialPatientDtosChange(selectedRowKeys, selectedRows) {
+      this.hlShioverSpecialPatientDtosRowKeys = selectedRowKeys;
+    },
+    hlShioverSurgicalPatientDtosChange(selectedRowKeys, selectedRows) {
+      this.hlShioverSurgicalPatientDtosRowKeys = selectedRowKeys;
+    },
+    hlShioverFirstLevelNursingDtosChange(selectedRowKeys, selectedRows) {
+      this.hlShioverFirstLevelNursingDtosRowKeys = selectedRowKeys;
+    },
+    // 7.8胖纸
+    handleOk(e) {
+      //编辑确定方法
+      this.xrbrvisible = false;
+    },
+    closexrbr(msg) {
+      //选中关闭弹出新入患者  msg选中数据的值
+      console.log(msg);
+      this.assignment(msg);
+      this.xrbrvisible = false;
+    },
+    assignment(record) {
+      this.isEdit = true; //表示新增
+      this.editItem = record.type;
+      this.editItemText = record.title;
+      this.editRowData = record;
+      this.drawerVisible = true;
+    },
+    openxrbr(msg) {
+      this.xrbrvisible = true;
+    },
+  },
+  components: {
+    xrbrForm,
+    cybrForm,
+    ssbrForm,
+    bwbrForm,
+    bzbrForm,
+    tsbrForm,
+    yjbrForm,
+    nexreJbSelect,
+  },
+  computed: {
+    updateGroupData1() {
+      return this.$store.state.updateGroupData;
+    },
+    jbjb(){
+      return this.$store.state.isjj;
+    },
+    AllOrIndividual(){
+      return this.$store.state.dataType;
+    }
+  },
+  watch: {
+    //监听点击更新数据按钮
+    updateGroupData1: function (old, newd) {
+      if (old) {
+        console.log("开始监听");
+        setTimeout(() => {
+          this.$store.commit("updateGroupData", false);
+          this.$message.success("更新成功！");
+        }, 1000);
+      }
+    },
+    //点击显示顶部的全科数据或者本人
+    AllOrIndividual: function (old, newd) {
+      if (old) {
+        this.getTopItemData(old)
+      }
+    },
+    jbjb: function (old, newd) {
+      if (old) {
+        this.getAlldeptData();
+      }else{
+        this.getAlldeptData();
+      }
+    },
+  },
+  mounted(){
+    this.getAlldeptData();
+    this.getTopItemData(1)
+  }
+};
+</script>
+<style scoped>
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.lis {
+  margin-top: 10px;
+}
+.box {
+  height: 100%;
+  border-radius: 5px;
+}
+.box header {
+  background: #fff;
+  padding: 10px;
+  border-radius: 0 0 7px 7px;
+}
+.box section {
+  height: calc(100% - 91px);
+  margin-top: 12px;
+  border-radius: 7px;
+  background: #fff;
+  padding: 10px;
+}
+.box section .tableBox {
+  height: 100%;
+  overflow-y: auto;
+}
+.ant-tabs-tab > span {
+  font-size: 15px;
+  font-weight: bold;
+}
+.heads {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.heads > span {
+  width: 40px;
+  font-size: 17px;
+  font-weight: bold;
+}
+.itemBox {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+}
+.itemBox li {
+  width: 90px;
+  height: 60px;
+  text-align: center;
+  border-radius: 5px;
+}
+.itemBox li p:first-child {
+  margin-top: -12px;
+}
+.itemBox li p:first-child span {
+  background: #fff;
+}
+.itemBox li p:last-child {
+  margin-top: -5px;
+  font-size: 15px;
+}
+.titles {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.titles div:first-child i {
+  display: inline-block;
+  width: 5px;
+  height: 28px;
+  background: orange;
+  vertical-align: middle;
+  border-radius: 3px;
+}
+.title-btn {
+  display: flex;
+  align-items: center;
+  justify-content:flex-end;
+  width: 266px;
+}
+.title-btn button{
+  margin-left:10px;
+}
+.tableBox::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 0px !important; /*高宽分别对应横竖滚动条的尺寸*/
+  height: 0px !important;
+  background: #ffffff !important;
+  cursor: pointer !important;
+}
+
+.tableBox::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 5px !important;
+  background: rgba(63, 98, 131, 0.8) !important;
+  cursor: pointer !important;
+}
+
+.tableBox::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  border-radius: 0 !important;
+  background: rgba(240, 240, 240, 0.5) !important;
+  cursor: pointer !important;
+}
+section >>> .ant-table-thead > tr > th {
+  background: #eaf0f6 !important;
+  color: #196d9d !important;
+  font-weight: bold;
+}
+section >>> .ant-table-small > .ant-table-content > .ant-table-body {
+  margin: 0;
+}
+.xzhzkuang >>> .ant-modal-footer {
+  display: none;
+}
+</style>

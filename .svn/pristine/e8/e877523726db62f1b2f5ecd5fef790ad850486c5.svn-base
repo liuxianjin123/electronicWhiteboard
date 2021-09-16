@@ -1,0 +1,168 @@
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.lis {
+    margin-top: 10px;
+}
+
+.box {
+    height: 100%;
+    border-radius: 5px;
+    position: relative;
+}
+
+.box header {
+    background: #fff;
+    padding: 10px;
+    border-radius: 0 0 7px 7px;
+}
+
+.box section {
+    height: calc(100% - 80px);
+    margin-top: 12px;
+    border-radius: 7px;
+    background: #fff;
+    padding: 10px;
+}
+
+.box section .tableBox {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.ant-tabs-tab>span {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.heads {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.heads>span {
+    width: 40px;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.itemBox {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+}
+
+.itemBox li {
+    width: 90px;
+    height: 60px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.itemBox li p:first-child {
+    margin-top: -12px;
+}
+
+.itemBox li p:first-child span {
+    background: #fff;
+}
+
+.itemBox li p:last-child {
+    margin-top: -5px;
+    font-size: 15px;
+}
+
+.anchor {
+    width: 50px;
+    height: auto;
+    border: 1px solid #ddd;
+    position: fixed;
+    right: -8px;
+    top: 50%;
+    margin-top: -76px;
+    z-index: 9;
+    background: #fff;
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.anchor>>>.ant-anchor-link {
+    padding: 7px 0 7px 4px;
+    line-height: 1.143;
+}
+
+.titles {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.titles div:first-child i {
+    display: inline-block;
+    width: 5px;
+    height: 28px;
+    background: orange;
+    vertical-align: middle;
+    border-radius: 3px;
+}
+
+.title-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 266px;
+}
+
+.title-group button {
+    margin-left: 10px;
+}
+
+.title-btn1:first-child {
+    width: 270px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.tableBox::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 0px !important;
+    /*高宽分别对应横竖滚动条的尺寸*/
+    height: 0px !important;
+    background: #ffffff !important;
+    cursor: pointer !important;
+}
+
+.tableBox::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    border-radius: 5px !important;
+    background: rgba(63, 98, 131, 0.8) !important;
+    cursor: pointer !important;
+}
+
+.tableBox::-webkit-scrollbar-track {
+    /*滚动条里面轨道*/
+    border-radius: 0 !important;
+    background: rgba(240, 240, 240, 0.5) !important;
+    cursor: pointer !important;
+}
+
+section>>>.ant-table-thead>tr>th {
+    background: #eaf0f6 !important;
+    color: #196d9d !important;
+    font-weight: bold;
+}
+
+section>>>.ant-table-small>.ant-table-content>.ant-table-body {
+    margin: 0;
+}
+
+.xzhzkuang>>>.ant-modal-footer {
+    display: none;
+}

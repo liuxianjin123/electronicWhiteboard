@@ -1,0 +1,96 @@
+<template>
+  <div>
+    <template>
+      <a-table
+        :columns="columns"
+        :data-source="nowpatients"
+        bordered
+        size="small"
+        :scroll="{ x: '100%' }"
+        :customRow="rowClick"
+        :rowKey="
+          (record, index) => {
+            return index;
+          }
+        "
+      >
+        <span slot="assessScoreLower" slot-scope="text, record">
+          {{ record.ssy }}/{{ record.szy }}
+        </span>
+      </a-table>
+    </template>
+  </div>
+</template>
+<script>
+const nowpatients = [
+  {
+    type: "tshz",
+    title: "特殊患者",
+    bedNumber: "0025",
+    bp: "123",
+    confirmTheShiftTime: null,
+    dayShiftCondition: "你大爷3",
+    diagnosis: "你大爷6",
+    handoverTime: "2021-07-25 00:00:00",
+    id: "null",
+    isHandover: false,
+    isSucceed: false,
+    lastNightCondition: "你大爷4",
+    levelOfCare: "二级护理",
+    nextNightCondition: "你大爷5",
+    orderOfClassesId: "1a23",
+    p: "520",
+    patientName: "你大爷",
+    r: "20",
+    specialDescription: "你大爷2",
+    specialProperty: "你大爷1",
+    succeedTime: "2021-07-26 07:50:22",
+    t: "36.4",
+    tmh: "HH1808695",
+    whiteboardDisplay: true,
+    zyh: "0372202104146380"
+  }   
+]
+export default {
+  data() {
+    return {
+      nowpatients, //获取当前所需数据
+      columns:null
+    };
+  },
+  props: {
+    showItem: {
+      //主页面传递的  { "name": "xrhz", "columns": "colxrhz", "title": "新入患者" }
+      type: Object,
+      default: "我是默认值，可以不定义",
+    },
+    iszxhzcolumns: {
+      //主页面传递表头
+      type: Array,
+      default() {
+        return [0, 1, 2, 3];
+      },
+    },
+  },
+  watch: {},
+  mounted() {
+    this.columns =JSON.parse(JSON.stringify(this.iszxhzcolumns));
+    this.columns.splice(this.columns.length - 1, 1);
+  },
+  methods: {
+    rowClick(record, index) {
+      //点击行时方法
+      return {
+        on: {
+          // 鼠标单击行
+          click: (event) => {
+            this.$emit("closexrbr", this.nowpatients[index]);
+          },
+        },
+      };
+    }
+  }
+};
+</script>
+<style scoped>
+</style>

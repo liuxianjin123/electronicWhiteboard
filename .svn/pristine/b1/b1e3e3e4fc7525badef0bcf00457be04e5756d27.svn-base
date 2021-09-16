@@ -1,0 +1,24 @@
+var obj = {
+    prop: {
+        isEdit: Boolean,
+        editRowData: Object,
+    },
+    watch: {
+        isEdit(n, o) {
+            this.isEdit = n;
+            if (!this.isEdit) {
+                for (var i in this.form) {
+                    if (i != "type" && i != "title") {
+                        this.form[i] = "";
+                    }
+                }
+            }
+        },
+        editRowData(n, o) {
+            this.editRowData = n;
+            this.form = JSON.parse(JSON.stringify(this.editRowData));
+        }
+    }
+}
+
+export default obj

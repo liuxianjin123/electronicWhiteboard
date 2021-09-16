@@ -1,0 +1,87 @@
+<template>
+  <div class="container">
+    <div class="box">
+      <header>
+        <template>
+          <a-tabs default-active-key="1" @change="callback">
+            <a-tab-pane key="1">
+              <span slot="tab">
+                <a-icon type="file-protect" style="font-size:20px;"/>
+                交班({{ title1 }})
+              </span>
+            </a-tab-pane>
+            <a-tab-pane key="2">
+              <span slot="tab">
+                <a-icon type="usergroup-delete" style="font-size:20px;"/>
+                接班({{ title2 }})
+              </span>
+            </a-tab-pane>
+          </a-tabs>
+          <div class="btnGroup">
+            <a-button type="primary" ghost icon="appstore" size="large">
+              显示本人
+            </a-button>
+            <a-button type="primary" ghost icon="sync" size="large">
+              更新数据
+            </a-button>
+          </div>
+        </template>
+      </header>
+      <section>
+        <router-view> </router-view>
+      </section>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+  name: "feelUnhappy",
+  data() {
+    return {
+      visible: false,
+      title1: "白班",
+      title2: "夜班",
+    };
+  },
+  methods: {
+    callback(key) {
+      key == 1
+        ? this.$router.push({ path: "/nexreJb" })
+        : this.$router.push({ path: "/nexreBb" });
+    },
+  },
+  created() {
+    this.$router.push({ path: "/nexreJb" });
+  },
+};
+</script>
+<style scoped>
+.container {
+  height: 100%;
+  background: #f2f2f2;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.box {
+  height: 100%;
+}
+.box section {
+  height: calc(100% - 72px);
+}
+.ant-tabs-tab > span {
+  font-size: 15px;
+  font-weight: bold;
+}
+.box header {
+  position: relative;
+  background: #fff;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 7px 7px 0 0;
+}
+.box header .btnGroup {
+  position: absolute;
+  right: 8px;
+  top: 7px;
+}
+</style>

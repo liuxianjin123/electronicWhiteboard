@@ -1,0 +1,1215 @@
+<template>
+  <div class="box">
+    <header>
+      <div class="heads">
+        <span>
+          {{ $store.state.dataType }}
+        </span>
+        <ul class="itemBox">
+          <template>
+            <li
+              class="topDataItem"
+              v-for="(item, index) in topDataList"
+              :key="index"
+              :style="{
+                border:
+                  $store.state.dataType == '全科'
+                    ? '2px dotted #f59a23'
+                    : '2px dotted #1e9fff',
+              }"
+            >
+              <p>
+                <span>{{ item.name }}</span>
+              </p>
+              <p>{{ item.num }}人</p>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </header>
+    <section>
+      <div class="tableBox" ref="questionnaireBox">
+        <ul
+          class="questionnaireBox"
+          ref="questionnaireBox"
+          style="height: 100%"
+        >
+          <li
+            v-for="(item, index) in showItem"
+            :key="index"
+            class="lis"
+            :id="item.name"
+          >
+            <div class="titles">
+              <div>
+                <i></i>
+                <span
+                  ><b>{{ item.title }}</b></span
+                >
+              </div>
+              <div class="title-btn">
+                <a-button
+                  v-if="$store.state.isjj"
+                  type="danger"
+                  style="background: orange; border-color: orange"
+                  :data-type="item.name"
+                  @click="addRowData(item.name, item.title, index)"
+                >
+                  增加{{ item.title }}
+                </a-button>
+                <a-button
+                  type="primary"
+                  :data-type="item.name"
+                  :disabled="!hasGroupName(item.name)"
+                  @click="batchSubmit(item.name)"
+                >
+                  {{$store.state.isjj?'批量交班':'批量接班'}}</a-button
+                >
+                <a-popover trigger="hover" placement="bottomRight">
+                  <template slot="content">
+                    <span v-for="item in showItem" :key="item.name">
+                      <a :href="'#' + item.name">{{ item.title }}</a>
+                      <a-divider type="vertical" />
+                    </span>
+                  </template>
+                  <a-button type="primary" ghost icon="more"></a-button>
+                </a-popover>
+              </div>
+            </div>
+            <template>
+              <a-table
+                :columns="isColumns(item.columns).column"
+                :data-source="isColumns(item.columns).datas"
+                bordered
+                :pagination="false"
+                :customRow="rowClick"
+                size="small"
+                :scroll="{ x: '100%', y: 'calc(100vh - 338px)' }"
+                :rowKey="
+                  (record, index) => {
+                    return index;
+                  }
+                "
+                :row-selection="{
+                  selectedRowKeys: isColumns(item.columns).selectA,
+                  onChange: isColumns(item.columns).selectChange,
+                  columnWidth: 40,
+                }"
+              >
+                <span slot="assessScoreLower" slot-scope="text, record">
+                  {{ record.ssy }}/{{ record.szy }}
+                </span>
+                <template slot="address" slot-scope="text, record, index">
+                  <a
+                    @click.stop="submintClass(item.name,index,record,$event)"
+                    ><a-icon type="interaction" />{{$store.state.isjj?'交班':'接班'}}</a
+                  >
+                  <template v-if="$store.state.isjj">
+                    |
+                    <template>
+                      <a-popconfirm title="确认删除?" ok-text="确认" cancel-text="取消" @confirm="deleteClass(item.name,index,record,$event)">
+                        <a
+                          style="color: red"
+                          @click.stop=""
+                          >
+                        <a-icon type="delete" theme="filled" /> 刪除</a
+                        >
+                      </a-popconfirm>
+                    </template>
+                  </template>
+                </template>
+              </a-table>
+            </template>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <a-drawer
+      :title="!isEdit ? '新增' + editItemText : '编辑' + editItemText"
+      placement="right"
+      :closable="false"
+      :visible="drawerVisible"
+      @close="onDrawerClose"
+      :width="450"
+      style="height: 100%;z-index=800"
+    >
+      <div
+        style="height: calc(100% - 60px); overflow-y: auto; overflow-x: hidden"
+      >
+        <xrbr-form
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'xrhz'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="xrhz"
+        ></xrbr-form>
+        <cybr-form
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'cyhz'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="cyhz"
+        ></cybr-form>
+        <ssbr-form 
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'sshz'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="sshz"
+        ></ssbr-form>
+        <bwbr-form 
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'bwhz'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="bwhz"
+        ></bwbr-form>
+        <bzbr-form 
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'bzhz'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="bzhz"
+        ></bzbr-form>
+        <tsbr-form
+          v-on:openxrbr="openxrbr"
+          v-if="editItem == 'tshz'"
+          @ruquestData="ruquestData"
+          :isEdit="isEdit"
+          :editRowData="editRowData"
+          ref="tshz"
+        ></tsbr-form>
+      </div>
+      <div style="height: 60px; line-height: 60px; text-align: center" v-if="$store.state.isjj">
+        <a-button type="primary" @click="mounitChildrenData">确认</a-button>
+        <a-button type="danger" ghost @click="drawerVisible = false"
+          >取消</a-button
+        >
+      </div>
+    </a-drawer>
+    <!-- 7.8胖纸 -->
+    <a-modal
+      class="xzhzkuang"
+      style="edit_kuang"
+      v-model="xrbrvisible"
+      width="94%"
+      :title="'选择' + showItem[iszxhzindex].title"
+      @ok="handleOk"
+    >
+      <nexreJbSelect
+        :showItem="showItem[iszxhzindex]"
+        :iszxhzcolumns="isColumns(showItem[iszxhzindex].columns).column"
+        v-on:closexrbr="closexrbr"
+      ></nexreJbSelect>
+    </a-modal>
+  </div>
+</template>
+<script>
+import xrbrForm from "../../views/ChangeShifts/jjbModel/xrbrForm";
+import cybrForm from "../../views/ChangeShifts/jjbModel/cybrForm";
+import ssbrForm from "../../views/ChangeShifts/jjbModel/ssbrForm";
+import bwbrForm from "../../views/ChangeShifts/jjbModel/bwbrForm";
+import bzbrForm from "../../views/ChangeShifts/jjbModel/bzbrForm";
+import tsbrForm from "../../views/ChangeShifts/jjbModel/tsbrForm";
+import nexreJbSelect from "../../views/ChangeShifts/jjbModel/nexreJb_Select";
+const colxrhz = [
+  {
+    title: "床号",
+    dataIndex: "bch",
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "name",
+    width: "70px",
+  },
+  {
+    title: "入院诊断",
+    dataIndex: "zyzd",
+    width: "270px",
+  },
+  {
+    title: "时间",
+    children: [
+      {
+        title: "新入",
+        dataIndex: "xrsj",
+        width: 100,
+      },
+      {
+        title: "转入",
+        dataIndex: "zrsj",
+        width: 100,
+      },
+    ],
+  },
+  {
+    title: "入院方式",
+    dataIndex: "ryfs",
+    width: "50px",
+  },
+  {
+    title: "护理级别",
+    dataIndex: "hljb",
+    width: "80px",
+  },
+  {
+    title: "T(℃)",
+    dataIndex: "tw",
+    width: "60px",
+  },
+  {
+    title: "P(次分)",
+    dataIndex: "mb",
+    width: "70px",
+  },
+  {
+    title: "R(次分)",
+    dataIndex: "hx",
+    width: "70px",
+  },
+  {
+    title: "BP(mmHg)",
+    width: "120px",
+    scopedSlots: { customRender: "assessScoreLower" },
+  },
+  {
+    title: "观察要点",
+    dataIndex: "gcyd",
+    width: "150px",
+  },
+  {
+    title: "上夜病情",
+    dataIndex: "sybq",
+    width: "150px",
+  },
+  {
+    title: "下夜病情",
+    dataIndex: "xybq",
+    width: "150px",
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+const colcyhz = [
+  {
+    title: "床号",
+    dataIndex: "bch",
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "name",
+    width: "70px",
+  },
+  {
+    title: "出院诊断",
+    dataIndex: "cyzd",
+  },
+  {
+    title: "时间",
+    children: [
+      {
+        title: "出院",
+        dataIndex: "cysj",
+        width: 150,
+      },
+      {
+        title: "转科",
+        dataIndex: "zksj",
+        width: 140,
+      },
+      {
+        title: "死亡",
+        dataIndex: "swsj",
+        width: 140,
+      },
+    ],
+  },
+  {
+    title: "转往科室",
+    dataIndex: "zwks",
+    width: 140,
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+const colbzhz = [
+  {
+    title: "床号",
+    dataIndex: "bch",
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "name",
+    width: "70px",
+  },
+  {
+    title: "T(℃)",
+    dataIndex: "tw",
+    width: "60px",
+  },
+  {
+    title: "P(次分)",
+    dataIndex: "mb",
+    width: "70px",
+  },
+  {
+    title: "R(次分)",
+    dataIndex: "hx",
+    width: "70px",
+  },
+  {
+    title: "BP(mmHg)",
+    width: "120px",
+    scopedSlots: { customRender: "assessScoreLower" },
+  },
+  {
+    title: "主要诊断",
+    dataIndex: "zyzd",
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+const colbwhz = [
+  {
+    title: "床号",
+    dataIndex: "bch",
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "name",
+    width: "70px",
+  },
+  {
+    title: "T(℃)",
+    dataIndex: "tw",
+    width: "60px",
+  },
+  {
+    title: "P(次分)",
+    dataIndex: "mb",
+    width: "70px",
+  },
+  {
+    title: "R(次分)",
+    dataIndex: "hx",
+    width: "70px",
+  },
+  {
+    title: "BP(mmHg)",
+    width: "120px",
+    scopedSlots: { customRender: "assessScoreLower" },
+  },
+  {
+    title: "主要诊断",
+    dataIndex: "zyzd",
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+const coltshz = [
+  {
+    title: "床号",
+    dataIndex: "bch",
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "name",
+    width: "70px",
+  },
+  {
+    title: "T(℃)",
+    dataIndex: "tw",
+    width: "60px",
+  },
+  {
+    title: "P(次分)",
+    dataIndex: "mb",
+    width: "70px",
+  },
+  {
+    title: "R(次分)",
+    dataIndex: "hx",
+    width: "70px",
+  },
+  {
+    title: "BP(mmHg)",
+    width: "120px",
+    scopedSlots: { customRender: "assessScoreLower" },
+  },
+  {
+    title: "主要诊断",
+    dataIndex: "zyzd",
+  },
+  {
+    title: "护理级别",
+    dataIndex: "hljb",
+  },
+  {
+    title: "日间病情变化/护理措施",
+    dataIndex: "rjbqbh",
+  },
+  {
+    title: "上夜病情变化/护理措施",
+    dataIndex: "sybqbh",
+  },
+  {
+    title: "下夜病情变化/护理措施",
+    dataIndex: "xybqbh",
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+const colsshz = [
+  {
+    title: "床号",
+    dataIndex: "bch",
+    sorter: (a, b) => a.bch.length - b.bch.length,
+    width: "70px",
+  },
+  {
+    title: "姓名",
+    dataIndex: "name",
+    width: "70px",
+  },
+  {
+    title: "T(℃)",
+    dataIndex: "tw",
+    width: "60px",
+  },
+  {
+    title: "P(次分)",
+    dataIndex: "mb",
+    width: "70px",
+  },
+  {
+    title: "R(次分)",
+    dataIndex: "hx",
+    width: "70px",
+  },
+  {
+    title: "BP(mmHg)",
+    width: "90px",
+    scopedSlots: { customRender: "assessScoreLower" },
+  },
+  {
+    title: "主要诊断",
+    dataIndex: "zyzd",
+    width: "120px",
+  },
+  {
+    title: "手术名称",
+    dataIndex: "ssmc",
+    width: "120px",
+  },
+  {
+    title: "时间",
+    children: [
+      {
+        title: "手术/分娩",
+        dataIndex: "sssj",
+        width: 100,
+      },
+      {
+        title: "送回病房",
+        dataIndex: "shbfsj",
+        width: 100,
+      },
+    ],
+  },
+  {
+    title: "麻醉方式",
+    dataIndex: "mzfs",
+    width: "120px",
+  },
+  {
+    title: "班次",
+    dataIndex: "bc",
+    width: "70px",
+  },
+  {
+    title: "观察要点",
+    children: [
+      {
+        title: "切口敷料",
+        dataIndex: "qkfl",
+        width: 70,
+      },
+      {
+        title: "引流",
+        children: [
+          {
+            title: "ml",
+            dataIndex: "yll",
+            width: 70,
+          },
+          {
+            title: "性状",
+            dataIndex: "yllxt",
+            width: 70,
+          },
+        ],
+      },
+      {
+        title: "胃肠减压",
+        children: [
+          {
+            title: "ml",
+            dataIndex: "wcjy",
+            width: 70,
+          },
+          {
+            title: "性状",
+            dataIndex: "wcjyxt",
+            width: 70,
+          },
+        ],
+      },
+      {
+        title: "小便(ml)",
+        dataIndex: "xb",
+        width: 70,
+      },
+      {
+        title: "其他",
+        dataIndex: "qt",
+        width: 170,
+      },
+    ],
+  },
+  {
+    title: "操作",
+    width: "120px",
+    align:'center',
+    scopedSlots: { customRender: "address" },
+  },
+];
+const xrhz = [
+  {
+    type: "xrhz",
+    title: "新入患者",
+    bch: "0001床",
+    name: "John Brown",
+    xb: "男",
+    tjbb: [],
+    zyzd: "病人正在倒立洗头",
+    xrsj: "2020-02-11 15:35:00",
+    zrsj: "2020-02-12 15:36:00",
+    ryfs: "步行",
+    hljb: "一级护理",
+    tw: "36.8",
+    mb: "35",
+    hx: "65",
+    ssy: "125",
+    szy: "98",
+    gcyd: "患者右手边的小拇指上的指甲盖左边有点黑",
+    sybq: "患者起来上厕所了",
+    xybq: "患者上完厕所了",
+  },
+  {
+    type: "xrhz",
+    title: "新入患者",
+    bch: "0002床",
+    name: "刘先近1",
+    xb: "女",
+    tjbb: ["1"],
+    zyzd: "病人鸡鸡被刘鹏咬伤",
+    xrsj: "2020-02-13 15:35:33",
+    zrsj: "2020-02-14 15:36:33",
+    ryfs: "飞行",
+    hljb: "十级护理",
+    tw: "37.8",
+    mb: "99",
+    hx: "25",
+    ssy: "225",
+    szy: "338",
+    gcyd: "刘鹏患者右手边的小拇指上的指甲盖左边有点黑",
+    sybq: "刘鹏患者起来上厕所了",
+    xybq: "刘鹏患者上完厕所了",
+  },
+  {
+    type: "xrhz",
+    title: "新入患者",
+    bch: "0002床",
+    name: "刘先近2",
+    xb: "女",
+    tjbb: ["1"],
+    zyzd: "病人鸡鸡被刘鹏咬伤",
+    xrsj: "2020-02-21 15:35:33",
+    zrsj: "2020-02-21 15:38:33",
+    ryfs: "飞行",
+    hljb: "十级护理",
+    tw: "37.8",
+    mb: "99",
+    hx: "25",
+    ssy: "225",
+    szy: "338",
+    gcyd: "刘鹏患者右手边的小拇指上的指甲盖左边有点黑",
+    sybq: "刘鹏患者起来上厕所了",
+    xybq: "刘鹏患者上完厕所了",
+  }
+];
+const cyhz = [
+  {
+    type: "cyhz",
+    title: "出院患者",
+    bch: "0001床",
+    name: "John Brown",
+    cyzd: "病人正在倒立洗头",
+    cysj: "2020-02-20 15:35",
+    zksj: "2020-02-20 15:36",
+    swsj: "2020-02-20 15:36",
+    zwks: "很惊雷嫩",
+  },
+  {
+    type: "cyhz",
+    title: "出院患者",
+    bch: "0002床",
+    name: "John Brown",
+    cyzd: "病人正在倒立洗头",
+    cysj: "2020-02-20 15:35",
+    zksj: "2020-02-20 15:36",
+    swsj: "2020-02-20 15:36",
+    zwks: "很惊雷嫩",
+  },
+  {
+    type: "cyhz",
+    title: "出院患者",
+    bch: "0003床",
+    name: "John Brown",
+    cyzd: "病人正在倒立洗头",
+    cysj: "2020-02-20 15:35",
+    zksj: "2020-02-20 15:36",
+    swsj: "2020-02-20 15:36",
+    zwks: "很惊雷嫩",
+  },
+  {
+    type: "cyhz",
+    title: "出院患者",
+    bch: "0004床",
+    name: "John Brown",
+    cyzd: "病人正在倒立洗头",
+    cysj: "2020-02-20 15:35",
+    zksj: "2020-02-20 15:36",
+    swsj: "2020-02-20 15:36",
+    zwks: "很惊雷嫩",
+  },
+];
+const bzhz = [
+  {
+    type: "bzhz",
+    title: "病重患者",
+    bch: "0001床",
+    name: "John Brown",
+    zyzd: "病人正在倒立洗头",
+    tw: "36.8",
+    mb: "35",
+    hx: "65",
+    ssy: "125",
+    szy: "98",
+    xb: "男",
+    tjbb: [],
+  },
+];
+const bwhz = [
+  {
+    type: "bwhz",
+    title: "病危患者",
+    bch: "0001床",
+    name: "John Brown",
+    zyzd: "病人正在倒立洗头",
+    tw: "36.8",
+    mb: "35",
+    hx: "65",
+    ssy: "125",
+    szy: "98",
+  },
+];
+const tshz = [
+  {
+    type: "tshz",
+    title: "特殊患者",
+    bch: "0001床",
+    name: "John Brown",
+    zyzd: "病人正在倒立洗头",
+    tw: "36.8",
+    mb: "35",
+    hx: "65",
+    ssy: "125",
+    szy: "98",
+    hljb: "特级",
+    rjbqbh: "一般",
+    sybqbh: "良好",
+    xybqbh: "极差",
+  },
+];
+const sshz = [
+  {
+    type: "sshz",
+    title: "手术患者",
+    bch: "0001床",
+    name: "John Brown",
+    zyzd: "55",
+    tw: "36.8",
+    mb: "35",
+    hx: "65",
+    ssy: "125",
+    szy: "98",
+    ssmc: "22",
+    sssj: "2020-02-20 20:20",
+    shbfsj: "2020-02-20 20:20",
+    mzfs: "静脉置管麻醉",
+    bc: "上夜",
+    qkfl: "yes",
+    yll: "55",
+    yllxt: "恶心",
+    wcjy: "250",
+    wcjyxt: "好得很",
+    xb: "250",
+    qt: "病人术后暂无不良反应",
+    xb: "男",
+    xm: "阿里up",
+    tjbb: [],
+  },
+];
+export default {
+  name: "nexreJb",
+  data() {
+    let topDataList = [
+      //顶部数据的集合
+      { name: "病人总数", num: "456" },
+      { name: "新入患者", num: "2" },
+      { name: "转入", num: "3" },
+      { name: "出院", num: "4" },
+      { name: "转出", num: "4556" },
+      { name: "死亡", num: "6456" },
+      { name: "一级护理", num: "4567" },
+      { name: "手术", num: "8" },
+      { name: "分娩", num: "4956" },
+      { name: "病重", num: "3" },
+      { name: "病危", num: "1" },
+      { name: "特殊", num: "4526" },
+    ];
+    let showItem = [
+      //读取过来护士选中那些项目需要展示
+      { name: "xrhz", columns: "colxrhz", title: "新入患者" },
+      { name: "cyhz", columns: "colcyhz", title: "出院患者" },
+      // { name: "zrhz", columns: "colzrhz", title: "转入患者" },
+      // { name: "zchz",columns:'colzchz',title:'转出患者'},
+      // { name: "swhz",columns:'colswhz',title:'死亡患者'},
+      // { name: "yjhl",columns:'colyjhl',title:'一级护理'},
+      { name: "sshz", columns: "colsshz", title: "手术患者" },
+      // { name: "fmhz",columns:'colfmhz',title:'分娩患者'},
+      { name: "bwhz", columns: "colbwhz", title: "病危患者" },
+      { name: "bzhz", columns: "colbzhz", title: "病重患者" },
+      { name: "tshz", columns: "coltshz", title: "特殊患者" },
+    ];
+    return {
+      drawerVisible: false, //抽屉显示与隐藏
+      topDataList, //顶部显示的所有项目数据
+      showItem, //护士选择了那些项目需要显示
+      isEdit: false, //判断点击的新增按钮还是点击的tr编辑
+      editItem: null, //编辑或者新增的哪一个项目，新入，病危，病重。。。
+      editItemText: null, //
+      editIndex: null, //编辑了数据的哪一条数据
+      editRowData: null, //编辑哪一行数据具体内容
+      visible: false,
+      title1: "白班",
+      title2: "夜班",
+      dataType: "全科",
+      showOption: false, //显示电梯
+      //table对应的数据源JSON
+      xrhz,
+      cyhz,
+      bzhz,
+      bwhz,
+      tshz,
+      sshz,
+      //table对应的数据表头JSON
+      colxrhz,
+      colcyhz,
+      colbzhz,
+      colbwhz,
+      coltshz,
+      colsshz,
+      //各个表格复选框对应的复选框选中的数据
+      xrhzRowKeys: [],
+      cyhzRowKeys: [],
+      bzhzRowKeys: [],
+      bwhzRowKeys: [],
+      tshzRowKeys: [],
+      sshzRowKeys: [],
+      // 7.8胖纸
+      iszxhzindex: "0", //点击增加患者的index
+      xrbrvisible: false, //选择患者是否弹出对话框
+    };
+  },
+  methods: {
+    //监听新增数据
+    addRowData(i, y, index) {
+      //点击增加患者的下标
+      //新增某某项目时方法
+      this.isEdit = false; //表示新增
+      this.editItem = i;
+      this.editItemText = y;
+      this.editIndex = null;
+      this.drawerVisible = true;
+      this.iszxhzindex = index;
+      // console.log(this.iszxhzindex);
+    },
+    //监听对话框
+    onDrawerClose() {
+      this.drawerVisible = !this.drawerVisible;
+    },
+    //更新全局数据
+    updateGroupData() {
+      this.$message.success("厉害了");
+    },
+    rowClick(record, index) {
+      //点击编辑行时方法
+      return {
+        on: {
+          // 鼠标单击行
+          click: (event) => {
+            this.drawerVisible = true;
+            this.isEdit = true; //表示新增
+            this.editItem = record.type;
+            this.editItemText = record.title;
+            this.editIndex = index;
+            console.log("当前点击的是:" + index, "赋值的是" + this.editIndex);
+            this.editRowData = record;
+          },
+        },
+      };
+    },
+    mounitChildrenData() {
+      var _thisEdit = this.editItem;
+      console.log("当前编辑的项目是：" + _thisEdit);
+      this.$refs[_thisEdit].onSubmit();
+    },
+    //新增
+    ruquestData(obj) {
+      var val = JSON.parse(JSON.stringify(obj));
+      if (this.editIndex == null) {
+        this[this.editItem].push(val);
+      } else {
+        //替换那个分组下面的第几条
+        this[this.editItem][this.editIndex] = val;
+      }
+      this.drawerVisible = false;
+    },
+    //提交数据
+    submintClass(type,index,rowData,event){
+      console.log(type,index,rowData,this[type])
+      if(this.$store.state.isjj){
+        this.$message.success("交班")
+      }else{
+        this.$message.success("接班")
+      }
+    },
+    //删除数据
+    deleteClass(type,index,rowData,event){
+      console.log(type,index,rowData,this[type])
+      this[type].splice(0,1)
+    },
+    //批量交接班、
+    batchSubmit(i){
+      var checkIndex=this[i+'RowKeys'];//获取需要批量提交的数据下标
+      var arr=[];//批量交接数据唯一标识符
+      for(var t in checkIndex){
+        arr.push(this[i][t].name)
+      }
+      console.log(i,arr);
+      if(this.$store.state.isjj){
+        alert('交班')
+      }else{
+        alert('接班')
+      }
+    },
+    isColumns(i) {
+      //判断分组名，返回对应的表头
+      var str = null;
+      var dataList = null;
+      var selectAyy = null;
+      var selectChange = null;
+      var isCheck = null;
+      switch (i) {
+        case "colxrhz":
+          str = this.colxrhz;
+          dataList = this.xrhz;
+          selectAyy = this.xrhzRowKeys;
+          selectChange = this.xrhzChange;
+          isCheck = this.hasxrhz;
+          break;
+        case "colcyhz":
+          str = this.colcyhz;
+          dataList = this.cyhz;
+          selectAyy = this.cyhzRowKeys;
+          selectChange = this.cyhzChange;
+          isCheck = this.hascyhz;
+          break;
+        case "colbzhz":
+          str = this.colbzhz;
+          dataList = this.bzhz;
+          selectAyy = this.bzhzRowKeys;
+          selectChange = this.bzhzChange;
+          isCheck = this.hasbzhz;
+          break;
+        case "colbwhz":
+          str = this.colbwhz;
+          dataList = this.bwhz;
+          selectAyy = this.bwhzRowKeys;
+          selectChange = this.bwhzChange;
+          isCheck = this.hasbwhz;
+          break;
+        case "coltshz":
+          str = this.coltshz;
+          dataList = this.tshz;
+          selectAyy = this.tshzRowKeys;
+          selectChange = this.tshzChange;
+          isCheck = this.hastshz;
+          break;
+        case "colsshz":
+          str = this.colsshz;
+          dataList = this.sshz;
+          selectAyy = this.sshzRowKeys;
+          selectChange = this.sshzChange;
+          isCheck = this.hassshz;
+          break;
+        default:
+          break;
+      }
+      return {
+        column: str,
+        datas: dataList,
+        selectA: selectAyy,
+        selectChange: selectChange,
+        isCheck: isCheck,
+      };
+    },
+    hasGroupName(name) {
+      return this[name+'RowKeys'].length > 0;
+    },
+    xrhzChange(selectedRowKeys, selectedRows) {
+      this.xrhzRowKeys = selectedRowKeys;
+    },
+    cyhzChange(selectedRowKeys, selectedRows) {
+      this.cyhzRowKeys = selectedRowKeys;
+    },
+    bzhzChange(selectedRowKeys, selectedRows) {
+      this.bzhzRowKeys = selectedRowKeys;
+    },
+    bwhzChange(selectedRowKeys, selectedRows) {
+      this.bwhzRowKeys = selectedRowKeys;
+    },
+    tshzChange(selectedRowKeys, selectedRows) {
+      this.tshzRowKeys = selectedRowKeys;
+    },
+    sshzChange(selectedRowKeys, selectedRows) {
+      this.sshzRowKeys = selectedRowKeys;
+    },
+    // 7.8胖纸
+    handleOk(e) {
+      //编辑确定方法
+      this.xrbrvisible = false;
+    },
+    closexrbr(msg) {
+      //选中关闭弹出新入患者  msg选中数据的值
+      console.log(msg);
+      this.assignment(msg);
+      this.xrbrvisible = false;
+    },
+    assignment(record) {
+      this.isEdit = true; //表示新增
+      this.editItem = record.type;
+      this.editItemText = record.title;
+      this.editRowData = record;
+      this.drawerVisible = true;
+    },
+    openxrbr(msg) {
+      this.xrbrvisible = true;
+    },
+  },
+  components: {
+    xrbrForm,
+    cybrForm,
+    ssbrForm,
+    bwbrForm,
+    bzbrForm,
+    tsbrForm,
+    nexreJbSelect,
+  },
+  computed: {
+    updateGroupData1() {
+      return this.$store.state.updateGroupData;
+    },
+  },
+  watch: {
+    updateGroupData1: function (old, newd) {
+      if (old) {
+        console.log("开始监听");
+        setTimeout(() => {
+          this.$store.commit("updateGroupData", false);
+          this.$message.success("更新成功！");
+        }, 1000);
+      }
+    },
+  },
+};
+</script>
+<style scoped>
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.lis {
+  margin-top: 10px;
+}
+.box {
+  height: 100%;
+  border-radius: 5px;
+}
+.box header {
+  background: #fff;
+  padding: 10px;
+  border-radius: 0 0 7px 7px;
+}
+.box section {
+  height: calc(100% - 91px);
+  margin-top: 12px;
+  border-radius: 7px;
+  background: #fff;
+  padding: 10px;
+}
+.box section .tableBox {
+  height: 100%;
+  overflow-y: auto;
+}
+.ant-tabs-tab > span {
+  font-size: 15px;
+  font-weight: bold;
+}
+.heads {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.heads > span {
+  width: 40px;
+  font-size: 17px;
+  font-weight: bold;
+}
+.itemBox {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+}
+.itemBox li {
+  width: 90px;
+  height: 60px;
+  text-align: center;
+  border-radius: 5px;
+}
+.itemBox li p:first-child {
+  margin-top: -12px;
+}
+.itemBox li p:first-child span {
+  background: #fff;
+}
+.itemBox li p:last-child {
+  margin-top: -5px;
+  font-size: 15px;
+}
+.titles {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.titles div:first-child i {
+  display: inline-block;
+  width: 5px;
+  height: 28px;
+  background: orange;
+  vertical-align: middle;
+  border-radius: 3px;
+}
+.title-btn {
+  display: flex;
+  align-items: center;
+  justify-content:flex-end;
+  width: 266px;
+}
+.title-btn button{
+  margin-left:10px;
+}
+.tableBox::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 0px !important; /*高宽分别对应横竖滚动条的尺寸*/
+  height: 0px !important;
+  background: #ffffff !important;
+  cursor: pointer !important;
+}
+
+.tableBox::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 5px !important;
+  background: rgba(63, 98, 131, 0.8) !important;
+  cursor: pointer !important;
+}
+
+.tableBox::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  border-radius: 0 !important;
+  background: rgba(240, 240, 240, 0.5) !important;
+  cursor: pointer !important;
+}
+section >>> .ant-table-thead > tr > th {
+  background: #eaf0f6 !important;
+  color: #196d9d !important;
+  font-weight: bold;
+}
+section >>> .ant-table-small > .ant-table-content > .ant-table-body {
+  margin: 0;
+}
+.xzhzkuang >>> .ant-modal-footer {
+  display: none;
+}
+</style>

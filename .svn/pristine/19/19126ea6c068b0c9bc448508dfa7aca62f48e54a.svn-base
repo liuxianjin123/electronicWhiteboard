@@ -1,0 +1,129 @@
+<template>
+  <div class="container">
+    <a-form-model :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
+      <div class="tops">
+        <div class="tops-left">
+          <a-icon type="user-add" style="color: cornflowerblue" />
+        </div>
+        <div class="tops-item" v-if="isEdit == true">
+          <ul>
+            <li>
+              <span>{{ form.bedNumber }}</span>
+              <span style="margin-left: 20px">
+                <a-icon type="down-circle" />
+                <a-icon type="down-circle" />
+              </span>
+            </li>
+            <li style="justify-content: space-between">
+              <span>
+                <span>{{ form.patientName }}</span>
+                <span style="margin-left: 20px">{{ form.xm }}</span>
+              </span>
+              <a-tooltip placement="left">
+                <template slot="title">
+                  <span>增加到白板显示</span>
+                </template>
+                <a-switch :default-checked="form.whiteboardDisplay" v-model="form.whiteboardDisplay"/>
+              </a-tooltip>
+            </li>
+          </ul>
+        </div>
+        <div class="tops-item tops-item-last" @click="xzhzAll(1)" v-else>
+          <a-button>选择患者</a-button>
+        </div>
+      </div>
+      <a-form-model-item label="主要诊断">
+        <a-input v-model="form.diagnosis" />
+      </a-form-model-item>
+      <a-form-model-item label="护理级别">
+        <a-select v-model="form.levelOfCare">
+          <a-select-option value="一级护理">一级护理</a-select-option>
+          <a-select-option value="二级护理">二级护理</a-select-option>
+          <a-select-option value="三级护理">三级护理</a-select-option>
+          <a-select-option value="特级护理">特级护理</a-select-option>
+        </a-select>
+      </a-form-model-item>
+      <div class="tprbm" @dblclick="xzhzAll(0)">
+        T：<label><a-input type="number" v-model="form.t" /></label> 
+        P：<label><a-input type="number" v-model="form.p" /></label>
+        R：<label><a-input type="number" v-model="form.r" /></label>
+        BP：<label><a-input type="text" v-model="form.bp" /></label>
+      </div>
+      <a-form-model-item label="特殊属性">
+        <a-input v-model="form.specialProperty" />
+      </a-form-model-item>
+      <a-form-model-item label="特殊描述">
+        <a-input v-model="form.specialDescription" />
+      </a-form-model-item>
+      <a-form-model-item label="白板病情">
+        <a-input v-model="form.dayShiftCondition" type="textarea" />
+      </a-form-model-item>
+      <a-form-model-item label="上夜病情">
+        <a-input v-model="form.lastNightCondition" type="textarea" />
+      </a-form-model-item>
+      <a-form-model-item label="下夜病情">
+        <a-input v-model="form.nextNightCondition" type="textarea" />
+      </a-form-model-item>
+    </a-form-model>
+  </div>
+</template>
+<script>
+import obj from "../../../../../static/js/jjbEdit";
+export default {
+  data() {
+    return {
+      labelCol: { span: 7 },
+      wrapperCol: { span: 17 },
+      form: {
+        type: "hlShioverSpecialPatientDtos",
+        title: "特殊患者",
+        id: null,
+        tmh: "",
+        zyh: "",
+        orderOfClassesId: "",
+        handoverTime: "",
+        confirmTheShiftTime: "",
+        succeedTime: "",
+        isHandover: "",
+        isSucceed: "",
+        bedNumber: "",
+        patientName: "",
+        diagnosis: "",
+        levelOfCare: "",
+        t: "",
+        p: "",
+        r: "",
+        bp: "",
+        specialProperty: "",
+        specialDescription: "",
+        dayShiftCondition: "",
+        lastNightCondition: "",
+        nextNightCondition: "",
+        whiteboardDisplay: false
+      }
+    };
+  },
+  props: obj.prop,
+  watch: obj.watch,
+  mounted(){
+    if(this.editRowData){
+      this.form=JSON.parse(JSON.stringify(this.editRowData));
+    }
+  },
+  methods: {
+    onSubmit() {
+      this.$emit("ruquestData", this.form);
+    },
+    dataChanges(i, v ,r) {
+      this.form[r] = v;
+    },
+    //7.8胖纸
+    xzhzAll(type){
+      this.$emit('openxrbr',type);
+    },
+  },
+};
+</script>
+<style scoped>
+@import url("../../../../../static/css/jjbModel.css");
+</style>

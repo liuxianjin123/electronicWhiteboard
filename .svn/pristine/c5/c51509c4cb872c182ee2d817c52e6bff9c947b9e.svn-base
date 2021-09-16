@@ -1,0 +1,365 @@
+<template>
+  <div style="height:100%;">
+    <a-menu v-model="current" mode="horizontal">
+      <a-menu-item key="ChangeShifts">
+        <router-link to="/ChangeShifts"> <a-icon type="apartment" />人员分组</router-link> 
+      </a-menu-item>
+      <a-menu-item key="ShiftSetting"> <a-icon type="usergroup-delete" />交接班设置</a-menu-item>
+    </a-menu>
+    <div class="container row">
+        <div class="p1">
+          <div class="nav_bar row">
+            <div class="nb_1">
+              <span></span>
+              <div>交班班次设置</div>
+            </div>
+            <div class="nb_2" @click="FrequencyAdd(p1_Frequency)"><img src="../../../../static/images/ChangeShifts/zj3.png" width="30px" alt=""></div>
+          </div>
+          <div class="tab_h row">
+              <div class="th_1" style="flex:2">班次</div>
+              <div class="th_2" style="flex:7">时间设置</div>
+              <div class="th_3" style="flex:3">是否启用</div>
+          </div>
+          <div class="tab_r">
+            <div class="row p1_tr" v-for="(Frequency,index) in AbnormalDegree(p1_Frequency,0,3)" :key="index">
+                <div class="tr_1" style="flex:3">
+                  <img :src='qzstr+Frequency.imageName+".png"' width="21px" alt=""> {{Frequency.name}} 
+                </div>
+                <div class="tr_2" style="flex:8">
+                  <input class="p1_input" type="time" v-model="Frequency.startTime"> 至 <input class="p1_input" type="time" v-model="Frequency.endTime">
+                </div>
+                <div class="tr_3" style="flex:3">
+                  <a-switch checked-children="ON" v-show="Frequency.canNotDelete" un-checked-children="OFF" @click="Frequencystate(index)" :default-checked='Frequency.isEnable'/>
+                </div>
+            </div>
+           
+            <div class="row p1_tr p1_add" v-for="(Frequency,index) in AbnormalDegree(p1_Frequency,3,p1_Frequency.lenthg)" :key="'custom'+index">
+                <div class="tr_1" style="flex:3">
+                   <input class="p1index_add" type="text" maxlength="4" v-model="Frequency.name" placeholder="班次名称">
+                </div>
+                <div class="tr_2" style="flex:8">
+                  <input class="p1_input" type="time" v-model="Frequency.startTime"> 至 <input class="p1_input" type="time" v-model="Frequency.endTime">
+                </div>
+                <div class="tr_3" style="flex:3">
+                  <a-button type="danger" v-show="Frequency.canNotDelete==false" @click="FrequencyDelete(p1_Frequency,index+3,Frequency.id)"> 删除 </a-button>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="p2">
+            <div class="nav_bar row">
+              <div class="nb_1">
+                <span></span>
+                <div>交班内容设置</div>
+              </div>
+            </div>
+            <div class="tab_r" style="text-align: left;height:calc(100% - 80px);">
+                <div class="p2_tr" :class="{p2_Select:capacity.isEnable}" @click="p2_content(index)" v-for="(capacity,index) in p2_capacity" :key="index">
+                  <img :src="p2_img" v-show="capacity.isEnable==false" width="25px" alt="">
+                  <img :src="p2_imgSelect" v-show="capacity.isEnable" width="25px" alt="">
+                   <span>{{capacity.titleName}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="p3">
+            <div class="nav_bar row">
+              <div class="nb_1">
+                <span></span>
+                <div @click="dd1">异常值显示设置</div>
+              </div>
+            </div>
+            <div class="tab_r" style="height:calc(100% - 80px);">
+                <div class="p3_tr" v-for="(Outliers,index) in AbnormalDegree(p3_Outliers,0,2)" :key="index+'degree'">
+                   <span>{{p2_type[Outliers.type]}}： </span>
+                   <div class="yichang">{{p2_symbol[Outliers.symbol]}}</div>
+                   <div class="yc_value"><input type="number" v-model="Outliers.value">{{Outliers.unit}}</div>
+                   <!-- <div class="yc_color"></div> -->
+                   <div class="color_div">
+                      <input type="color" class="color_yc" v-model="Outliers.colour" >
+                   </div>
+                </div>
+                <div class="p3_tr dashed"></div>
+                 <div class="p3_tr dashed"  v-for="(Outliers,index) in AbnormalDegree(p3_Outliers,2,p3_Outliers.lenthg)" :key="index">
+                   <span>{{p2_type[Outliers.type]}}： </span>
+                   <div class="yichang">{{p2_symbol[Outliers.symbol]}}</div>
+                   <div class="yc_value"><input type="number" v-model="Outliers.value">{{Outliers.unit}}</div>
+                   <!-- <div class="yc_color"></div> -->
+                   <div class="color_div">
+                      <input type="color" class="color_yc" v-model="Outliers.colour" >
+                   </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+    <div class="button_right">
+          <a-button type="primary" @click="preservation"> 保存 </a-button>  
+          <a-button @click="Reset"> 重置 </a-button>  
+    </div>
+   
+  </div>
+</template>
+<script>
+export default {
+    name: "ShiftSetting",
+    data() {
+        return {
+            current: ['ShiftSetting'],
+            qzstr:'../../../../static/images/ChangeShifts/',
+            p1_Frequency:[],//交班班次设置数组
+            p1_Frequencydelete:[],//删除的数据
+            p1_FrequencyAdd:[{'canNotDelete':false,'endTime': "",'id':null,'imageName': " ",'isEnable':true,'name': "",'startTime': "",'sort':100}],
+            p2_capacity:[],//交班内容设置数组
+            p2_symbol:['<','=','>','<=','>='],
+            p2_type:['体温','呼吸','脉搏','血氧饱和度'],
+            p2_imgSelect:'../../../../static/images/ChangeShifts/gz1.png',
+            p2_img:'../../../../static/images/ChangeShifts/gz.png',
+            p3_Outliers:[],//异常值显示设置
+            value:'',
+        };
+    },
+    components:{
+        
+    },
+    mounted() {
+     this.getHandoverdata()
+    },
+    methods: {
+        dd1(){
+          console.log(this.color);
+        },
+        p2_content(index){
+          if(this.p2_capacity[index].isEnable){
+              this.p2_capacity[index].isEnable=false;
+          }else{
+              this.p2_capacity[index].isEnable=true;
+          }
+        },
+        AbnormalDegree(arr,start,end){//返回所需数组
+            return arr.slice(start,end);
+        },
+        Frequencystate(index){//点击开关
+        if(this.p1_Frequency[index].isEnable){
+          this.p1_Frequency[index].isEnable=false;
+        }else{
+          this.p1_Frequency[index].isEnable=true;
+        }
+        },
+        FrequencyDelete(arr,index,id){//交班班次 删除
+          arr.splice(index,1);
+          if(id!=null){
+            this.p1_Frequencydelete.push(id);
+          }
+        },
+        FrequencyAdd(arr){//增加指定数值
+          this.p1_FrequencyAdd=[{'canNotDelete':false,'endTime': "",'id':null,'imageName': " ",'isEnable':true,'name': "",'startTime': "",'sort':100}]
+          arr.push(this.p1_FrequencyAdd[0]);
+          console.log(arr)
+          return arr;
+        },
+        async getHandoverdata(){//获取数据
+          const res = await this.$axios.get('/han/handover/getShiftSetting',{});
+          this.p2_capacity=res.result.hlShioverContent;
+          this.p3_Outliers=res.result.hlShioverOutlier;
+          this.p1_Frequency=res.result.hlShioverOrderOfClass;
+          this.p1_Frequencydelete=[];//删除数组清空
+        },
+        async preservation(){//点击保存
+          let preservation=[];
+          preservation.push({"hlShioverContent":this.p2_capacity,'hlShioverOutlier':this.p3_Outliers,'hlShioverOrderOfClass':this.p1_Frequency});
+          if(this.p1_Frequencydelete.length>0){
+             await this.onpotdelete(this.p1_Frequencydelete);
+          }
+          const res = await this.$axios.post('/han/handover/saveShiftSetting',preservation[0]);
+          console.log(res);
+          if(res.result){
+              this.$message.success('保存成功！');
+          }else{
+              this.$message.warning(res.msg);
+          }
+          await this.getHandoverdata();
+        },
+        async onpotdelete(id){//删除方法
+          const res = await potdelete('/han/handover/deleteOrderOfClasses',id);
+          console.log(res);
+        },
+        Reset(){
+          this.getHandoverdata();
+          
+        }
+
+    }
+
+}
+</script>
+<style scoped>
+.container{
+    padding: 20px;
+    width: 100%;
+    height: calc(100% - 49px);
+
+}
+.button_right{
+  position: fixed;
+  right: 30px;
+  bottom: 40px;
+}
+.row{
+   display: flex;
+  flex-direction:row;
+}
+.container>div{
+  flex: 1;
+  margin-left: 15px;
+  margin-right: 15px;
+  border:1px solid #eee;
+  border-radius: 5px;
+  box-shadow: 8px 8px 5px #c7c6c6;
+  overflow: auto;
+  height: 90%;
+
+}
+.nav_bar{
+  padding:10px 30px;
+  /* border:1px solid #eee; */
+  height: 70px;
+}
+.nb_1{
+  flex: 10;
+  line-height: 50px;
+
+}
+.nb_1>span{
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background-color: #F59A23;
+  border-radius: 50%;
+}
+.nb_1>div{
+  display: inline-block;
+  font-weight: bold;
+  font-size: 16px;
+
+}
+.nb_2{
+  flex: 1;
+  line-height: 50px;
+}
+.tab_h{
+  background-color: #F2F2F2;
+  font-weight: bold;
+}
+.tab_r{
+  overflow: auto;
+  height:calc(100% - 130px);
+}
+.tab_r>.p1_tr,.tab_h{
+  height: 60px;
+  line-height: 60px;
+}
+.tab_h,.tab_r{
+  width: 90%;
+  margin-left: 5%;
+  text-align: center;
+  /* border:1px solid #eee; */
+
+}
+input[type='time']{
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #ccc;
+  width: 40%;
+  height: 30px;
+  text-align: center;
+}
+.p1index_add{
+  width: 90%;
+  height: 30px;
+  text-align: center;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #ccc;
+
+}
+.p2_tr{
+  width: 40%;
+  border:1px solid #ccc;
+  margin: 3%;
+  display: inline-block;
+  text-align: center;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 5px;
+  cursor:pointer;
+}
+.p2_Select{
+  border:1px solid #1f71a0;
+  color:#1f71a0;
+
+}
+.p3_tr{
+  height: 60px;
+  line-height: 60px;
+  display: flex;
+  flex-direction:row;
+  /* border:1px solid #ccc; */
+
+}
+.p3_tr>span{
+  /* width: 30%; */
+  /* display: inline-block; */
+  flex: 2;
+}
+.yichang{
+ width: 50px;
+ height: 25px;
+ border:1px solid #ccc;
+ line-height: 20px;
+ border-radius: 5px;
+ font-size: 18px;
+ margin-top: 20px;
+ margin-right: 20px;
+  flex: 1;
+
+}
+.yc_value{
+  border-bottom: 1px solid #ccc;
+  height: 40px;
+  line-height: 40px;
+  /* width: 150px; */
+  flex: 3;
+  margin-right: 10px;
+
+}
+.yc_value>input{
+   border: none;
+   outline: none;
+   width: 50%;
+  height: 30px;
+  text-align: center;
+}
+.yc_color{
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #D9001B;
+}
+.color_div{
+  flex: 2;
+}
+.color_yc{
+width: 25px;
+height: 25px;
+border-radius: 5px;
+border: none;
+outline: none;
+margin-top: 15px;
+}
+.dashed{
+  border-bottom: 1px dashed #ccc;
+}
+ input::-webkit-input-placeholder{
+    color:#ccc;
+}
+</style>

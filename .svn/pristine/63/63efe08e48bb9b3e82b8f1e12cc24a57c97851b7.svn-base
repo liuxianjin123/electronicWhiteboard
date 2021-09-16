@@ -1,0 +1,241 @@
+<template>
+  <div>
+      
+    <a-row :gutter="16" >
+        <a-col :span='6' v-for="(group,index_g) in groups" :key="index_g">
+            <div class="cards" style="width:90%" :span="8" :offset="8">
+                <a-card :title='group.groupName' style="width:100%">
+                    <a-row type="flex" class="team">
+                        <a-col :span='4' style="line-height: 80px;">
+                            <img src="../../../../static/images/ChangeShifts/zhuyuan.png" width="40px" alt="" />
+                        </a-col>
+                        <a-col :span='20' style="padding-top: 5%;height: 80px" @mouseleave='more_h()'>
+                            <more :dataList="group.groupMembers" :datatitle="group.groupName" v-show="'a1'+index_g == int" @mouseleave='more_h()'></more>
+                            <div v-if="group.memberCount>8" v-show="'a1'+index_g != int">
+                                <div class="team_people" v-show="groupMembers.isExist" v-for="(groupMembers,index) in beyond_hidden(group.groupMembers,8)" :key="index"> 
+                                    {{ groupMembers.userName }}
+                                </div>
+
+                                <div class="more" style="bottom: -1px;" @mouseenter="more('a1'+index_g)">更多...</div>
+                                
+                            </div>
+                            <div v-else>
+                                <div class="team_people" v-show="groupMembers.isExist" v-for="(groupMembers,index) in beyond_hidden(group.groupMembers,8)" :key="index"> 
+                                    {{ groupMembers.userName }}
+                                </div>
+                            </div>
+                           
+                        </a-col>
+                        
+                    </a-row>
+                     <a-row type="flex" class="bed">
+                        <a-col :span='4'  style="line-height: 150px;">
+                             <img src="../../../../static/images/ChangeShifts/bc.png" width="40px" alt="" />
+                        </a-col>
+                        <a-col :span='20' style="padding-top: 5%;height: 150px;" @mouseleave='more_h()'>
+                            <more :dataList="group.beds" :datatitle="group.groupName" v-show="'a2'+index_g == int" @mouseleave='more_h()' ></more>
+                            <div v-if="group.bedCount>20" v-show="'a2'+index_g != int" class="yingchang">
+                                <div class="bed_number" v-show="beds.isExist" v-for="(beds,index) in group.beds" :key="index"> 
+                                <!-- <div class="bed_number" v-show="beds.isExist" v-for="(beds,index) in beyond_hidden(group.beds,20)" :key="index"> {{ beds.bedName }}</div> -->
+                                    <span>{{ beds.bedName }}</span>
+                                </div>
+                                <div class="more" @mouseenter="more('a2'+index_g)">更多...</div>
+                            </div>
+                           <div v-else>
+                                <div class="bed_number" v-show="beds.isExist" v-for="(beds,index) in group.beds" :key="index"> {{ beds.bedName }}</div>
+                           </div>
+                            
+                        </a-col>
+                    </a-row>
+                </a-card>
+                <a-row type="flex">
+                    <a-col :flex="1" class="buttom_edit"  @click="showModal(index_g)">编辑</a-col>
+                    <template>
+                        <a-popconfirm :title="'是否删除'+group.groupName+'，删除将清空所有数据?'" ok-text="确定" cancel-text="取消" @confirm="confirm(group.id)">
+                            <a-col :flex="1" class="buttom_delete">删除</a-col>
+                        </a-popconfirm>
+                    </template>
+                    
+                </a-row>
+            </div>
+        </a-col>
+       
+  </a-row>
+
+
+<a-modal style="edit_kuang" v-model="visible" width="60%" cancelText='取消' okText='确定' title="编辑分组" @ok="handleOk">
+    <edit :dataList="groups[indexedit]" ref="edit"></edit>
+</a-modal>
+  
+      
+    
+  </div>
+</template>
+<script>
+import more from '../../views/ChangeShifts/ChangeShifts_card_more'
+import edit from '../../views/ChangeShifts/ChangeShifts_card_edit'
+import { potdelete, get }from '../../../request/request';
+export default {
+    data(){
+    return{
+        appData:{
+            title:"我是父组件的dataList数据"
+        },
+        visible: false,
+        int:-1,
+        groups:[],//后台获取的所有数据
+        groupslength:[],//所有组内的人员人数
+        indexedit:0,
+        newlybuild:[],
+        
+
+    }
+    },
+    props:{
+       
+        
+    },
+    components:{
+        more,
+        edit,
+    },
+    mounted() {
+     this.arrcard()
+    },
+    methods: {
+       
+        beyond_hidden(arr,number){//数组超出数值隐藏 arr数组 number最大长度
+            if(arr.length>number){
+                return arr.slice(0,number);
+            }
+            return arr;
+        },
+        more(str){//显示更多内容
+            // console.log(str);
+            this.int=str;
+        },
+        more_h(){//隐藏更多内容
+            this.int=-1;
+        },
+        async confirm(e) {//删除方法
+            console.log('/han/handover/deleteGroup/'+e+'');
+            const res = await potdelete('/han/handover/deleteGroup/'+e+'');
+            await this.arrcard();
+            console.log()
+            if(res.result){
+                this.$message.success('删除成功');
+            }else{
+                this.$message.warning('删除失败');
+            }
+        },
+        showModal(index) {//弹出编辑
+            this.indexedit=index;
+            this.visible = true;
+            // console.log(this.groups[this.indexedit]);
+
+        },
+        async handleOk(e) {//编辑确定方法
+            // console.log(e);
+            await this.$refs.edit.EditSave();
+            await this.arrcard();
+            this.visible = false;
+        },
+        async GetGroups(){//获取当前科室的交班分组
+            //const res=await get('/han/Handover/GetShiftSetting',{})
+
+        },
+        async arrcard(){//获取责任组数据
+            this.newlybuild=[];
+            const res = await get('/han/handover/getGroups',{});
+            this.groups=res.result;
+            this.newlybuild.push({
+                id:null
+                ,beds:this.isExisttrue(this.groups[0].beds)
+                ,groupMembers:this.isExisttrue(this.groups[0].groupMembers)
+            })
+            console.log(this.groups);
+        },
+        isExisttrue(arr){//分离已选和未选数组
+            let arrdd=[];
+            for(var item of arr){	
+                if(item.isExist==false){
+                    arrdd.push(item);
+                }
+            }
+            return arrdd;
+           
+        },
+        
+        
+    }
+}
+</script>
+<style scoped>
+.cards{
+    margin-top: 20px;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 8px 8px 5px #c7c6c6;
+     
+}
+.buttom_edit,.buttom_delete{
+   border: 1px solid #e8e8e8;
+    height: 45px;
+    line-height: 45px;
+}
+.ant-card-bordered{
+    border-radius:5px 5px 0 0;
+
+}
+.buttom_edit{
+    color: #196D9D;
+    border-radius: 0 0 0 5px;
+}
+.buttom_delete{
+    color: red;
+    border-radius: 0 0 5px 0;
+}
+.team{
+    height: 80px;
+    /* line-height: 80px; */
+    /* border: 1px solid #e8e8e8; */
+    text-align: left;
+    
+
+
+}
+.bed{
+    height: 150px;
+    /* line-height: 150px; */
+    /* border: 1px solid #e8e8e8; */
+    text-align: left;
+}
+.team_people,.bed_number{
+    display: inline-block;
+    width: 30%;
+    text-align: center;
+}
+.bed_number{
+   background-color:#E3F2FF; 
+   margin-top: 5px;
+   border-radius: 5px;
+   width: 22%;
+   margin-right: 3px;
+}
+.more{
+    color:#196D9D;
+    float: right;
+    margin-right: 15%;
+    position: absolute;
+    right: 0px;
+    bottom: -17px;
+}
+
+.hidden{
+    display: none;
+}
+.yingchang{
+    height: 135px;
+    overflow: hidden;
+}
+</style>

@@ -1,0 +1,184 @@
+<template>
+  <div>
+    <template>
+      <a-table
+        :columns="BrOrDatail?selectBr:selectBrDetail"
+        :data-source="BrOrDatail?selectBrData:selectBrDetailData"
+        bordered
+        :pagination="false"
+        size="small"
+        :scroll="{ x: '100%',y: 'calc(100vh - 300px)' }"
+        :customRow="rowClick"
+        :rowKey="
+          (record, index) => {
+            return index;
+          }
+        "
+      >
+        <span slot="assessScoreLower" slot-scope="text, record">
+          {{ record.ssy }}/{{ record.szy }}
+        </span>
+      </a-table>
+    </template>
+  </div>
+</template>
+<script>
+import { post, get, potdelete}from '../../../../request/request';
+export default {
+  data() {
+    return {
+      selectBr:[
+        {
+          title: "床号",
+          dataIndex: "bcmc",
+          align:'center',
+          width: "100px",
+        },
+        {
+          title: "姓名",
+          dataIndex: "brxm",
+          align:'center',
+          width: "100px",
+        },
+        {
+          title: "性别",
+          dataIndex: "brxb",
+          align:'center',
+          width: "100px",
+        },
+        {
+          title: "年龄",
+          dataIndex: "brnl",
+          align:'center',
+          width: "100px",
+        },
+        {
+          title: "条码号",
+          dataIndex: "tmh",
+          align:'center',
+          width: "100px",
+        },
+        {
+          title: "住院号",
+          dataIndex: "zyh",
+          align:'left',
+        }
+      ],
+      selectBrDetail:[
+        {
+          title: "条码号",
+          dataIndex: "tmh",
+          align:'center',
+          width: "140px",
+        },
+        {
+          title: "住院号",
+          dataIndex: "zyh",
+          align:'left',
+          width: "140px",
+        },
+        {
+          title: "体温(℃)",
+          dataIndex: "tw",
+          align:'center',
+          width: "70px",
+        },
+        {
+          title: "呼吸(次分)",
+          dataIndex: "hx",
+          align:'center',
+          width: "100px",
+        },
+        {
+          title: "脉搏(次分)",
+          dataIndex: "mb",
+          align:'center',
+          width: "100px",
+        },
+        {
+          title: "血压(mmHg)",
+          scopedSlots: { customRender: "assessScoreLower" },
+          width: "110px",
+        },
+        {
+          title: "病情观察",
+          dataIndex: "bqgc",
+          align:'left',
+        },
+        {
+          title: "病人诊断",
+          dataIndex: "brzd",
+          align:'left',
+        }
+      ],
+      selectBrData:[
+       
+      ],
+      selectBrDetailData:[
+        
+      ]
+    };
+  },
+  props: {
+    BrOrDatail: {
+      type: Number
+    },
+    brDataType:{
+      type: Number
+    },
+    brZyh:{
+      type:String
+    }
+  },
+  watch: {
+    BrOrDatail:function(n, o){
+      if(n){
+        console.log("我变了")
+        this.getBrlist(this.brDataType)
+      }else{
+        console.log("个寂寞")
+        this.getBrSmtz(this.brZyh)
+      }
+    }
+  },
+  methods: {
+    rowClick(record, index) {
+      //点击行时方法
+      return {
+        on: {
+          // 鼠标单击行
+          click: (event) => {
+            if(this.BrOrDatail){
+              this.$emit("closexrbr", this.selectBrData[index]); 
+            }else{
+              this.$emit("closexrbr", this.selectBrDetailData[index]); 
+            }
+          },
+        },
+      };
+    },
+    async getBrlist(brDataType){
+      const res = await get('/han/PatientRelated/GetPatients/'+brDataType);
+      if(res.result){
+        this.selectBrData = res.result
+      }
+    },
+    async getBrSmtz(brZyh){
+      const res = await get('/han/PatientRelated/GetPatientSignData?zyh='+brZyh+'&stime=2021-05-25 19:30:00.000&etime=2021-08-25 19:30:00.000');
+      console.log(res);
+      if(res.result){
+        this.selectBrDetailData = res.result
+      }
+    }
+  },
+  mounted(){
+    if(this.BrOrDatail){
+      this.getBrlist(this.brDataType)
+    }else{
+      this.getBrSmtz(this.brZyh)
+    }
+  }
+};
+</script>
+<style scoped>
+</style>

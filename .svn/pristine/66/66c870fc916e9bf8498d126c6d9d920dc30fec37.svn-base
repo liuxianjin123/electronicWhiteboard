@@ -1,0 +1,112 @@
+<template>
+  <div>
+    <template>
+      <a-table
+        :columns="columns"
+        :data-source="nowpatients"
+        bordered
+        size="small"
+        :scroll="{ x: '100%' }"
+        :customRow="rowClick"
+        :rowKey="
+          (record, index) => {
+            return index;
+          }
+        "
+      >
+        <span slot="assessScoreLower" slot-scope="text, record">
+          {{ record.ssy }}/{{ record.szy }}
+        </span>
+      </a-table>
+    </template>
+  </div>
+</template>
+<script>
+const nowpatients = [
+  {
+    type: "xrhz",
+    title: "新入患者",
+    bch: "0001床",
+    name: "滴滴滴n",
+    xb: "男",
+    tjbb: [],
+    zyzd: "加快速度老卡速度快",
+    xrsj: "2020-02-20 15:35",
+    zrsj: "2020-02-20 15:36",
+    ryfs: "步行",
+    hljb: "一级护理",
+    tw: "36.8",
+    mb: "35",
+    hx: "65",
+    ssy: "125",
+    szy: "98",
+    gcyd: "患者右手边的小拇指上的指甲盖左边有点黑",
+    sybq: "患者起来上厕所了",
+    xybq: "患者上完厕所了",
+  },
+  {
+    type: "xrhz",
+    title: "新入患者",
+    bch: "0002床",
+    name: "大胖子",
+    xb: "女",
+    tjbb: ["1"],
+    zyzd: "加快速度老卡速度快",
+    xrsj: "2020-02-21 15:35",
+    zrsj: "2020-02-21 15:36",
+    ryfs: "飞行",
+    hljb: "十级护理",
+    tw: "37.8",
+    mb: "99",
+    hx: "25",
+    ssy: "225",
+    szy: "338",
+    gcyd: "刘鹏患者右手边的小拇指上的指甲盖左边有点黑",
+    sybq: "刘鹏患者起来上厕所了",
+    xybq: "刘鹏患者上完厕所了",
+  },
+];
+
+export default {
+  data() {
+    return {
+      nowpatients, //获取当前所需数据
+      columns:null
+    };
+  },
+  props: {
+    showItem: {
+      //主页面传递的  { "name": "xrhz", "columns": "colxrhz", "title": "新入患者" }
+      type: Object,
+      default: "我是默认值，可以不定义",
+    },
+    iszxhzcolumns: {
+      //主页面传递表头
+      type: Array,
+      default() {
+        return [0, 1, 2, 3];
+      },
+    },
+  },
+  watch: {},
+  mounted() {
+    this.columns =JSON.parse(JSON.stringify(this.iszxhzcolumns));
+    this.columns.splice(this.columns.length - 1, 1);
+  },
+  methods: {
+    rowClick(record, index) {
+      //点击行时方法
+      return {
+        on: {
+          // 鼠标单击行
+          click: (event) => {
+            this.$emit("closexrbr", this.nowpatients[index]);
+          },
+        },
+      };
+    }
+  }
+};
+</script>
+<style scoped>
+</style>

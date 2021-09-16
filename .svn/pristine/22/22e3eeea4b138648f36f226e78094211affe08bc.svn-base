@@ -1,0 +1,217 @@
+<template>
+  <div id="components">
+    <div class="aslde" :style="{ width: collapsed ? '80px' : '200px' }">
+      <div class="menuBox">
+        <a-menu
+          :defaultOpenKeys="lj"
+          :selectedKeys="active"
+          mode="inline"
+          :inline-collapsed="collapsed"
+        >
+          <template v-for="item in leftSolde">
+            <a-sub-menu
+              :key="item.path"
+              v-if="item.children"
+              @click="handelClickLink"
+            >
+              <span slot="title">
+                <a-icon :type="item.icon" />
+                <span>{{ item.name }}</span>
+              </span>
+              <a-menu-item v-for="items in item.children" :key="items.path">
+                <a-icon :type="items.icon" /><span>{{ items.name }}</span>
+              </a-menu-item>
+            </a-sub-menu>
+            <a-menu-item :key="item.path" v-else @click="handelClickLink">
+              <a-icon :type="item.icon" />
+              <span>{{ item.name }}</span>
+            </a-menu-item>
+          </template>
+        </a-menu>
+      </div>
+      <div class="shrinkage">
+        <a-button
+          type="primary"
+          :icon="collapsed ? 'menu-unfold' : 'menu-fold'"
+          @click="operationMian"
+        >
+        </a-button>
+      </div>
+    </div>
+    <div
+      class="content"
+      :style="{ width: collapsed ? 'calc(100% - 80px)' : 'calc(100% - 200px)' }"
+    >
+      <header></header>
+      <section>
+        <a-tabs
+          v-model="activeKey"
+          type="editable-card"
+          tabPosition="top"
+          @tabClick="tabClick"
+          @edit="onEdit"
+          animated
+          hideAdd
+        >
+          <template v-if="panes">
+            <a-tab-pane
+              v-for="pane in panes"
+              :key="pane.key"
+              :tab="pane.title"
+              :closable="pane.closable"
+            >
+              <router-view></router-view>
+            </a-tab-pane>
+          </template>
+        </a-tabs>
+      </section>
+      <footer>3123</footer>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "index",
+  data() {
+    return {
+      collapsed: false,
+      activeKey: "/advancedTable", //打开页面默认加载这个界面
+      active: ["/advancedTable"], //左边的下拉框默认选中item
+      lj: ["/index"], //左边的下拉框默认展开的分组
+      panes: [{ title: "高级表格", key: "/advancedTable", closable: false }], //默认渲染tabs的数据
+      leftSolde: this.$store.state.router
+    };
+  },
+  methods: {
+    operationMian() {
+      this.collapsed = !this.collapsed;
+    },
+    handelClickLink(item) {
+      console.log(item);
+      //左边列表item的选中事件
+      var isYou = true;
+      if (item.keyPath.length>1) {
+        for (var f in this.panes) {
+          if (this.panes[f].key == item.key) {
+            isYou = false;
+          }
+        }
+        if (isYou) {
+          this.panes.push({
+            title: item.item.$el.childNodes[1].childNodes[0].data,
+            key: item.key,
+            closable:item.key == "/button"?false:true,
+          });
+        }
+        this.active.length = 0; //将默认选中的item去掉，赋值上当前的key，这样左边选中的就会有样式
+        this.active.push(item.key);
+      }
+      this.activeKey = item.key; //
+      this.$router.push({ path: item.key }); //路由跳转
+    },
+    onEdit(targetKey, action) {
+      //tabs的操作事件，关联下面的删除
+      this[action](targetKey);
+    },
+    tabClick(targetKey) {
+      this.$router.push({ path: targetKey });
+      this.active.length = 0;
+      this.active.push(targetKey); //将默认选中的item去掉，赋值上当前的key，这样左边选中的就会有样式
+    },
+    remove(targetKey) {
+      //tabs的移除事件
+      let activeKey = this.activeKey;
+      let lastIndex;
+      this.panes.forEach((pane, i) => {
+        if (pane.key === targetKey) {
+          lastIndex = i - 1;
+        }
+      });
+      const panes = this.panes.filter((pane) => pane.key !== targetKey);
+      if (panes.length && activeKey === targetKey) {
+        if (lastIndex > 0) {
+          activeKey = panes[lastIndex].key;
+        } else {
+          activeKey = panes[0].key;
+        }
+      }
+      this.panes = panes;
+      this.active.length = 0;
+      this.active.push(activeKey); //这里的控制页面切换
+      this.activeKey = activeKey;
+      this.$router.push({ path: activeKey });
+    },
+  },
+  created() {
+    var query = this.$route.query;
+    console.log(query);
+    //this.$router.push({ path: "/advancedTable" });
+  },
+};
+</script>
+<style scoped>
+#components {
+  text-align: left;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  widows: 100%;
+}
+#components .aslde {
+  width: 200px;
+  border-right: 1px solid #ddd;
+  transition: all 0.3s;
+  background: #fff;
+}
+#components .content {
+  width: calc(100% - 200px);
+  height: 100%;
+  transition: all 0.3s;
+}
+#components .content header,
+footer {
+  height: 60px;
+  background: #1e9fff;
+  line-height: 60px;
+  text-align: right;
+  padding-right: 10px;
+}
+footer {
+  height: 30px;
+  line-height: 30px;
+}
+#components .content section {
+  height: calc(100% - 90px);
+  overflow: auto;
+  padding: 3px;
+}
+.ant-tabs-bar {
+  margin: 0 !important;
+}
+.ant-menu-inline {
+  border: none;
+}
+.menuBox {
+  width: 100%;
+  height: calc(100% - 60px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.shrinkage {
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+}
+#components .content section >>> .ant-tabs {
+  height: 100%;
+}
+#components .content section >>> .ant-tabs .ant-tabs-content {
+  height: calc(100% - 44px);
+}
+</style>
+<style>
+.ant-tabs-bar {
+  margin: 0 0 4px 0 !important;
+}
+</style>

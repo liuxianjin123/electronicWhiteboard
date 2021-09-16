@@ -1,0 +1,82 @@
+.container>>>.ant-form-item-label {
+    position: relative;
+}
+
+.container>>>.ant-form-item-label::before {
+    content: "";
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    background: orange;
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 15px;
+}
+
+.container .tprbm::before {
+    content: "";
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    background: orange;
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 15px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.tprbm {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 32px;
+    margin-bottom: 15px;
+}
+
+.tops {
+    height: 100px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+}
+
+.tops-left {
+    width: 100px;
+    font-size: 85px;
+    text-align: left;
+    line-height: 89px;
+}
+
+.tops-item {
+    flex: 1;
+    box-sizing: border-box;
+}
+
+.tops-item ul {
+    margin: 0;
+    padding: 0;
+}
+
+.tops-item ul li {
+    list-style: none;
+    display: flex;
+    justify-content: flex-start;
+    line-height: 31px;
+}
+
+.tops-item-last {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

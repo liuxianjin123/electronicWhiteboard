@@ -1,0 +1,148 @@
+<template>
+  <div class="container">
+    <a-form-model :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
+      <div class="tops">
+        <div class="tops-left">
+          <a-icon type="user-add" style="color: cornflowerblue" />
+        </div>
+        <div class="tops-item" v-if="isEdit == true">
+          <ul>
+            <li>
+              <span>{{ form.bch }}</span>
+              <span style="margin-left: 20px">
+                <a-icon type="down-circle" />
+                <a-icon type="down-circle" />
+              </span>
+            </li>
+            <li style="justify-content: space-between">
+              <span>
+                <span>{{ form.bch }}</span>
+                <span style="margin-left: 20px">{{ form.xm }}</span>
+              </span>
+              <a-checkbox-group v-model="form.tjbb">
+                <a-checkbox value="1"> </a-checkbox>
+              </a-checkbox-group>
+            </li>
+          </ul>
+        </div>
+        <div class="tops-item tops-item-last" @click="xzhzAll()" v-else>
+          <a-button>选择患者</a-button>
+        </div>
+      </div>
+      <a-form-model-item label="主要诊断">
+        <a-input v-model="form.zyzd" />
+      </a-form-model-item>
+      <a-form-model-item label="手术名称">
+        <a-input v-model="form.ssmc" />
+      </a-form-model-item>
+      <a-form-model-item label="手术/分娩">
+        <a-date-picker
+          v-model="form.sssj"
+          show-time
+          :format="dateFormat"
+          @change="(i,v)=>dataChanges(i,v,'sssj')"
+        />
+      </a-form-model-item>
+      <a-form-model-item label="送回病房">
+        <a-date-picker
+          v-model="form.shbfsj"
+          show-time
+          :format="dateFormat"
+          @change="(i,v)=>dataChanges(i,v,'shbfsj')"
+        />
+      </a-form-model-item>
+      <a-form-model-item label="麻醉方式">
+        <a-input v-model="form.mzfs" />
+      </a-form-model-item>
+      <a-form-model-item label="班次">
+        <a-select v-model="form.bc">
+          <a-select-option value="白班">白班</a-select-option>
+          <a-select-option value="上夜">上夜</a-select-option>
+          <a-select-option value="下夜">下夜</a-select-option>
+        </a-select>
+      </a-form-model-item>
+      <a-form-model-item label="切口敷料">
+        <a-input v-model="form.qkfl" />
+      </a-form-model-item>
+      <a-form-model-item label="引流ml">
+        <a-input v-model="form.yll" />
+      </a-form-model-item>
+      <a-form-model-item label="引流性状">
+        <a-input v-model="form.yllxz" />
+      </a-form-model-item>
+      <a-form-model-item label="胃肠减压ml">
+        <a-input v-model="form.wcjy" />
+      </a-form-model-item>
+      <a-form-model-item label="胃肠减压性状">
+        <a-input v-model="form.wcjyxz" />
+      </a-form-model-item>
+       <a-form-model-item label="小便ml">
+        <a-input v-model="form.xb" />
+      </a-form-model-item>
+      <a-form-model-item label="其他">
+        <a-input v-model="form.qt" type="textarea"/>
+      </a-form-model-item>
+    </a-form-model>
+  </div>
+</template>
+<script>
+import obj from "../../../../../static/js/jjbEdit";
+export default {
+  data() {
+    return {
+      dateFormat: "YYYY-MM-DD HH:mm",
+      labelCol: { span: 7 },
+      wrapperCol: { span: 17 },
+      form: {
+        type: "sshz",
+        title: "手术患者",
+        bch: "",
+        name: "",
+        zyzd: "",
+        tw: "",
+        mb: "",
+        hx: "",
+        ssy: "",
+        szy: "",
+        ssmc: "",
+        sssj: "",
+        shbfsj: "",
+        mzfs: "",
+        bc: "",
+        qkfl: "",
+        yll: "",
+        yllxt: "",
+        wcjy: "",
+        ycjyxt: "",
+        xb: "",
+        qt: "",
+        xb: "",
+        xm: "",
+        tjbb: [],
+      }
+    };
+  },
+  props: obj.prop,
+  watch: obj.watch,
+  mounted(){
+    if(this.editRowData){
+      this.form=JSON.parse(JSON.stringify(this.editRowData));
+    }
+  },
+  methods: {
+    onSubmit() {
+      this.$emit("ruquestData", this.form);
+    },
+    dataChanges(i, v ,r) {
+      this.form[r] = v;
+    },
+    //7.8胖纸
+    xzhzAll(){
+      this.$emit('openxrbr',this.form.type);
+    },
+  },
+};
+</script>
+<style scoped>
+@import url("../../../../../static/css/jjbModel.css");
+</style>

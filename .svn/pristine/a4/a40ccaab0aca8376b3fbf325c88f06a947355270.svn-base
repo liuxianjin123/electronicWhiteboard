@@ -1,0 +1,266 @@
+<template>
+  <div>
+    <a-row :gutter="16" >
+        <a-col :span='6' v-for="(group,index_g) in groups" :key="index_g">
+            <div class="cards" style="width:90%" :span="8" :offset="8">
+                <a-card :title='group.name' style="width:100%">
+                    <a-row type="flex" class="team">
+                        <a-col :span='4' style="line-height: 80px;">
+                            <img src="../../../../static/images/ChangeShifts/组员.png" width="40px" alt="" />
+                        </a-col>
+                        <a-col :span='20' style="padding-top: 5%;height: 80px" @mouseleave='more_h()'>
+                            <more :dataList="items" v-show="'a1'+index_g == int" @mouseleave='more_h()'></more>
+                            <div v-if="items.length>8" v-show="'a1'+index_g != int">
+                                <div class="team_people" v-for="(item,index) in beyond_hidden(items,8)" :key="index"> 
+                                    {{ item.name }}
+                                </div>
+                                <div class="more" @mouseenter="more('a1'+index_g)">更多...</div>
+                                
+                            </div>
+                            <div v-else>
+                                <div class="team_people" v-for="(item,index) in beyond_hidden(items,8)" :key="index"> 
+                                    {{ item.name }}
+                                </div>
+                            </div>
+                           
+                        </a-col>
+                        
+                    </a-row>
+                     <a-row type="flex" class="bed">
+                        <a-col :span='4'  style="line-height: 150px;">
+                             <img src="../../../../static/images/ChangeShifts/病床2.png" width="40px" alt="" />
+                        </a-col>
+                        <a-col :span='20' style="padding-top: 5%;height: 150px;" @mouseleave='more_h()'>
+                            <more :dataList="items1" v-show="'a2'+index_g == int" @mouseleave='more_h()' ></more>
+                            <div v-if="items1.length>20" v-show="'a2'+index_g != int">
+                                <div class="bed_number" v-for="(item1,index) in beyond_hidden(items1,20)" :key="index"> {{ item1.name }}</div>
+                                <div class="more" @mouseenter="more('a2'+index_g)">更多...</div>
+                            </div>
+                           <div v-else>
+                                <div class="bed_number" v-for="(item1,index) in beyond_hidden(items1,20)" :key="index"> {{ item1.name }}</div>
+                           </div>
+                            
+                        </a-col>
+                    </a-row>
+                </a-card>
+                <a-row type="flex">
+                    <a-col :flex="1" class="buttom_edit"  @click="showModal">编辑</a-col>
+                    <template>
+                        <a-popconfirm :title="'是否删除'+group.name+'，删除将清空所有数据?'" ok-text="确定" cancel-text="取消" @confirm="confirm">
+                            <a-col :flex="1" class="buttom_delete">删除</a-col>
+                        </a-popconfirm>
+                    </template>
+                    
+                </a-row>
+            </div>
+        </a-col>
+       
+  </a-row>
+
+
+<a-modal style="edit_kuang" v-model="visible" width="60%" cancelText='取消' okText='确定' title="编辑分组" @ok="handleOk">
+    <edit></edit>
+</a-modal>
+  
+      
+    
+  </div>
+</template>
+<script>
+import more from '../../views/ChangeShifts/ChangeShifts_card_more'
+import edit from '../../views/ChangeShifts/ChangeShifts_card_edit'
+export default {
+    data(){
+    return{
+        appData:{
+            title:"我是父组件的dataList数据"
+        },
+        visible: false,
+        int:-1,
+        groups:[{ name: '责任组一'},
+            { name: '责任组二' },
+            { name: '责任组三' },
+            { name: '责任组四' },
+            { name: '责任组五' },
+            { name: '责任组六' }],
+        items: [
+            { name: '分开发'},
+            { name: '九分裤' },
+            { name: '纠纷解' },
+            { name: '度假酒店' },
+            { name: '分开发' },
+            { name: '九分裤' },
+            { name: '纠纷解' },
+            { name: '度假酒店' },
+            { name: '九分裤' },
+            { name: '九分裤' },
+            { name: '纠纷解' },
+            { name: '度假酒店' },
+            { name: '分开发' },
+            { name: '九分裤' },
+            { name: '九分裤' },
+            { name: '纠纷解' },
+            { name: '度假酒店' },
+            { name: '分开发' },
+            { name: '九分裤' },
+            { name: '度假酒店' },
+            { name: '九分裤' },
+            { name: '九分裤' },
+            { name: '纠纷解' },
+            { name: '度假酒店' },
+            { name: '分开发' },
+            { name: '九分裤' },
+            { name: '九分裤' },
+            { name: '纠纷解' },
+            { name: '度假酒店' },
+            { name: '分开发' },
+            { name: '九分裤' },
+            { name: '度假酒店' },
+            { name: '九分裤' },
+            { name: '九分裤' },
+            { name: '纠纷解' },
+            { name: '度假酒店' },
+            { name: '分开发' },
+            { name: '九分裤' },
+            { name: '九分裤' },
+            { name: '纠纷解' },
+            { name: '度假酒店' },
+            { name: '分开发' },
+            { name: '九分裤' },
+            { name: '纠纷解' },
+            { name: '度假酒店' },
+            { name: '九分裤' },
+            { name: '纠纷解' },
+            { name: '九分裤' },
+            { name: '纠纷解' },
+            { name: '度假酒店' },
+            { name: '九分裤' },
+            { name: '纠纷解' },
+           
+            ],
+        items1: [
+            { name: '1911床' },
+            { name: '11床' },
+            { name: '111床' },
+            { name: '1911床' },
+            { name: '1911床' },
+            { name: '1191床' },
+            { name: '1191床' },
+            { name: '1191床' },
+            { name: '1191床' },
+            { name: '1191床' },
+            { name: '1911床' },
+            { name: '1191床' },
+            { name: '1191床' },
+            { name: '1191床' },
+            { name: '1191床' },
+            { name: '1191床' },
+            { name: '1191床' },
+            { name: '1191床' },
+            { name: '1191床' },
+            { name: '1191床' },
+            { name: '1191床' },
+           
+            ],
+       
+           
+
+    }
+    },
+    components:{
+        more,
+        edit,
+    },
+    methods: {
+        beyond_hidden(arr,number){//数组超出数值隐藏 arr数组 number最大长度
+            if(arr.length>number){
+                return arr.slice(0,number);
+            }
+            return arr;
+        },
+        more(str){//显示更多内容
+            console.log(str);
+            this.int=str;
+        },
+        more_h(){//隐藏更多内容
+            this.int=-1;
+        },
+        confirm(e) {//删除方法
+            console.log(e);
+            this.$message.success('删除成功');
+        },
+        showModal() {//弹出编辑
+            this.visible = true;
+        },
+        handleOk(e) {//编辑确定方法
+            console.log(e);
+            this.visible = false;
+        },
+        
+        
+    }
+}
+</script>
+<style scoped>
+.cards{
+    margin-top: 20px;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 8px 8px 5px #c7c6c6;
+     
+}
+.buttom_edit,.buttom_delete{
+   border: 1px solid #e8e8e8;
+    height: 45px;
+    line-height: 45px;
+}
+.ant-card-bordered{
+    border-radius:5px 5px 0 0;
+
+}
+.buttom_edit{
+    color: #196D9D;
+    border-radius: 0 0 0 5px;
+}
+.buttom_delete{
+    color: red;
+    border-radius: 0 0 5px 0;
+}
+.team{
+    height: 80px;
+    /* line-height: 80px; */
+    /* border: 1px solid #e8e8e8; */
+    text-align: left;
+    
+
+
+}
+.bed{
+    height: 150px;
+    /* line-height: 150px; */
+    /* border: 1px solid #e8e8e8; */
+    text-align: left;
+}
+.team_people,.bed_number{
+    display: inline-block;
+    width: 30%;
+    text-align: center;
+}
+.bed_number{
+   background-color:#E3F2FF; 
+   margin-top: 5px;
+   border-radius: 5px;
+   width: 22%;
+   margin-right: 3px;
+}
+.more{
+    color:#196D9D;
+    float: right;
+    margin-right: 15%;
+}
+
+.hidden{
+    display: none;
+}
+
+</style>

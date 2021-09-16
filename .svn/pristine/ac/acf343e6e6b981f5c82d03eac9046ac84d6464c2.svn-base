@@ -1,0 +1,235 @@
+<template>
+  <div class="container">
+    <div class="box">
+      <header>
+        <div>
+          <span
+            ><a-icon type="container" style="font-size: 25px" />护理交接班
+          </span>
+          <span>
+            <a-button type="primary" size="large" @click="addTsjb">
+              新增特殊交班
+            </a-button>
+          </span>
+        </div>
+        <div>
+          选择日期范围：<a-range-picker @change="selectDateRange">
+            <a-icon slot="suffixIcon" type="calendar" />
+          </a-range-picker>
+        </div>
+      </header>
+      <section>
+        <template>
+          <a-table
+            :columns="columns"
+            :data-source="data"
+            bordered
+            size="middle"
+            :pagination="false"
+            :scroll="{ y: 'calc(100vh - 200px)' }"
+          >
+            <template slot="address" slot-scope="text, record, index">
+              <a @click="editThis($event)" :data-index="index"><a-icon type="edit" theme="filled" /> 编辑</a>
+              <a-divider type="vertical" />
+              <a style="color: red" @click="delThis($event)" :data-index="index"><a-icon type="delete" theme="filled"/> 刪除</a
+              >
+            </template>
+          </a-table>
+        </template>
+      </section>
+      <a-modal
+        v-model="visible"
+        :width="400"
+        title="特殊交班"
+        ok-text="确认"
+        cancel-text="取消"
+        :closable="false"
+        :maskClosable="false"
+        @ok="hideModal"
+      >
+        <div style="text-align: center">
+          交班时间：<a-date-picker @change="jbsj">
+            <a-icon slot="suffixIcon" type="calendar" />
+          </a-date-picker>
+        </div>
+      </a-modal>
+    </div>
+  </div>
+</template>
+<script>
+const data = [
+  {
+    key: "1",
+    name: "John Brown",
+    age: 32,
+    tel: "0571-22098909",
+    phone: 18889898989,
+    address: "New York No. 1 Lake Park",
+  },
+  {
+    key: "2",
+    name: "Jim Green",
+    tel: "0571-22098333",
+    phone: 18889898888,
+    age: 42,
+    address: "London No. 1 Lake Park",
+  },
+  {
+    key: "3",
+    name: "Joe Black",
+    age: 32,
+    tel: "0575-22098909",
+    phone: 18900010002,
+    address: "Sidney No. 1 Lake Park",
+  },
+  {
+    key: "4",
+    name: "Jim Red",
+    age: 185,
+    tel: "0575-22098909",
+    phone: 18900010002,
+    address: "London No. 2 Lake Park",
+  },
+  {
+    key: "5",
+    name: "Jake White",
+    age: 18,
+    tel: "0575-22098909",
+    phone: 18900010002,
+    address: "Dublin No. 2 Lake Park",
+  },
+];
+
+export default {
+  name: "ChangeShifts",
+  data() {
+    const columns = [
+      {
+        title: "Name",
+        dataIndex: "name",
+        width: "150px",
+        align: "center",
+      },
+      {
+        title: "Age",
+        dataIndex: "age",
+        width: "150px",
+        align: "center",
+        customRender: (text, row, index) => {
+          const obj = {
+            children: text,
+            attrs: {},
+          };
+          if (index === 2) {
+            obj.attrs.rowSpan = 2;
+          } else if(index >2 && index<4){
+            obj.attrs.rowSpan = 0;
+          }else{
+            obj.attrs.rowSpan = 1;
+          }
+          return obj;
+        },
+      },
+      {
+        title: "Home phone",
+        dataIndex: "tel",
+        width: "150px",
+        align: "center",
+      },
+      {
+        title: "Phone",
+        dataIndex: "phone",
+        align: "center",
+      },
+      {
+        title: "Address",
+        dataIndex: "address",
+        align: "center",
+      },
+      {
+        title: "操作",
+        dataIndex: "",
+        width: "160px",
+        align: "center",
+        scopedSlots: { customRender: "address" },
+      },
+    ];
+    return {
+      visible: false,
+      data,
+      columns,
+    };
+  },
+  methods: {
+    selectDateRange(date, dateString) {
+      console.log(date, dateString);
+    },
+    jbsj(date, dateString) {
+      console.log(date, dateString);
+    },
+    addTsjb() {
+      this.visible = !this.visible;
+    },
+    hideModal() {
+      this.visible = false;
+      this.$message.success("点击确定");
+      this.data.push({
+        key: "6",
+        name: "Jake White",
+        age: 112128,
+        tel: "0575-22098909",
+        phone: 18900010002,
+        address: "Dublin No. 2 Lake Park",
+      });
+    },
+    editThis(e){
+      let idx =  e.currentTarget.getAttribute("data-index");
+      this.$XModal.message({ content:`将要编辑第${idx}行`, status:'success'})
+    },
+    delThis(e){
+      let idx =  e.currentTarget.getAttribute("data-index");
+      this.$message.error(`将要删除第${idx}行`);
+    }
+  },
+};
+</script>
+<style scoped>
+.container {
+  padding: 10px;
+  box-sizing: border-box;
+  background: #f2f2f2;
+  height: 100%;
+}
+.box {
+  background: #fff;
+  height: 100%;
+  border-radius: 5px;
+  padding: 10px;
+}
+.box header,
+.box section {
+  align-self: start;
+}
+.box header div {
+  height: 60px;
+  align-items: center;
+  display: flex;
+  padding: 0 10px;
+  justify-content: space-between;
+}
+.box header div:first-child span:first-child {
+  font-size: 23px;
+}
+.box header div:last-child {
+  justify-content: flex-start;
+  border-top: 1px solid #7d7d7d;
+}
+section >>> .ant-table-thead > tr > th {
+  background: #1890ff;
+  color: #fff;
+  font-weight: bold;
+}
+section >>> .ant-calendar-picker-input ant-input {
+  width: 240px;
+}
+</style>

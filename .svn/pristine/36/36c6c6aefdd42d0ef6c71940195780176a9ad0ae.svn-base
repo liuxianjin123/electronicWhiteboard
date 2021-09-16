@@ -1,0 +1,343 @@
+<template>
+  <div class="container" id="container">
+    <div class="container-top">
+      <div class="container-item-right">
+        <section class="item-config">
+          <div id="smtz" ref="smtz">echarts2</div>
+        </section>
+      </div>
+    </div>
+   
+  </div>
+</template>
+<script>
+import Shead from "../../views/Board/nursingBoardHead";
+import { post, get1 }from '../../../request/request1';
+import { getDate, fullScreen, exitFull  }from '../../../../static/js/Board';
+export default {
+  name: "nursingBoard",
+  data() {
+    return {
+      zyh: "",
+      brxm: "患者",
+      time:[],
+      tw:[],
+      szy:[],
+      ssy:[],
+      mb:[],
+      hx:[],
+
+    };
+  },
+  props:{
+    datazyh:String,
+    dataname:String,
+  },
+  components: {
+    Shead,
+  },
+  watch: {
+    datazyh() {
+      // this.zyh = this.datazyh;
+      this.getDataAll();
+    },
+    dataname() {
+      this.brxm = this.dataname;
+    }
+  },
+  computed: {},
+  methods: {
+    toHZ() {
+      // sessionStorage.setItem("pbybj", 'ybj');//进入查看昨日后返回到已标记
+      // this.$router.go(-1);
+      this.$router.push({
+        path: "/patientBoard",
+        query: {
+          bqdm: this.bqdm,
+          item: this.item,
+        },
+      });
+    },
+    
+    async getDataAll() {
+      //获取全部数据&html架构JSON
+       var obj ={ "zyh": this.datazyh}
+      const res=await get1('/han/PatientRelated/getPatientVitalSignData',obj)
+      // console.log(res);
+      this.alpha_sort(res.result);
+      if(res.result){
+        this.smtz();
+      }else{
+        console.log(res);
+      }
+    //  console.log('hx',this.hx,'mb',this.mb,'ssy',this.ssy,'szy',this.szy,'tw',this.tw,'time',this.time,1);
+    },
+    alpha_sort(labels){//处理获取到的数组，生成新数组
+       this.hx=[]; this.mb=[]; this.ssy=[]; this.szy=[]; this.tw=[]; this.time=[];
+       for(var i=0;i<labels.length;i++){
+          this.hx.push(labels[i].hx);
+          this.mb.push(labels[i].mb);
+          this.ssy.push(labels[i].ssy);
+          this.szy.push(labels[i].szy);
+          this.tw.push(labels[i].tw);
+          this.time.push(labels[i].jlsj);
+       }
+       return;
+    },
+    smtz() {
+      const chart = this.$refs.smtz;
+      var myChart = this.$echarts.init(smtz);
+      var option = {
+        title: {
+          top:'20',
+          left:'20',
+          text: "[前一日]"+this.brxm+" 生命体征趋势图",
+          textAlign: "left",
+          textStyle: {
+            //这里就是设置ttile文本的样式。
+            color: "#000",
+            fontSize: 18,
+          },
+        },
+        tooltip: {
+          trigger: "axis",
+        },
+        legend: {
+          type: "plain",
+          data: ["体温", "呼吸", "脉搏", "收缩压", "舒张压"],
+          top:'20',
+          right: "50",
+          itemHeight: 13, //没个iten图标的大小。
+          symbolKeepAspect: true,
+          icon: "rect",
+        },
+        grid: {
+          left: "4%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        grid: { //canvas中的图表绘制。就是网格区域 。
+            show: true,
+            top: '8%', //可以是数值，也可以是百分比。
+            left: '3%',
+            right: '2%',
+            bottom: '2%',
+            borderWidth: '0.5',
+            borderColor: "#fff",
+            containLabel: true, //是否包含刻度标尺，不包含的话Y轴在全屏状态下就会显示在屏幕之外。
+        },
+        xAxis: {
+          type: "category",
+          //boundaryGap: false,
+          data:this.time,
+          // data: ["4-12", "4-12", "4-12", "4-12", "4-12", "4-12", "4-12"],
+          axisTick: { //控制x轴刻度。
+                    show: true, //不显示刻度。
+                    inside: true, //代表刻度的小尖尖朝内还是朝外。
+                },
+            axisLabel: { //坐标轴刻度标签的相关设置。
+                show: true,
+                color: '#000', //刻度名称的字体颜色。
+                fontSize: 13,
+            },
+        },
+        yAxis: [
+          {
+            show: true,
+            offset: 40,
+            type: "value",
+            position: "left", //原来y轴可以放在left，right两个位置。
+            min: 0, //刻度尺最小单位。
+            max: 100, //刻度尺最大单位。
+            interval: 10, //强制分割单位。
+            axisLine: {
+              show: true,
+              color: "#000",
+              lineStyle: {
+                color: "#000",
+              },
+            },
+            splitLine:{show: false}
+          },
+          {
+            show: true,
+            type: "value",
+            position: "left", //原来y轴可以放在left，right两个位置。
+            min: 0, //刻度尺最小单位。
+            max: 200, //刻度尺最大单位。
+            interval: 20, //强制分割单位。
+            axisLine: {
+              show: true,
+              color: "#000",
+              lineStyle: {
+                color: "#000",
+              },
+            },
+            splitLine:{show: false}
+          },
+          {
+            show: true,
+            type: "value",
+            position: "right", //原来y轴可以放在left，right两个位置。
+            min: 35, //刻度尺最小单位。
+            max: 43, //刻度尺最大单位。
+            interval: 1, //强制分割单位。
+            axisLine: {
+              show: true,
+              color: "#000",
+              lineStyle: {
+                color: "#000",
+              },
+            },
+            axisLabel: {
+              formatter: function (value) {
+                var texts = [];
+                texts.push(value+"℃");
+                return texts;
+              },
+            },
+            splitLine:{show: false}
+          },
+        ],
+        series: [
+          {
+            name: "体温",
+            type: "line",
+            yAxisIndex: 2,
+            // data: [36.8, 36, 37.6, 38.7, 36.5, 35.9, 35.5],
+            data: this.tw,
+            lineStyle:{
+                normal:{
+                    width:1.5
+                }
+            }
+          },
+          {
+            name: "呼吸",
+            type: "line",
+            yAxisIndex: 0,
+            // data: [70, 65, 75, 65, 55, 90, 80],
+            data: this.hx,
+            lineStyle:{
+                normal:{
+                    width:1.5
+                }
+            }
+          },
+          {
+            name: "脉搏",
+            type: "line",
+            yAxisIndex: 0,  
+            // data: [50, 32, 20, 54, 90, 33, 41],
+            data: this.mb,
+            lineStyle:{
+                normal:{
+                    width:1.5
+                }
+            }
+          },
+          {
+            name: "收缩压",
+            type: "line",
+            yAxisIndex: 1,
+            // data: [115, , 102, 95, , 90, 124],
+            data: this.ssy,
+            lineStyle:{
+                normal:{
+                    width:1.5
+                }
+            },
+            connectNulls:true,
+          },
+          {
+            name: "舒张压",
+            type: "line",
+            yAxisIndex: 1,
+            // data: [80, 98, 77, 89, 84, 91, 79],
+            data: this.szy,
+            lineStyle:{
+                normal:{
+                    width:1.5
+                }
+            }
+          },
+        ],
+      };
+      if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+      }
+      window.onresize = function () {
+        myChart.resize();
+      };
+    },
+  },
+  mounted() {
+    this.brxm = this.dataname;
+    this.zyh = this.datazyh;
+    console.log(this.brxm,this.zyh);
+    this.getDataAll();
+    fullScreen();
+    // this.qst();
+    this.smtz();
+    
+  },
+};
+</script>
+
+<style  scoped>
+/* @import url("../../../../static/css/Board.css"); */
+
+.container-top .container-item-right,
+.container-top .container-item-right header,
+.container-top .container-item-right section,
+.container-item-right header .title,
+.container-item-right header nav {
+  width: 1000px;
+}
+.container-item-right section {
+  height: 890x;
+  display: flex;
+  justify-content: space-between;
+  /* padding: 0 30px 30px 30px; */
+}
+.container-item-right section > div {
+  height: 890px;
+  width: 910px;
+  
+}
+.container-item-right header .title {
+  padding: 0 20px;
+}
+.container-top {
+  height: 890px;
+  background: #ffffff;
+  border-radius: 0;
+}
+.container-bottom {
+  justify-content: space-between;
+  background: #196d9d;
+  color: #fff;
+  font-weight: bold;
+  font-size: 18px;
+  padding: 0 45px;
+}
+.container-bottom i {
+  margin: 0;
+  color: #fff;
+}
+.container-bottom > div:first-child {
+  display: flex;
+  align-items: center;
+}
+.container {
+  border-radius: 40px;
+  overflow: hidden;
+}
+.zwsj{
+  /* //background: url('../../../../static/images/Board/zwsj.png'); */
+  background-size: 60%;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+}
+</style>

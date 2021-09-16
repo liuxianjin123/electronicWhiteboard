@@ -1,0 +1,43 @@
+import axios from 'axios'
+///接口文档地址：https://www.showdoccc/AIMS?page_id=4264603188555394
+const instance = axios.create({
+        //baseURL: 'http://192.168.0.80:666', //正式库
+        baseURL: 'http://192.168.1.9:8909', //白班
+        //baseURL: 'http://192.168.1.9:5005', //交接班
+        responseType: 'json',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+        }
+    })
+    //请求拦截
+instance.interceptors.request.use(config => {
+    config.headers.Authorization = window.sessionStorage.getItem('token');
+    //console.log(config)
+    return config
+})
+instance.interceptors.response.use(res => {
+    return res.data
+}, err => {
+    return err
+})
+export function post(url, params) {
+    return instance({
+        method: 'post',
+        url,
+        data: params
+    })
+}
+export function potdelete(url, params) {
+    return instance({
+        method: 'delete',
+        url,
+        data: params
+    })
+}
+export function get(url, params) {
+    return instance({
+        method: 'get',
+        url,
+        params: params
+    })
+}

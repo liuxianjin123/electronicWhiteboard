@@ -1,0 +1,184 @@
+import Vue from 'vue'
+import Vuex from 'vuex'
+//挂载Vuex
+Vue.use(Vuex)
+
+//创建VueX对象
+const store = new Vuex.Store({
+    state: {
+        router: [{
+                path: '/',
+                name: '登录',
+                icon: 'aliwangwang',
+                component: resolve => require(['@/components/system/login'], resolve)
+            },
+            {
+                path: '/nursingBoard',
+                name: '电子白板',
+                icon: 'aliwangwang',
+                component: resolve => require(['@/components/views/Board/nursingBoard'], resolve)
+            },
+            {
+                path: '/patientBoard',
+                name: '患者',
+                icon: 'aliwangwang',
+                component: resolve => require(['@/components/views/Board/patientBoard'], resolve)
+            },
+            {
+                path: '/tendencyEchart',
+                name: '评估趋势',
+                icon: 'aliwangwang',
+                component: resolve => require(['@/components/views/Board/tendencyEchart'], resolve)
+            },
+            {
+                path: '/analysisDepartment',
+                name: '科室分析',
+                icon: 'aliwangwang',
+                component: resolve => require(['@/components/views/Board/analysisDepartment'], resolve)
+            },
+            {
+                path: '/advancedTable',
+                name: '高级表格',
+                icon: 'aliwangwang',
+                component: resolve => require(['@/components/views/advancedTable'], resolve)
+            },
+            {
+                path: '/testHljid',
+                name: '手风琴表格',
+                icon: 'aliwangwang',
+                component: resolve => require(['@/components/views/testHljid'], resolve)
+            },
+            {
+                path: '/crl',
+                name: '出入量',
+                icon: 'aliwangwang',
+                component: resolve => require(['@/components/views/crl'], resolve)
+            },
+            {
+                path: '/nuxreChangeShifts',
+                name: '护理交接班',
+                icon: 'aliwangwang',
+                component: resolve => require(['@/components/views/ChangeShifts/nuxreChangeShifts'], resolve)
+            },
+
+            {
+                path: '/feelUnhappy',
+                name: '交接&接班',
+                icon: 'aliwangwang',
+                component: resolve => require(['@/components/views/ChangeShifts/feelUnhappy'], resolve),
+                children: [{
+                    path: '/nexreJb',
+                    name: '交班',
+                    icon: 'aliwangwang',
+                    component: resolve => require(['@/components/views/ChangeShifts/nexreJb'], resolve)
+                }, {
+                    path: '/nexreBb',
+                    name: '接班',
+                    icon: 'aliwangwang',
+                    component: resolve => require(['@/components/views/ChangeShifts/nexreBb'], resolve)
+                }]
+            },
+            {
+                path: '/index',
+                name: '主页',
+                lcon: 'dingding',
+                component: resolve => require(['@/components/system/index'], resolve),
+                children: [{
+                        path: '/form',
+                        name: '表单',
+                        icon: 'aliwangwang',
+                        component: resolve => require(['@/components/views/form'], resolve)
+                    },
+                    {
+                        path: '/dialog',
+                        name: '对话框',
+                        icon: 'aliwangwang',
+                        component: resolve => require(['@/components/views/dialog'], resolve)
+                    },
+                    {
+                        path: '/testRequest',
+                        name: '测试请求',
+                        icon: 'aliwangwang',
+                        component: resolve => require(['@/components/views/testRequest'], resolve)
+                    },
+                    {
+                        path: '/testPrint',
+                        name: '测试打印',
+                        icon: 'aliwangwang',
+                        component: resolve => require(['@/components/views/testPrint'], resolve)
+                    },
+                    {
+                        path: '/testEcharts',
+                        name: '测试Echarts',
+                        icon: 'aliwangwang',
+                        component: resolve => require(['@/components/views/testEcharts'], resolve)
+                    },
+                    {
+                        path: '/costomParent',
+                        name: '自定义组件',
+                        icon: 'aliwangwang',
+                        component: resolve => require(['@/components/views/costomParent'], resolve)
+                    },
+                    {
+                        path: '/testVxeTable',
+                        name: '测试tble组件',
+                        icon: 'aliwangwang',
+                        component: resolve => require(['@/components/views/testVxeTable'], resolve)
+                    },
+                    {
+                        path: '/ChangeShifts',
+                        name: '护理交接班设置',
+                        lcon: 'dingding',
+                        component: resolve => require(['@/components/views/ChangeShifts/ChangeShifts'], resolve),
+
+                    },
+                    {
+                        path: '/ShiftSetting',
+                        name: '护理人员分组',
+                        lcon: 'dingding',
+                        component: resolve => require(['@/components/views/ChangeShifts/ShiftSetting'], resolve),
+
+                    }
+                ]
+            },
+            {
+                path: '*',
+                name: 'NotFound',
+                icon: 'aliwangwang',
+                component: resolve => require(['@/components/error/404'], resolve)
+            }
+
+        ],
+        dataType: 0, //护士需要展示交接班全科的数据还是自己所管床的数据
+        updateGroupData: false, //更新交接班全局数据
+        isjj: true, //判断用户点击的是交班还是接班
+        token: '',
+        userId: '',
+        baseUrl: 'http://172.16.252.250:8082',
+        operatorMsg: null, //操作员信息
+        board: {
+            boardBqdm: '0005', //病区代码
+            boardItem: '', //同病区不同楼层的分组
+            boardwardName: '' //病区名称
+        }
+    },
+    mutations: {
+        updateBoardItem(state, data) {
+            this.state.board.boardBqdm = data
+        },
+        updateDataType(state, data) {
+            this.state.dataType = this.state.dataType == 1 ? 0 : 1
+        },
+        updateGroupData(state, data) {
+            this.state.updateGroupData = data;
+        },
+        updateisjj(state, data) {
+            this.state.isjj = data;
+        },
+        updateOperatorMsg(state, data) {
+            this.state.operatorMsg = data;
+        }
+    }
+})
+
+export default store

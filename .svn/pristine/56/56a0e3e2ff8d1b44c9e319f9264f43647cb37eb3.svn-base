@@ -1,0 +1,54 @@
+<template>
+  <div>
+    <a-menu v-model="current" mode="horizontal">
+      <a-menu-item key="ChangeShifts"> <a-icon type="apartment" />人员分组 </a-menu-item>
+      <a-menu-item key="ShiftSetting"> 
+            <router-link to="/ShiftSetting"><a-icon type="usergroup-delete" />交接班设置</router-link>
+      </a-menu-item>
+    </a-menu>
+    <div class="container">
+        <a-button><a-icon type="snippets" />新增</a-button>
+        <div class="button_right">
+            <a-button type="primary"> 从PDA导入 </a-button>  
+            <a-button type="primary"> 从排班导入 </a-button>  
+        </div>
+        <div class="card_cont" style="overflow: auto;height: 700px;padding-bottom: 5%;">
+           
+             <card ></card>
+            
+        </div>
+        
+        
+    </div>
+  </div>
+</template>
+<script>
+import card from '../../views/ChangeShifts/ChangeShifts_card'
+export default {
+    name: "ChangeShifts",
+    data() {
+        return {
+            current: ['ChangeShifts'],
+            
+        };
+    },
+    components:{
+        card
+    },
+    
+    methods: {
+        
+
+    }
+
+}
+</script>
+<style scoped>
+.container{
+    padding: 20px;
+}
+.button_right{
+    float: right;
+}
+
+</style>

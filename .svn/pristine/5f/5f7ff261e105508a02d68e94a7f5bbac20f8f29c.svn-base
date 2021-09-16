@@ -1,0 +1,794 @@
+<template>
+  <div class="container" id="container">
+    <div class="container-top" :style="{ background: containerBg }">
+      <div class="container-item-left">
+        <aside>
+          <ul style="margin: 0; padding: 0; margin-bottom: 80px">
+            <li
+              @click="toggle($event)"
+              :class="[isActive == '分析' ? 'liCkeced' : '']"
+            >
+              <img :src="[isActive == '分析' ? jbCheck : jb]" alt="" />
+              <span>分析</span>
+            </li>
+            <li
+               @click="toggle($event)"
+              :class="[isActive == '交接班' ? 'liCkeced' : '']"
+            >
+              <img :src="[isActive == '交接班' ? pbCheck : pb]" alt="" />
+              <span>交接班</span>
+            </li>
+            <li @click="toggle($event)">
+              <img :src="[isActive == '患者' ? hzCheck : hz]" alt="" />
+              <span>患者</span>
+            </li>
+            <li @click="toggle($event)" style="color:#636adc">
+              <img :src="[isActive == '首页' ? homeCheck : home]" alt="" />
+              <span>首页</span>
+            </li>
+          </ul>
+        </aside>
+      </div>
+      <div class="container-item-right">
+        <header>
+          <shead @save="save" @showModal="showModal"  @controlShade="controlShade"  :hospitalName="hospitalName" :wardName="wardName" :dates="dates"></shead>
+          <nav class="shadow">
+            <template>
+              <div v-for="(item,index) in sectionItem[4].other" :key="item.id" @click="topItemClick(index)" >
+                <a-badge status="processing" />{{item.title}} <span>{{item.childrenValue==""?"--":item.childrenValue}}人</span>
+              </div>
+            </template>
+          </nav>
+        </header>
+        <section class="item-config">
+          <i class="shade" v-if="shade"></i>
+          <a-spin :spinning="spinning" size="large">
+            <table >
+              <tr>
+                <td :class="[SelectedGrouping == 'fz1' ? 'sleectFz' : '']">
+                  <template>
+                    <div
+                      @dblclick="editThis($event)"
+                      class="itemBox shadow"
+                      v-for="(item, i) in sectionItem[0].item"
+                      :data-id="sectionItem[0].item[i].Id"
+                      :key="sectionItem[0].item[i].Id"
+                      :data-fz="1"
+                      :style="{
+                        height: sectionItem[0].item[i].height+'px'}"
+                      >
+                      <template v-if="sectionItem[0].item[i].children!=null">
+                        <div class="item-box-children" 
+                          v-for="(item1,ii) in sectionItem[0].item[i].children" 
+                          :style="sectionItem[0].item[i].children[ii].style"
+                          :key="sectionItem[0].item[i].children[ii].Id">
+                          <div class="item-box-children-title">
+                            <i class="icons" 
+                            :style="sectionItem[0].item[i].children[ii].childrenStyle"
+                            ></i>
+                            <h2>{{sectionItem[0].item[i].children[ii].childrenText}}</h2>
+                          </div>
+                          <div class="texts" :style="sectionItem[0].item[i].children[ii].contentStyle">
+                            <template v-if="sectionItem[0].item[i].children[ii].childrenValue!=null">
+                              <template v-for="(item,index) in sectionItem[0].item[i].children[ii].childrenValue">
+                                <span  :key="index" v-if="index+1 != sectionItem[0].item[i].children[ii].childrenValue.length">
+                                  {{sectionItem[0].item[i].children[ii].childrenValue[index]}},
+                                </span>
+                                <span  :key="index" v-else>
+                                  {{sectionItem[0].item[i].children[ii].childrenValue[index]}}
+                                </span>
+                              </template>
+                            </template>
+                          </div>
+                        </div>
+                      </template>  
+                    </div>
+                  </template>
+                </td>
+                <td :class="[SelectedGrouping == 'fz2' ? 'sleectFz' : '']">
+                  <template>
+                    <div
+                      @dblclick="editThis($event)"
+                      class="itemBox shadow"
+                      v-for="(item, i) in sectionItem[1].item"
+                      :data-id="sectionItem[1].item[i].Id"
+                      :key="sectionItem[1].item[i].Id"
+                      :data-fz="2"
+                      :style="{
+                        height: sectionItem[1].item[i].height+'px'
+                      }"
+                    >
+                      <template v-if="sectionItem[1].item[i].children!=null">
+                        <div class="item-box-children" 
+                          v-for="(item1,ii) in sectionItem[1].item[i].children" 
+                          :style="sectionItem[1].item[i].children[ii].style"
+                          :key="sectionItem[1].item[i].children[ii].Id">
+                          <div class="item-box-children-title">
+                            <i class="icons" 
+                            :style="sectionItem[1].item[i].children[ii].childrenStyle"
+                            ></i>
+                            <h2>{{sectionItem[1].item[i].children[ii].childrenText}}</h2>
+                          </div>
+                          <div class="texts" :style="sectionItem[1].item[i].children[ii].contentStyle">
+                            <template v-if="sectionItem[1].item[i].children[ii].childrenValue!=null">
+                              <template v-for="(item,index) in sectionItem[1].item[i].children[ii].childrenValue">
+                                <span  :key="index" v-if="index+1 != sectionItem[1].item[i].children[ii].childrenValue.length">
+                                  {{sectionItem[1].item[i].children[ii].childrenValue[index]}},
+                                </span>
+                                <span  :key="index" v-else>
+                                  {{sectionItem[1].item[i].children[ii].childrenValue[index]}}
+                                </span>
+                              </template>
+                            </template>
+                          </div>
+                        </div>
+                      </template>  
+                    </div>
+                  </template>
+                </td>
+                <td :class="[SelectedGrouping == 'fz3' ? 'sleectFz' : '']">
+                  <template>
+                    <div
+                      @dblclick="editThis($event)"
+                      class="itemBox shadow"
+                      v-for="(item, i) in sectionItem[2].item"
+                      :data-id="sectionItem[2].item[i].Id"
+                      :key="sectionItem[2].item[i].Id"
+                      :data-fz="3"
+                      :style="{
+                        height: sectionItem[2].item[i].height+'px',
+                      }"
+                    >
+                      <template v-if="sectionItem[2].item[i].children!=null">
+                        <div class="item-box-children" 
+                          v-for="(item1,ii) in sectionItem[2].item[i].children" 
+                          :style="sectionItem[2].item[i].children[ii].style"
+                          :key="sectionItem[2].item[i].children[ii].Id">
+                          <div class="item-box-children-title">
+                            <i class="icons" 
+                            :style="sectionItem[2].item[i].children[ii].childrenStyle"
+                            ></i>
+                            <h2>{{sectionItem[2].item[i].children[ii].childrenText}}</h2>
+                          </div>
+                          <div class="texts" :style="sectionItem[2].item[i].children[ii].contentStyle">
+                            <template v-if="sectionItem[2].item[i].children[ii].childrenValue!=null">
+                              <template v-for="(item,index) in sectionItem[2].item[i].children[ii].childrenValue">
+                                <span  :key="index" v-if="index+1 != sectionItem[2].item[i].children[ii].childrenValue.length">
+                                  {{sectionItem[2].item[i].children[ii].childrenValue[index]}},
+                                </span>
+                                <span  :key="index" v-else>
+                                  {{sectionItem[2].item[i].children[ii].childrenValue[index]}}
+                                </span>
+                              </template>
+                            </template>
+                          </div>
+                        </div>
+                      </template>  
+                    </div>
+                  </template>
+                </td>
+                <td :class="[SelectedGrouping == 'fz4' ? 'sleectFz' : '']">
+                  <template>
+                    <div
+                      @dblclick="editThis($event)"
+                      class="itemBox shadow"
+                      v-for="(item, i) in sectionItem[3].item"
+                      :data-id="sectionItem[3].item[i].Id"
+                      :key="sectionItem[3].item[i].Id"
+                      :data-fz="4"
+                      :style="{
+                        height: sectionItem[3].item[i].height+'px',
+                      }"
+                    >
+                      <template v-if="sectionItem[3].item[i].children!=null">
+                        <div class="item-box-children" 
+                          v-for="(item1,ii) in sectionItem[3].item[i].children" 
+                          :style="sectionItem[3].item[i].children[ii].style"
+                          :key="sectionItem[3].item[i].children[ii].Id">
+                          <div class="item-box-children-title">
+                            <i class="icons" 
+                            :style="sectionItem[3].item[i].children[ii].childrenStyle"
+                            ></i>
+                            <h2>{{sectionItem[3].item[i].children[ii].childrenText}}</h2>
+                          </div>
+                          <div class="texts" :style="sectionItem[3].item[i].children[ii].contentStyle">
+                            <span v-for="(item,index) in sectionItem[3].item[i].children[ii].childrenValue" :key="index">
+                              {{sectionItem[3].item[i].children[ii].childrenValue[index]}}
+                            </span>
+                          </div>
+                        </div>
+                      </template>  
+                    </div>
+                  </template>
+                </td>
+              </tr>
+            </table>
+          </a-spin>
+        </section>
+      </div>
+    </div>
+    <div class="container-bottom">
+      <a-icon type="sync" :spin="isSpin" @click="load" />
+      <a-icon :type="full" @click="fulls" />
+    </div>
+    <a-modal
+      title="编辑"
+      :visible="visible"
+      :mask="false"
+      :dialog-style="{ top: '20px' }"
+      @ok="handleOk"
+      @cancel="handleCancel"
+    >
+      <template>
+        <a-form-model
+          :model="form"
+          :label-col="labelCol"
+          :wrapper-col="wrapperCol"
+        >
+          <a-form-model-item label="分组名称">
+            <a-select
+              placeholder="请选择分组"
+              @change="handleSelectChange"
+              v-model="form.fzname"
+            >
+              <a-select-option value="fz1">分组一</a-select-option>
+              <a-select-option value="fz2">分组二</a-select-option>
+              <a-select-option value="fz3">分组三</a-select-option>
+              <a-select-option value="fz4">分组四</a-select-option>
+            </a-select>
+          </a-form-model-item>
+          <a-form-model-item label="容器高度">
+            <a-input-number
+              v-model="form.heights"
+              :min="50"
+              :max="900"
+              style="width: 352px"
+            />
+          </a-form-model-item>
+        </a-form-model>
+      </template>
+    </a-modal>
+    <a-modal
+      width="400px"
+      :centered="true"
+      :mask="false"
+      title="编辑"
+      :visible="delVisible"
+      ok-text="确认"
+      cancel-text="取消"
+      :dialogStyle="dialogStyle"
+      :zIndex='1000'
+      @ok="delOk"
+      @cancel="delCancel"
+    >
+    <template v-if="checckTemplate!=null">
+      <a-form-model
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+      >
+        <div class="alerts">
+          <span><a-icon type="exclamation-circle" style="color:#1e9fff"/>&nbsp;&nbsp;主模块</span>
+          <a-tooltip placement="top">
+            <template slot="title">
+              <span>删除主模块会连同主模块中的子模块一并删除，想好再删哦!</span>
+            </template>
+            <a-icon type="delete" style="color:red" data-type="0" @click="del($event)" :data-id="checckTemplate.Id"/>
+          </a-tooltip>
+        </div>
+        <a-form-model-item label="高度">
+          <a-input-number :min="100" :max="1000"
+            v-model="checckTemplate.height"
+          />
+        </a-form-model-item>
+        <template v-if="checckTemplate.children.length!=0">
+          <template v-for="(item,i) in checckTemplate.children" >
+            <div :key="item.Id+i">
+              <div class="alerts">
+                <span><a-icon type="exclamation-circle"  style="color:#1e9fff"/>&nbsp;&nbsp;{{"子模块"+(i+1)}}</span>
+                <a-tooltip placement="top">
+                  <template slot="title">
+                    <span>删除当前子模块</span>
+                  </template>
+                  <a-icon type="delete" style="color:red"  data-type="1" @click="del($event)" :data-id="item.Id"/>
+                </a-tooltip>
+              </div>
+              <a-form-model-item label="模块标题" >
+                <a-input v-model="item.childrenText"/>
+              </a-form-model-item>
+              <a-form-model-item label="模块ID" >
+                <a-input v-model="item.Id"/>
+              </a-form-model-item>
+              <a-form-model-item label="模块样式" >
+                <a-input v-model="item.style" type="textarea"/>
+              </a-form-model-item>
+              <a-form-model-item label="内容容器样式" >
+                <a-input v-model="item.contentStyle" type="textarea"/>
+              </a-form-model-item>
+              <a-form-model-item label="sql" >
+                <a-input v-model="item.childrenSelectSql" type="textarea"/>
+              </a-form-model-item>
+              <a-form-model-item label="sql参数" >
+                <a-input v-model="item.ChildrenSelectParameters"/>
+              </a-form-model-item>
+              <a-form-model-item label="图标样式">
+                <a-input v-model="item.childrenStyle" type="textarea"/>
+              </a-form-model-item>
+            </div>
+          </template>         
+        </template>
+        <div class="alerts">
+          <span><a-icon type="plus-circle"  style="color:#1e9fff"/>&nbsp;&nbsp;添加子模块</span>
+          <template>
+            <a-popconfirm title="选择插入顺序" ok-text="底部插入" cancel-text="顶部插入" @cancel="addItem(0)"  @confirm="addItem(1)">
+              <a href="#">
+                <a-icon type="plus-circle" style="color:#1e9fff"/>
+              </a>
+            </a-popconfirm>
+          </template>
+        </div>
+      </a-form-model>
+    </template>
+    </a-modal>
+    <a-modal
+      title="编辑"
+      :visible="topVisible"
+      :mask="false"
+      centered
+      @ok="topItemOk"
+      @cancel="topItemCancel"
+    >
+      <template v-if="checckTopItem!=null">
+        <a-form-model
+          :label-col="labelCol"
+          :wrapper-col="wrapperCol"
+        >
+          <a-form-model-item label="sql">
+            <a-input
+              v-model="checckTopItem.childrenSelectSql"
+            />
+          </a-form-model-item>
+          <a-form-model-item label="sql参数">
+            <a-input
+              v-model="checckTopItem.ChildrenSelectParameters"
+            />
+          </a-form-model-item>
+        </a-form-model>
+      </template>
+    </a-modal>
+  </div>
+</template>
+<script>
+import Shead from '../../views/Board/nursingBoardHead'
+export default {
+  name: "nursingBoard",
+  data() {
+    return {
+      shade:true,//添加遮罩避免护士误操作
+      spinning:true,
+      timer:null,//刷新数据定时器
+      labelCol: { span: 6 },//弹出的新增模块表单布局
+      wrapperCol: { span: 18 },
+      hospitalName: "绵阳市三台县人民医院",//医院名称
+      bqdm: "",//医院所属病区
+      item:"",//同病区不同楼层分组
+      wardName:"XXX病区",//病区名称
+      dates: "8888-88-88 88:88 星期一",//当前时间
+      jb: "../../../../static/images/Board/jb.png",//交班图标
+      jbCheck: "../../../../static/images/Board/jbChecked.png",//交班被选中图标
+      pb: "../../../../static/images/Board/pb.png",//交接班图标
+      pbCheck: "../../../../static/images/Board/pbChecked.png",//交接班被选中图标
+      hz: "../../../../static/images/Board/hz.png",//患者图标
+      hzCheck: "../../../../static/images/Board/hzChecked.png",//患者被选中图标
+      home: "../../../../static/images/Board/home.png",//首页
+      homeCheck: "../../../../static/images/Board/homeChecked.png",//首页被选中
+      containerBg: "url(../../../../static/images/Board/1.png)",//点击那个就切换那个对应的背景（主要设置item处的圆角）
+      isActive: "首页",//点击那个item给那个加上类名
+      full: "fullscreen",//切换全屏图标
+      play: "play-circle",//播放图标
+      isSpin: true,//刷新图标动起来
+      visible: false,//控制模态框
+      delVisible: false,//控制模态框
+      topVisible:false,//
+      SelectedGrouping: "",//选中的分组名称
+      checckId: "",//双击的元素id
+      checckTemplate:null,//当前点击的模块对应的数组
+      isFullScreen:false,//是否全屏
+      isCarousel:true,//是否展示轮播
+      checckTopItem:null,//当前选中的顶部项目
+      swiperOption: {//轮播组件的参数
+          autoplay: {
+            disableOnInteraction: false,
+            delay: 5000, // 自动切换的时间间隔（单位ms）
+          },
+          loop: true,
+          speed:3000,
+          direction : 'vertical',
+      },
+      dialogStyle:{
+        left:''
+      },
+      form: {
+        fzname: "",
+        heights: "",
+      },
+      sectionItem: [
+        {
+          item: [//大容器比如table的td第一列
+            
+          ],
+        },
+        {
+          item: [
+            
+          ],
+        },
+        {
+          item: [
+            
+          ],
+        },
+        {
+          item: [
+            
+          ],
+        },
+        {
+          other:[
+            { 
+              Id:"bqzhz",
+              title:'当前病区总患者 ',
+              childrenSelectSql:'',
+              ChildrenSelectParameters:'',
+              childrenValue: ""
+            },
+            { 
+              Id:"jrry",
+              title:'今日入院人数',
+              childrenSelectSql:'',
+              ChildrenSelectParameters:'',
+              childrenValue: ""
+            },
+            { 
+              Id:"jrcy",
+              title:'今日出院人数 ',
+              childrenSelectSql:'',
+              ChildrenSelectParameters:'',
+              childrenValue: ""
+            },
+            { 
+              Id:"tjhl",
+              title:'特级护理患者数 ',
+              childrenSelectSql:'',
+              ChildrenSelectParameters:'',
+              childrenValue: ""
+            },
+            { 
+              Id:"yjhl",
+              title:'一级护理患者数 ',
+              childrenSelectSql:'',
+              ChildrenSelectParameters:'',
+              childrenValue: ""
+            },
+            { 
+              Id:"ejhl",
+              title:'二级护理患者数 ',
+              childrenSelectSql:'',
+              ChildrenSelectParameters:'',
+              childrenValue: ""
+            },
+            { 
+              Id:"sjhl",
+              title:'三级护理患者数 ',
+              childrenSelectSql:'',
+              ChildrenSelectParameters:'',
+              childrenValue: ""
+            },
+            
+          ]
+        }
+      ],
+    };
+  },
+  components:{
+    Shead
+  },
+  methods: {
+    toggle(e) {//点击切换左边的item，顺便切换背景图
+      switch (e.currentTarget.lastElementChild.innerHTML) {
+        case "分析":
+          this.$router.push({
+            path: "/analysisDepartment",
+            query: {
+              bqdm:this.bqdm,
+              item:this.item,
+              wardName:this.wardName
+            },
+          });
+          break;
+        case "交接班":
+          this.$router.push({
+            path: "/SchedulingBoard",
+            query: {
+              bqdm:this.bqdm,
+              item:this.item,
+              wardName:this.wardName
+            },
+          });
+          break;
+        case "患者":
+          this.$router.push({
+            path: "/patientBoard",
+            query: {
+              bqdm:this.bqdm,
+              item:this.item,
+              wardName:this.wardName
+            },
+          });
+          break;
+        case "首页":
+          break;
+      }
+    },
+    plays() {//是否展示轮播
+      this.play = this.play == "play-circle" ? "pause-circle" : "play-circle";
+      this.isCarousel = this.isCarousel ? false : true;
+    },
+    fulls() {//全屏&退出全屏
+      this.full = this.full == "fullscreen" ? "fullscreen-exit" : "fullscreen";
+      if(!this.isFullScreen){
+        this.isFullScreen=true;
+        this.$Page.fullScreen();
+      }else{
+        this.isFullScreen=false;
+        this.$Page.exitFull();
+      }
+    },
+    load() {//再次手动加载数据
+      this.getDataAll();
+    },
+    
+    showModal() {//现在增加分组的对话框
+      this.visible = true;
+    },
+    controlShade(){
+      this.$message.info("遮罩已取消，可双击编辑模块(*^▽^*)~~");
+      this.shade= false;
+    },
+    handleOk(e) {//增减分组的对话框确定回调
+      this.visible = false;
+      this.SelectedGrouping = "";
+      if (this.form.fzname == "fz1") {
+        this.sectionItem[0].item.push({
+          Id: "item" + parseInt(Math.random() * 99999),
+          height: this.form.heights,
+          children: [],
+        });
+      } else if (this.form.fzname == "fz2") {
+        this.sectionItem[1].item.push({
+          Id: "item" + parseInt(Math.random() * 99999),
+          height: this.form.heights,
+          children: [],
+        });
+      } else if (this.form.fzname == "fz3") {
+        this.sectionItem[2].item.push({
+          Id: "item" + parseInt(Math.random() * 99999),
+          height: this.form.heights,
+          children: [],
+        });
+      } else if (this.form.fzname == "fz4") {
+        this.sectionItem[3].item.push({
+          Id: "item" + parseInt(Math.random() * 99999),
+          height: this.form.heights,
+          width:169,
+          children: [],
+        });
+      }
+      this.form.heights="";
+      this.form.fzname=""
+    },
+    handleCancel(e) {//点击增减分组的对话框取消
+      this.visible = false;
+      this.SelectedGrouping = "";
+      this.form.heights="";
+      this.form.fzname=""
+    },
+    editThis(e) {//设置分组对话框位置，避免遮挡
+      this.isCarousel= false;
+      clearInterval(this.timer);
+      switch (e.currentTarget.getAttribute("data-fz")){
+        case "1":
+          this.dialogStyle.left="650px";
+          break;
+        case "2":
+          this.dialogStyle.left="650px";
+          break;
+        case "3":
+          this.dialogStyle.left="-600px";
+          break;
+        case "4":
+          this.dialogStyle.left="-600px";
+          break;
+      }
+      this.delVisible = true;
+      this.checckId = e.currentTarget.getAttribute("data-id");
+      for (var i = 0; i < 4; i++) {
+        for (var f = 0; f < this.sectionItem[i].item.length; f++) {
+          if (this.sectionItem[i].item[f].Id == this.checckId) {
+            this.checckTemplate=this.sectionItem[i].item[f];
+          }
+        }
+      }
+    },
+    delOk() {//确定添加分组
+      this.isCarousel= true;
+      this.delVisible = false;
+    },
+    delCancel() {//取消
+      this.isCarousel= true;
+      this.delVisible = false;
+    },
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log("Received values of form: ", values);
+        }
+      });
+    },
+    handleSelectChange() {
+      this.SelectedGrouping = this.form.fzname;
+    },
+    del(e) {//删除子模块
+      let types = e.currentTarget.getAttribute("data-type");
+      var _thisId = e.currentTarget.getAttribute("data-id");
+      if(types==0){
+        for (var i = 0; i < 4; i++) {
+          for (var f = 0; f < this.sectionItem[i].item.length; f++) {
+            if (this.sectionItem[i].item[f].Id == this.checckId) {
+              this.sectionItem[i].item.splice(f,1);
+            }
+          }
+        }
+      }else{
+        for (var i = 0; i < this.checckTemplate.children.length; i++) {
+          if(this.checckTemplate.children[i].Id==_thisId){
+            this.checckTemplate.children.splice(i,1);
+          }
+        }
+      }
+    },
+    addItem(d){//添加子模块
+      if(d==1){
+        this.checckTemplate.children.push({
+          Id: "Item"+parseInt(Math.random() * 99999),
+          style:'margin-top:10px',
+          childrenStyle:'width:15px;height:15px;background:orange;',
+          childrenText: "子模块",
+          contentStyle:"min-height:30px",
+          childrenSelectSql:'',
+          ChildrenSelectParameters:'',
+          childrenValue: "",
+        })
+      }else{
+        this.checckTemplate.children.unshift({
+          Id:"Item"+parseInt(Math.random() * 99999),
+          style:'margin-top:10px',
+          childrenStyle:'width:15px;height:15px;background:orange;',
+          childrenText: "子模块",
+          contentStyle:"min-height:30px",
+          childrenSelectSql:'',
+          ChildrenSelectParameters:'',
+          childrenValue: "",
+        })
+      }
+    },
+    topItemClick(index){//顶部的几大项目编辑语句啥子的
+      this.isCarousel= false;
+      this.topVisible=true;
+      this.checckTopItem=this.sectionItem[4].other[index];
+    },
+    topItemOk(){//顶部编辑ok
+      this.isCarousel= true;
+      this.topVisible=false;
+    },
+    topItemCancel(){//顶部编辑取消
+      this.isCarousel= true;
+      this.topVisible=false;
+    },
+    async getDataAll(){//获取全部数据&html架构JSON
+      this.isSpin =true;
+      this.spinning = true;
+      const res=await this.$axios.get('/WhiteBoard/WBApi.ashx/GetWhiteBoardData',{bqdm:this.bqdm,item:this.item});
+      if(res.code==0){
+        this.isSpin =!this.isSpin;
+        this.spinning = !this.spinning;
+        if(res.result!=null){
+          this.sectionItem=JSON.parse(res.result.whiteBoardModule);
+          this.hospitalName = res.result.hospitalName;
+          this.wardName = res.result.wardName;
+          for (var i = 0; i < 4; i++) {
+            for (var f = 0; f < this.sectionItem[i].item.length; f++) {
+              for(var d = 0;d<this.sectionItem[i].item[f].children.length;d++){
+                var val = this.forValue(this.sectionItem[i].item[f].children[d].Id,res.result.source);//循环获取看看匹配的id数据是否为空
+                if(val!=null){
+                  this.sectionItem[i].item[f].children[d].childrenValue=val;
+                }else{
+                  this.sectionItem[i].item[f].children[d].childrenValue=[];
+                }
+              }
+            } 
+          }
+          for(var h in this.sectionItem[4].other){//循环获取对应id时候存在数据
+            if(this.forValue(this.sectionItem[4].other[h].Id,res.result.source)!=null){
+              this.sectionItem[4].other[h].childrenValue=this.forValue(this.sectionItem[4].other[h].Id,res.result.source).toString();
+            }
+          }
+        }
+        this.TimeToLoad();
+      }
+    },
+    forString(r){//如果是字符串宽度+16，否则+7
+      var s = 0;
+      for(var i in r){
+        s+=this.isChinese(r[i])?22:11
+      }
+      return s;
+    },
+    isChinese(temp){//判断是否是汉字
+        var re=/[^\u4E00-\u9FA5]/;
+        if (re.test(temp)) return false ;
+        return true;
+    },
+    forValue(e,obj){//根据id取值
+      //r=this.isChinese(r.substr(0,1))?r:r.substr(1,r.length);
+      var isMatching = ""; 
+      for(var d in obj){
+          if (e == obj[d].key) {
+          isMatching=obj[d].value;
+        }
+      }
+      return isMatching
+    },
+    async save(){//保存配置的白板JSON架构
+      this.spinning= true;
+      this.shade= true;
+      this.sectionItem[4].other.forEach((i)=>{//防止sql删除之后加载依然存在数据，保存时将相应字段值情况
+        i.childrenValue=0
+      })
+      var obj ={
+        bqdm:this.bqdm,
+        item:this.item,
+        WBJson:JSON.stringify(this.sectionItem)
+      }
+      const res = await this.$axios.post('/WhiteBoard/WBApi.ashx/SaveWhiteBoard', obj);
+      if(res.result){
+        this.spinning= false;
+        this.$message.success("保存"+res.msg);
+        this.getDataAll();
+      }else{
+        this.spinning= false;
+      }
+    },
+    TimeToLoad(){
+      clearInterval(this.timer);
+      this.timer = setInterval(() => {//每5分钟刷新一次整体数据
+        this.getDataAll();
+      },60*5000)
+    }
+  },
+  mounted() {
+    setInterval(() => {//页面创建完成加载当前时间。1s一次
+      this.dates = this.$Page.getDate();
+    }, 1000);
+    this.$Page.fullScreen();
+    var query=this.$route.query;
+    this.bqdm=query.bqdm;
+    this.item = query.item;
+    this.getDataAll();
+  }
+};
+</script>
+
+<style  scoped>
+@import url("../../../../static/css/Board.css");
+</style>
