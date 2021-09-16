@@ -898,7 +898,7 @@ export default {
     grandpaIdx：属于第几块，默认分为4块
     parentIdx： //第几块中的第几个大模块
     idx：//大模块中的第几个成员
-    moveDirection：上移还是下移
+    moveDirection：上移还是下移呢
     **/
     moveTo(grandpaIdx, parentIdx, idx, moveDirection) {
       let tmp = null;
