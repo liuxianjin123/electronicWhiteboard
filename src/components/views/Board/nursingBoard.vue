@@ -943,7 +943,7 @@ export default {
     }
   },
   mounted() {
-    this.bqdm = "0031";
+    this.bqdm = "0001";
     this.item = "1";
     this.getDict();
     this.getTemplate();
