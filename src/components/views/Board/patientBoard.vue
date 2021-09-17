@@ -213,8 +213,6 @@ export default {
   name: "nursingBoard",
   data() {
     return {
-      bqdm: "", //医院所属病区
-      item: "", //同病区不同楼层分组
       checckTemplate: null, //当前点击的模块对应的数组
       isCarousel: true, //是否展示轮播
       brxxData: null,
@@ -303,7 +301,7 @@ export default {
   methods: {
     async getDataAll() {
       const res = await this.$axios.get("/WhiteBoard/WBApi.ashx/GetPatients", {
-        bqdm: this.bqdm
+        bqdm: this.$route.query.bqdm
       });
       this.$emit("changeIsLoad");
       if (res.msg == "成功" && res.result != null) {
@@ -341,8 +339,6 @@ export default {
     },
   },
   mounted() {
-    this.bqdm = "0005";
-    this.item = 1;
     this.getDataAll();
   }
 };

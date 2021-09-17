@@ -1,7 +1,7 @@
 <template>
   <div class="container" :style="{ background: setBackground }">
     <header>
-      <topheader :hospitalName="hospitalName" :wardName="wardName"></topheader>
+      <topheader></topheader>
     </header>
     <section>
       <keep-alive>
@@ -95,7 +95,7 @@ export default {
       full: "fullscreen", //切换全屏图标
       isFullScreen: false, //是否全屏
       fontColor: "#585eda",
-      isLoad: true
+      isLoad: true,
     };
   },
   components: {
@@ -135,7 +135,7 @@ export default {
       document.getElementById(loadSpan).style.transform = this.isLoad
         ? "rotate(180000deg)"
         : "rotate(0deg)";
-    }
+    },
   },
   computed: {
     returnModule() {
@@ -151,9 +151,6 @@ export default {
         ? "static/images/Board/nightIcon" + (this.indexPage + 1) + ".png"
         : "static/images/Board/whiteIcon" + (this.indexPage + 1) + ".png";
     }
-  },
-  mounted() {
-    //this.loadChildData()
   }
 };
 </script>

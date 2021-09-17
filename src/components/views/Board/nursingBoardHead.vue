@@ -17,11 +17,11 @@
           fontSize: '36px'
         }"
       >
-        {{ hospitalName }}{{ bqmc }}
+        {{ yymc }}{{ bqmc }}
       </h1>
     </div>
     <div class="title-date">
-      <span @click="showmodals()">{{ NowDate }}</span>
+      <span>{{ NowDate }}</span>
     </div>
   </div>
 </template>
@@ -29,25 +29,26 @@
 export default {
   data() {
     return {
-      bqmc: "",
+      yymc:"绵阳市***人民医院",
+      bqmc: "****科病区",
       dates: null
     };
   },
-  props: {
-    hospitalName: String,
-    wardName: String
+  props:{
+    bqdm:String
   },
-  mounted() {
-    this.bqmc = this.wardName;
-    return setInterval(() => {
-      this.dates = this.$Page.getDate();
-    }, 1000);
+  
+  methods: {
+    //获取医院基本信息
+    async getYYms() {
+      const res = await this.$axios.get(
+        "/han/WhiteBoardApi/GetOrgName/"+this.$route.query.bqdm
+      );
+      this.yymc=res.result.yymc;
+      this.bqmc=res.result.bqmc;
+    }
   },
-  methods: {},
   watch: {
-    wardName: function(newVal, oldVal) {
-      this.bqmc = newVal;
-    },
     displayMode: function(newVal, oldVal) {
       newVal
         ? (this.darklyFontColor = "#44ffe5")
@@ -58,7 +59,13 @@ export default {
     NowDate() {
       return this.dates;
     }
-  }
+  },
+  mounted() {
+    this.getYYms();
+    return setInterval(() => {
+      this.dates = this.$Page.getDate();
+    }, 1000);
+  },
 };
 </script>
 <style scoped>

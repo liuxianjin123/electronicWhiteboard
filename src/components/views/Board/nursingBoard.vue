@@ -166,7 +166,7 @@
       </template>
     </a-modal>
     <a-modal
-      width="400px"
+      width="800px"
       :centered="true"
       :mask="false"
       title="编辑"
@@ -179,7 +179,7 @@
       @cancel="delCancel"
     >
       <template v-if="checckTemplate != null">
-        <a-form-model :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-form-model layout="inline">
           <div class="alerts">
             <span
               ><a-icon
@@ -219,10 +219,6 @@
                       style="color:#1e9fff"
                     />&nbsp;&nbsp;{{ "子模块" + (i + 1) }}</span
                   >
-                  <a-tooltip placement="top">
-                    <template slot="title">
-                      <span>删除当前子模块</span>
-                    </template>
                     <a-icon
                       type="delete"
                       style="color:red"
@@ -230,37 +226,38 @@
                       @click="del($event)"
                       :data-id="item.Id"
                     />
-                  </a-tooltip>
                 </div>
                 <a-form-model-item label="模块标题">
-                  <a-input v-model="item.childrenText" />
+                  <a-input v-model="item.childrenText" style="width:150px;"/>
                 </a-form-model-item>
                 <a-form-model-item label="模块ID">
-                  <a-input v-model="item.Id" />
+                  <a-input v-model="item.Id" style="width:164px;"/>
                 </a-form-model-item>
                 <a-form-model-item label="模块样式">
-                  <a-input v-model="item.style" type="textarea" />
+                  <a-input v-model="item.style" type="textarea" style="width:180px;"/>
                 </a-form-model-item>
-                <a-form-model-item label="内容容器样式">
-                  <a-input v-model="item.contentStyle" type="textarea" />
+                <a-form-model-item label="内容样式">
+                  <a-input v-model="item.contentStyle" type="textarea" style="width:150px;"/>
                 </a-form-model-item>
-                <a-form-model-item label="数据来源字典">
+                <a-form-model-item label="数据字典">
                   <a-select
                     v-model="item.dictionaries"
+                    optionFilterProp="label"
                     show-search
-                    style="width: 100%"
+                    style="width:150px;"
                   >
                     <a-select-option
                       v-for="i in dataDict"
                       :key="i.id"
                       :value="i.id"
+                      :label="i.dictName"
                     >
                       {{ i.dictName }}
                     </a-select-option>
                   </a-select>
                 </a-form-model-item>
                 <a-form-model-item label="图标样式">
-                  <a-input v-model="item.childrenStyle" type="textarea" />
+                  <a-input v-model="item.childrenStyle" type="textarea" style="width:180px;"/>
                 </a-form-model-item>
               </div>
             </template>
@@ -273,17 +270,9 @@
               />&nbsp;&nbsp;添加子模块</span
             >
             <template>
-              <a-popconfirm
-                title="选择插入顺序"
-                ok-text="底部插入"
-                cancel-text="顶部插入"
-                @cancel="addItem(0)"
-                @confirm="addItem(1)"
-              >
-                <a href="#">
-                  <a-icon type="plus-circle" style="color:#1e9fff" />
-                </a>
-              </a-popconfirm>
+              <a href="#" @click="addItem()">
+                <a-icon type="plus-circle" style="color:#1e9fff" />
+              </a>
             </template>
           </div>
         </a-form-model>
@@ -311,10 +300,11 @@
           <a-form-model-item label="数据来源字典">
             <a-select
               v-model="checckTopItem.dictionaries"
+              optionFilterProp="label"
               show-search
               style="width: 100%"
             >
-              <a-select-option v-for="i in dataDict" :key="i.id" :value="i.id">
+              <a-select-option v-for="i in dataDict" :key="i.id" :value="i.id" :label="i.dictName">
                 {{ i.dictName }}
               </a-select-option>
             </a-select>
@@ -364,6 +354,7 @@
   </div>
 </template>
 <script>
+import costomParentVue from '../costomParent.vue';
 function computedFontSize() {
   let nbs = document.getElementsByClassName("texts");
   for (var i = 0; i < nbs.length; i++) {
@@ -384,8 +375,6 @@ export default {
       timer: null, //刷新数据定时器
       labelCol: { span: 6 }, //弹出的新增模块表单布局
       wrapperCol: { span: 18 },
-      bqdm: "", //医院所属病区
-      item: "", //同病区不同楼层分组
       visible: false, //控制模态框
       delVisible: false, //控制模态框
       topVisible: false, //
@@ -557,7 +546,6 @@ export default {
         this.sectionItem[3].item.push({
           Id: "item" + parseInt(Math.random() * 99999),
           height: this.form.heights,
-          width: 169,
           children: []
         });
       }
@@ -580,16 +568,16 @@ export default {
       clearInterval(this.timer);
       switch (e.currentTarget.getAttribute("data-fz")) {
         case "1":
-          this.dialogStyle.left = "650px";
+          this.dialogStyle.left = "550px";
           break;
-        case "2":
-          this.dialogStyle.left = "650px";
+          case "2":
+          this.dialogStyle.left = "550px";
           break;
-        case "3":
-          this.dialogStyle.left = "-600px";
+          case "3":
+          this.dialogStyle.left = "-550px";
           break;
-        case "4":
-          this.dialogStyle.left = "-600px";
+          case "4":
+          this.dialogStyle.left = "-550px";
           break;
       }
       this.delVisible = true;
@@ -635,27 +623,15 @@ export default {
     },
     addItem(d) {
       //添加子模块
-      if (d == 1) {
-        this.checckTemplate.children.push({
-          Id: "Item" + parseInt(Math.random() * 99999),
-          style: "margin-top:10px",
-          childrenStyle: "width:15px;height:15px;background:orange;",
-          childrenText: "子模块",
-          contentStyle: "min-height:30px",
-          dictionaries: "",
-          childrenValue: ""
-        });
-      } else {
-        this.checckTemplate.children.unshift({
-          Id: "Item" + parseInt(Math.random() * 99999),
-          style: "margin-top:10px",
-          childrenStyle: "width:15px;height:15px;background:orange;",
-          childrenText: "子模块",
-          contentStyle: "min-height:30px",
-          dictionaries: "",
-          childrenValue: ""
-        });
-      }
+      this.checckTemplate.children.push({
+        Id: "Item" + parseInt(Math.random() * 99999),
+        style: "margin-top:10px",
+        childrenStyle: "width:15px;height:15px;background:orange;",
+        childrenText: "子模块",
+        contentStyle: "min-height:30px",
+        dictionaries: "",
+        childrenValue: ""
+      });
     },
     topItemClick(index) {
       //顶部的几大项目编辑语句啥子的
@@ -718,10 +694,11 @@ export default {
     async getDict() {
       const res = await this.$axios.get(
         "/han/WhiteBoardApi/GetWhiteBoardDict?bqdm=" +
-          this.bqdm +
+          this.$route.query.bqdm +
           "&lc=" +
-          this.item
+          this.$route.query.lc
       );
+      console.log(res,"字典")
       if (res.result) {
         this.dataDict = res.result;
       }
@@ -730,10 +707,11 @@ export default {
     async getTemplate() {
       const res = await this.$axios.get(
         "/han/WhiteBoardApi/GetWhiteBoardConfig?bqdm=" +
-          this.bqdm +
+          this.$route.query.bqdm +
           "&lc=" +
-          this.item
+          this.$route.query.lc
       );
+      console.log(res,"模板")
       if (res.result.content) {
         this.sectionItem = JSON.parse(res.result.content);
       }
@@ -741,8 +719,8 @@ export default {
     //获取全部数据
     async getDataAll() {
       var datas = {
-        bqdm: this.bqdm,
-        lc: this.item,
+        bqdm: this.$route.query.bqdm,
+        lc: this.$route.query.lc,
         stime: "2021-09-08 08:00:00",
         etime: "2021-09-09 08:00:00"
       };
@@ -789,7 +767,6 @@ export default {
     },
     /*保存数据*/
     async save() {
-      console.log(this.sectionItem);
       var dictXml = "<root>";
       var idx=0;
       for (var i of this.sectionItem) {
@@ -806,14 +783,14 @@ export default {
         }
       }
       dictXml += "</root>";
+      console.log(dictXml)
       var obj = {
-        bqdm: this.bqdm,
-        lc: this.item,
+        bqdm: this.$route.query.bqdm,
+        lc: this.$route.query.lc,
         dictval: dictXml, //xml
-        content: JSON.stringify(this.sectionItem), //JSON末班
+        content: JSON.stringify(this.sectionItem), //JSON模板
         uptime: ""
       };
-      console.log(this.sectionItem,6666)
       const res = await this.$axios.post(
         "/han/WhiteBoardApi/SaveWhiteBoard",
         obj
@@ -943,8 +920,6 @@ export default {
     }
   },
   mounted() {
-    this.bqdm = "0001";
-    this.item = "1";
     this.getDict();
     this.getTemplate();
     this.getDataAll();
