@@ -9,7 +9,7 @@ const instance = axios.create({
             'Content-Type': 'application/json;charset=utf-8',
         }
     })
-    //请求拦截
+    //请求拦截LXJ666
 instance.interceptors.request.use(config => {
     config.headers.Authorization = window.sessionStorage.getItem('token');
     return config
