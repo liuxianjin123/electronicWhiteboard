@@ -406,7 +406,7 @@ export default {
       daytimeFontColor: "#196d9d",
       darklyshadowColor: "0px 0px 11px 3px #4079ad",
       daytimeshadowColor: "0px 0px 11px 3px #dedddd",
-      dataDict: null, //数据字典
+      dataDict: null, //数据字典666
       topItemTmplate: [
         {
           Id: "bqzhz",
