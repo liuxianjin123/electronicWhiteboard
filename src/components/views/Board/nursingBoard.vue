@@ -219,7 +219,7 @@
           </a-form-model-item>
           <template v-if="checckTemplate.children.length != 0">
             <template v-for="(item, i) in checckTemplate.children">
-              <div :key="item.Id + i">
+              <div :key="i">
                 <div class="alerts">
                   <span
                     ><a-icon
@@ -701,7 +701,7 @@ export default {
     //加载字典
     async getDict() {
       const res = await this.$axios.get(
-        "/han/WhiteBoardApi/GetWhiteBoardDict?bqdm=" +
+        "/api/WhiteBoardApi/GetWhiteBoardDict?bqdm=" +
           this.$route.query.bqdm +
           "&lc=" +
           this.$route.query.lc
@@ -714,7 +714,7 @@ export default {
     //获取JSON模板
     async getTemplate() {
       const res = await this.$axios.get(
-        "/han/WhiteBoardApi/GetWhiteBoardConfig?bqdm=" +
+        "/api/WhiteBoardApi/GetWhiteBoardConfig?bqdm=" +
           this.$route.query.bqdm +
           "&lc=" +
           this.$route.query.lc
@@ -735,7 +735,7 @@ export default {
         utype:0
       };
       const res = await this.$axios.get(
-        "/han/WhiteBoardApi/GetWhiteBoardData",
+        "/api/WhiteBoardApi/GetWhiteBoardData",
         datas
       );
       console.log(res,666)
@@ -802,7 +802,7 @@ export default {
         uptime: ""
       };
       const res = await this.$axios.post(
-        "/han/WhiteBoardApi/SaveWhiteBoard",
+        "/api/WhiteBoardApi/SaveWhiteBoard",
         obj
       );
       if (res.result) {

@@ -1,8 +1,8 @@
 import axios from 'axios'
 ///接口文档地址：https://www.showdoccc/AIMS?page_id=4264603188555394lxj
 const instance = axios.create({
-        //baseURL: 'http://192.168.0.80:666', //正式库
-        baseURL: 'http://192.168.1.9:5005', //白板
+        //baseURL: 'http://192.168.1.192:5063', //正式库
+        baseURL: 'http://192.167.0.80:5005', //白板
         //baseURL: 'http://192.168.1.9:5005', //交接班
         responseType: 'json',
         headers: {

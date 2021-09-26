@@ -42,8 +42,9 @@ export default {
     //获取医院基本信息
     async getYYms() {
       const res = await this.$axios.get(
-        "/han/WhiteBoardApi/GetOrgName/"+this.$route.query.bqdm
+        "/api/WhiteBoardApi/GetOrgName/"+this.$route.query.bqdm
       );
+      console.log(res,"YYXX")
       this.yymc=res.result.yymc;
       this.bqmc=res.result.bqmc;
     }

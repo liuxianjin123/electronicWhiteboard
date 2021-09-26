@@ -4,14 +4,12 @@
       <topheader></topheader>
     </header>
     <section>
-      <keep-alive>
         <component
           :is="returnModule"
           ref="mychild"
           @changeIsLoad="changeIsLoad"
         >
         </component>
-      </keep-alive>
     </section>
     <footer>
       <a-row type="flex" justify="space-between" align="middle">
@@ -29,7 +27,7 @@
                 患者
               </p>
             </li>
-            <li @click="indexPage = 2">
+            <!-- <li @click="indexPage = 2">
               <img :src="[indexPage == 2 ? pbCheck : pb]" alt="" />
               <p :style="{ color: indexPage == 2 ? fontColor : '#fff' }">
                 交接班
@@ -40,7 +38,7 @@
               <p :style="{ color: indexPage == 3 ? fontColor : '#fff' }">
                 分析
               </p>
-            </li>
+            </li> -->
           </ul>
         </aside>
         <div class="container-bottom">

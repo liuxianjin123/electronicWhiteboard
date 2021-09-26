@@ -298,7 +298,7 @@ export default {
   },
   methods: {
     async getDataAll() {
-      const res = await this.$axios.get("/han/WhiteBoardApi/GetBrxxList", {
+      const res = await this.$axios.get("/api/WhiteBoardApi/GetBrxxList", {
         bqdm: this.$route.query.bqdm,
         lx:0
       });
@@ -319,7 +319,7 @@ export default {
         utype:1
       };
       const res = await this.$axios.get(
-        "/han/WhiteBoardApi/GetWhiteBoardData",
+        "/api/WhiteBoardApi/GetWhiteBoardData",
         datas
       );
       console.log(res,666)
