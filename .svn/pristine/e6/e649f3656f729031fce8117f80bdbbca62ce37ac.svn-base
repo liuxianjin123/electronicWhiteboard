@@ -313,8 +313,8 @@ export default {
       var datas = {
         bqdm: this.$route.query.bqdm,
         lc: this.$route.query.lc,
-        stime: this.$Page.getDate().substring(0,10)+" 08:00:00",
-        etime: this.$Page.getNextDate(this.$Page.getDate().substring(0,10),1)+" 08:00:00",
+        stime: "2021-09-08 08:00:00",
+        etime: "2021-09-09 08:00:00",
         userCode:"",
         utype:1
       };
