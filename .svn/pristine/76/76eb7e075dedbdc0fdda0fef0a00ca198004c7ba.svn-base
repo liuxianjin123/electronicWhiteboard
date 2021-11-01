@@ -1,0 +1,130 @@
+<template>
+  <div class="container">
+    <a-form-model ref="ruleForm" :model="ruleForm" :rules="rules" class="forms">
+      <div class="titles">
+        <h2>护理综合管理平台</h2>
+        <h3>HuHui Nursing Integrated nursing management platform</h3>
+      </div>
+      <a-form-model-item has-feedback label="" prop="Account">
+        <a-input
+          v-model="ruleForm.Account"
+          type="text"
+          autocomplete="off"
+          size="large"
+        >
+          <a-icon slot="prefix" type="user" style="color:#1e9fff" />
+        </a-input>
+      </a-form-model-item>
+      <a-form-model-item has-feedback label="" prop="Password">
+        <a-input
+          v-model="ruleForm.Password"
+          :type="pwdType"
+          autocomplete="off"
+          size="large"
+        >
+          <a-icon slot="prefix" type="lock" style="color:#1e9fff" />
+          <a-tooltip slot="suffix">
+            <a-icon
+              :type="pwdType == 'password' ? 'eye' : 'eye-invisible'"
+              @click="
+                pwdType == 'password'
+                  ? (pwdType = 'text')
+                  : (pwdType = 'password')
+              "
+            />
+          </a-tooltip>
+        </a-input>
+      </a-form-model-item>
+      <a-form-model-item :wrapper-col="{ span: 24 }">
+        <a-button
+          :loading="loading"
+          type="primary"
+          @click="submitForm('ruleForm')"
+          block
+          style="height:40px"
+        >
+          登 录
+        </a-button>
+      </a-form-model-item>
+      <a href="javascript:;" class="bg"
+        >CopyRight©2021 四川互慧软件有限公司,All CopyRights Reserved</a
+      >
+    </a-form-model>
+  </div>
+</template>
+<script>
+export default {
+  data() {
+    let users = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入用户名"));
+      } else {
+        callback();
+      }
+    };
+    let pwds = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        callback();
+      }
+    };
+    return {
+      loading: false,
+      pwdType: "password",
+      ruleForm: {
+        Account: "",
+        Password: ""
+      },
+      rules: {
+        Account: [{ validator: users, trigger: "change" }],
+        Password: [{ validator: pwds, trigger: "change" }]
+      }
+    };
+  },
+
+  methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate(async valid => {
+        if (valid) {
+          this.loading = true;
+          //const res=await this.$axios.post('/Api/FormHandler.ashx/IsLogin',this.ruleForm)
+          //if(res){
+            let routerPath ="";
+            this.loading = false; 
+            if (this.ruleForm.Account == 0) {
+              routerPath = "/Board";
+            } else if (this.ruleForm.Account == 1) {
+              routerPath = "/jjbIndex";
+            }else{
+              routerPath = "/index";
+            }
+            this.$router.push({
+              path: routerPath,
+              query: {
+                bqdm: "0001",
+                lc: 1,
+              }
+            });  
+          //}
+          //   console.log(res)
+          //   sessionStorage.zyh='0823202105159233',
+          //   sessionStorage.userName='黄秀兰'
+          //   sessionStorage.user='0225'
+          //   sessionStorage.keys=res.result.key;
+          //   sessionStorage.value=res.result.value;
+          //   
+        } else {
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    }
+  }
+};
+</script>
+<style scoped>
+@import url("../../../static/css/Login.css");
+</style>
