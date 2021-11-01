@@ -14,6 +14,13 @@ var routerConfig = {
         require(["@/components/views/Board/nursingBoard"], resolve)
     },
     {
+      path: "/dictConfig",
+      name: "白板字典设置",
+      icon: "aliwangwang",
+      component: resolve =>
+        require(["@/components/views/Board/dictConfig"], resolve)
+    },
+    {
       path: "/SchedulingBoard",
       name: "排班",
       icon: "aliwangwang",
