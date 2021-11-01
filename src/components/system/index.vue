@@ -65,22 +65,24 @@
           </template>
         </a-tabs>
       </section>
-      <footer>3123</footer>
+      <footer>{{$store.state.router}}1111</footer>
     </div>
   </div>
 </template>
 
 <script>
+import routerConfig from '@/config/routerConfig'
 export default {
   name: "index",
   data() {
     return {
+      routerConfig,
       collapsed: false,
-      activeKey: "/nuxreChangeShifts", //打开页面默认加载这个界面
-      active: ["/nuxreChangeShifts"], //左边的下拉框默认选中item
+      activeKey: "/form", //打开页面默认加载这个界面
+      active: ["/form"], //左边的下拉框默认选中item
       lj: ["/index"], //左边的下拉框默认展开的分组
-      panes: [{ title: "交接班", key: "/nuxreChangeShifts", closable: false }], //默认渲染tabs的数据
-      leftSolde: this.$store.state.router
+      panes: [{ title: "表单", key: "/form", closable: false }], //默认渲染tabs的数据
+      leftSolde: routerConfig.router
     };
   },
   methods: {

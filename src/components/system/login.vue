@@ -2,10 +2,10 @@
   <div class="container">
     <a-form-model ref="ruleForm" :model="ruleForm" :rules="rules" class="forms">
       <div class="titles">
-        <h2>互慧护理交接班管理系统</h2>
-        <h3>HuHui Nursing comprehensive management platform</h3>
+        <h2>护理综合管理平台</h2>
+        <h3>HuHui Nursing Integrated nursing management platform</h3>
       </div>
-      <a-form-model-item has-feedback label="" prop="user">
+      <a-form-model-item has-feedback label="" prop="Account">
         <a-input
           v-model="ruleForm.Account"
           type="text"
@@ -15,21 +15,21 @@
           <a-icon slot="prefix" type="user" style="color:#1e9fff" />
         </a-input>
       </a-form-model-item>
-      <a-form-model-item has-feedback label="" prop="pwd">
+      <a-form-model-item has-feedback label="" prop="Password">
         <a-input
           v-model="ruleForm.Password"
-          :type="password"
+          :type="pwdType"
           autocomplete="off"
           size="large"
         >
           <a-icon slot="prefix" type="lock" style="color:#1e9fff" />
           <a-tooltip slot="suffix">
             <a-icon
-              :type="password == 'password' ? 'eye' : 'eye-invisible'"
+              :type="pwdType == 'password' ? 'eye' : 'eye-invisible'"
               @click="
-                password == 'password'
-                  ? (password = 'text')
-                  : (password = 'password')
+                pwdType == 'password'
+                  ? (pwdType = 'text')
+                  : (pwdType = 'password')
               "
             />
           </a-tooltip>
@@ -37,12 +37,13 @@
       </a-form-model-item>
       <a-form-model-item :wrapper-col="{ span: 24 }">
         <a-button
+          :loading="loading"
           type="primary"
           @click="submitForm('ruleForm')"
           block
           style="height:40px"
         >
-          <a-icon :type="loads" />登 录
+          登 录
         </a-button>
       </a-form-model-item>
       <a href="javascript:;" class="bg"
@@ -69,11 +70,11 @@ export default {
       }
     };
     return {
-      loads: "",
-      password: "password",
+      loading: false,
+      pwdType: "password",
       ruleForm: {
-        Account: "0",
-        Password: "1234"
+        Account: "",
+        Password: ""
       },
       rules: {
         Account: [{ validator: users, trigger: "change" }],
@@ -86,31 +87,34 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          this.loads = "loading";
-          // const res=await  post('/Api/FormHandler.ashx/IsLogin',this.ruleForm);
-          // if(res.code==0&& res.result){
+          this.loading = true;
+          //const res=await this.$axios.post('/Api/FormHandler.ashx/IsLogin',this.ruleForm)
+          //if(res){
+            let routerPath ="";
+            this.loading = false; 
+            if (this.ruleForm.Account == 0) {
+              routerPath = "/Board";
+            } else if (this.ruleForm.Account == 1) {
+              routerPath = "/jjbIndex";
+            }else{
+              routerPath = "/index";
+            }
+            this.$router.push({
+              path: routerPath,
+              query: {
+                bqdm: "0001",
+                lc: 1,
+              }
+            });  
+          //}
           //   console.log(res)
           //   sessionStorage.zyh='0823202105159233',
           //   sessionStorage.userName='黄秀兰'
           //   sessionStorage.user='0225'
           //   sessionStorage.keys=res.result.key;
           //   sessionStorage.value=res.result.value;
-          let routerPath = null;
-          if (this.ruleForm.Account == 0) {
-            routerPath = "/Board";
-          } else if (this.ruleForm.Account == 1) {
-            routerPath = "/jjbIndex";
-          }
-          this.$router.push({
-            path: routerPath,
-            query: {
-              bqdm: "0001",
-              lc: 1,
-            }
-          });
-          //}
+          //   
         } else {
-          this.$message.error("请输入用户名或密码");
           return false;
         }
       });
