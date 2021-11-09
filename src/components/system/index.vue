@@ -22,7 +22,7 @@
                 <a-icon :type="items.icon" /><span>{{ items.name }}</span>
               </a-menu-item>
             </a-sub-menu>
-            <a-menu-item :key="item.path" v-else @click="handelClickLink">
+            <a-menu-item :key="item.path" v-else-if="item.path!='/' && item.path!='*'" @click="handelClickLink">
               <a-icon :type="item.icon" />
               <span>{{ item.name }}</span>
             </a-menu-item>
@@ -103,7 +103,6 @@ export default {
           this.panes.push({
             title: item.item.$el.childNodes[1].childNodes[0].data,
             key: item.key,
-            closable:item.key == "/button"?false:true,
           });
         }
         this.active.length = 0; //将默认选中的item去掉，赋值上当前的key，这样左边选中的就会有样式
@@ -148,7 +147,7 @@ export default {
   created() {
     var query = this.$route.query;
     console.log(query);
-    //this.$router.push({ path: "/advancedTable" });
+    this.$router.push({ path: "/form" });
   },
 };
 </script>
