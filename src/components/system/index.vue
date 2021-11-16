@@ -33,7 +33,7 @@
         <a-button
           type="primary"
           :icon="collapsed ? 'menu-unfold' : 'menu-fold'"
-          @click="operationMian"
+          @click="changeCollapsed()"
         >
         </a-button>
       </div>
@@ -60,7 +60,9 @@
               :tab="pane.title"
               :closable="pane.closable"
             >
-              <router-view></router-view>
+              <keep-alive>
+                <router-view></router-view>
+              </keep-alive>
             </a-tab-pane>
           </template>
         </a-tabs>
@@ -72,12 +74,12 @@
 
 <script>
 import routerConfig from '@/config/routerConfig'
+import { mapState, mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   name: "index",
   data() {
     return {
       routerConfig,
-      collapsed: false,
       activeKey: "/form", //打开页面默认加载这个界面
       active: ["/form"], //左边的下拉框默认选中item
       lj: ["/index"], //左边的下拉框默认展开的分组
@@ -86,9 +88,9 @@ export default {
     };
   },
   methods: {
-    operationMian() {
-      this.collapsed = !this.collapsed;
-    },
+    ...mapMutations({
+      changeCollapsed: "index/updateCollapsed" //收起或展开菜单 clickTotal 是mutation 里的方法，totalAlise是重新定义的一个别名方法，本组件直接调用这个方法
+    }),
     handelClickLink(item) {
       console.log(item);
       //左边列表item的选中事件
@@ -148,7 +150,16 @@ export default {
     var query = this.$route.query;
     console.log(query);
     this.$router.push({ path: "/form" });
+    this.$eventBus.$on('test',function(e){
+      this.$message.info("eventBus监听到的参数是"+e);
+      //this.$eventBus.$off("test")
+    })
   },
+  computed:{
+    ...mapState({//获取state.index下的变量
+      collapsed: state => state.index.collapsed,
+    }),
+  }
 };
 </script>
 <style scoped>
@@ -207,8 +218,14 @@ footer {
 #components .content section >>> .ant-tabs {
   height: 100%;
 }
+#components .content section >>>.ant-tabs-bar{
+  margin: 0;
+}
+#components .content section >>>.ant-tabs-tabpane{
+  overflow: auto;
+}
 #components .content section >>> .ant-tabs .ant-tabs-content {
-  height: calc(100% - 44px);
+  height: calc(100% - 40px);
 }
 </style>
 <style>

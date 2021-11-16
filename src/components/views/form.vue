@@ -202,6 +202,7 @@ export default {
   methods: {
     test(){
       console.log(this.$route);
+      this.$eventBus.$emit("test",6666)
     },
     handleSubmit(e) {
       e.preventDefault();
@@ -218,10 +219,24 @@ export default {
       }
       return e && e.fileList;
     },
+    getBr(){
+      this.axios.get('https://api.apiopen.top/getJoke?page=1&count=120&type=video',{
+        data:{},
+        headers: {
+            'Authorization': 'Bearer ' + sessionStorage.getItem('tk'),
+        }
+      }).then(res => {
+          console.log(res)
+      })
+      .catch(err => {
+          console.log(err);
+      });
+    },
   },
   created(){
     var query=this.$route.query;
-    console.log(query)
+    //console.log(query);
+    this.getBr()
   }
 };
 </script>

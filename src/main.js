@@ -18,6 +18,7 @@ import '../static/js/rem' //计算高度?
 import animate from 'animate.css' //animate动画库css
 import requests from './request/request' //全局请求
 import BoardPublic from '../static/js/BoardPublic' //定义一些全局方法
+Vue.prototype.$eventBus = new Vue();
 Vue.prototype.$utils = XEUils;
 Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false;

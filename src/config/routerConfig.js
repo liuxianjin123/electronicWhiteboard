@@ -105,27 +105,6 @@ var routerConfig = {
             }
           ]
         }
-        // {
-        //   path: "/ChangeShifts",
-        //   name: "护理交接1班设置",
-        //   lcon: "dingding",
-        //   component: resolve =>
-        //     require(["@/components/views/ChangeShifts/ChangeShifts"], resolve)
-        // },
-        // {
-        //   path: "/ShiftSetting",
-        //   name: "护理交接班设置",
-        //   lcon: "dingding",
-        //   component: resolve =>
-        //     require(["@/components/views/ChangeShifts/ShiftSetting"], resolve)
-        // },
-        // {
-        //   path: "/ShiftSetting",
-        //   name: "护理交接班设置",
-        //   lcon: "dingding",
-        //   component: resolve =>
-        //     require(["@/components/views/ChangeShifts/ShiftSetting"], resolve)
-        // }
       ]
     },
     {
