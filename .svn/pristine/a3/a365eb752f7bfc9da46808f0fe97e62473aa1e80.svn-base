@@ -1,0 +1,104 @@
+<template>
+  <div class="container">
+    <header>
+      <p>
+        <span>span1</span>
+        <span>span2</span>
+        <span>span3</span>
+        <span>span4</span>
+        <span>span5</span>
+      </p>
+    </header>
+    <section>
+      <ul>
+        <li>li1</li>
+        <li>li2</li>
+        <li>li3</li>
+        <li>li4</li>
+        <li>li5</li>
+      </ul>
+    </section>
+    <footer>
+      <b>footer</b>
+    </footer>
+  </div>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      text: ""
+    };
+  },
+  methods: {},
+  mounted() {
+    var d = "666";
+  }
+};
+</script>
+<style lang="less" scoped>
+/*申明当前页面内css变量*/
+@width: 50px;
+@width2: 0.5;
+.flex {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+}
+.container {
+  header,
+  section,
+  footer {
+    border: 5px dashed red;
+    margin: 10px 0;
+  }
+  section {
+    ul {
+      list-style: none;
+      .flex();
+      font-size: 25px;
+      line-height: 50px;
+      li {
+        margin: 10px 10px 10px;
+        border-width: 10px 10px 0px;
+        border-style: double;
+        border-color: tomato;
+        border-radius: 10px;
+        width: @width+50px;
+      }
+      li:last-child{
+        background: chartreuse;
+      }
+    }
+  }
+  footer{
+    width:percentage(@width2); // returns `50%`使用less函数
+    background: greenyellow;
+    transition: all .3s;
+    height: 50px;
+    user-select: none;
+    &:hover {
+      font-size: 60px;
+      color: #fff;
+      height: 150px;
+      width:percentage(0.8);
+      background-color: blue;
+      border-color:hotpink;
+      border-style:solid
+    }
+    &:active{
+      background: red;
+      cursor: pointer;
+    }
+  }
+}
+header {
+  color: red;
+  p {
+    .flex(); /*使用变量 */
+  }
+  p span {
+    font-size: 25px;
+  }
+}
+</style>

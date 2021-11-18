@@ -22,11 +22,7 @@
                 <a-icon :type="items.icon" /><span>{{ items.name }}</span>
               </a-menu-item>
             </a-sub-menu>
-            <a-menu-item
-              :key="item.path"
-              v-else-if="item.path != '/' && item.path != '*'"
-              @click="handelClickLink"
-            >
+            <a-menu-item :key="item.path" v-else-if="item.path!='/' && item.path!='*'" @click="handelClickLink">
               <a-icon :type="item.icon" />
               <span>{{ item.name }}</span>
             </a-menu-item>
@@ -54,6 +50,7 @@
           tabPosition="top"
           @tabClick="tabClick"
           @edit="onEdit"
+          animated
           hideAdd
         >
           <template v-if="panes">
@@ -62,24 +59,21 @@
               :key="pane.key"
               :tab="pane.title"
               :closable="pane.closable"
-              ><transition
-                enter-active-class="animate__animated animate__fadeIn"
-              >
-                <keep-alive>
-                  <router-view />
-                </keep-alive>
-              </transition>
+            >
+              <keep-alive>
+                <router-view></router-view>
+              </keep-alive>
             </a-tab-pane>
           </template>
         </a-tabs>
       </section>
-      <footer>{{ $store.state.router }}1111</footer>
+      <footer>{{$store.state.router}}1111</footer>
     </div>
   </div>
 </template>
 
 <script>
-import routerConfig from "@/config/routerConfig";
+import routerConfig from '@/config/routerConfig'
 import { mapState, mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   name: "index",
@@ -98,9 +92,10 @@ export default {
       changeCollapsed: "index/updateCollapsed" //收起或展开菜单 clickTotal 是mutation 里的方法，totalAlise是重新定义的一个别名方法，本组件直接调用这个方法
     }),
     handelClickLink(item) {
+      console.log(item);
       //左边列表item的选中事件
       var isYou = true;
-      if (item.keyPath.length > 1) {
+      if (item.keyPath.length>1) {
         for (var f in this.panes) {
           if (this.panes[f].key == item.key) {
             isYou = false;
@@ -109,7 +104,7 @@ export default {
         if (isYou) {
           this.panes.push({
             title: item.item.$el.childNodes[1].childNodes[0].data,
-            key: item.key
+            key: item.key,
           });
         }
         this.active.length = 0; //将默认选中的item去掉，赋值上当前的key，这样左边选中的就会有样式
@@ -136,7 +131,7 @@ export default {
           lastIndex = i - 1;
         }
       });
-      const panes = this.panes.filter(pane => pane.key !== targetKey);
+      const panes = this.panes.filter((pane) => pane.key !== targetKey);
       if (panes.length && activeKey === targetKey) {
         if (lastIndex > 0) {
           activeKey = panes[lastIndex].key;
@@ -149,22 +144,21 @@ export default {
       this.active.push(activeKey); //这里的控制页面切换
       this.activeKey = activeKey;
       this.$router.push({ path: activeKey });
-    }
+    },
   },
   created() {
     var query = this.$route.query;
-    //console.log(query);
+    console.log(query);
     this.$router.push({ path: "/form" });
-    this.$eventBus.$on("test", function(e) {
-      this.$message.info("eventBus监听到的参数是" + e);
+    this.$eventBus.$on('test',function(e){
+      this.$message.info("eventBus监听到的参数是"+e);
       //this.$eventBus.$off("test")
-    });
-  },
-  computed: {
-    ...mapState({
-      //获取state.index下的变量
-      collapsed: state => state.index.collapsed
     })
+  },
+  computed:{
+    ...mapState({//获取state.index下的变量
+      collapsed: state => state.index.collapsed,
+    }),
   }
 };
 </script>
@@ -224,18 +218,14 @@ footer {
 #components .content section >>> .ant-tabs {
   height: 100%;
 }
-#components .content section >>> .ant-tabs-bar {
+#components .content section >>>.ant-tabs-bar{
   margin: 0;
 }
-#components .content section >>> .ant-tabs-tabpane {
+#components .content section >>>.ant-tabs-tabpane{
   overflow: auto;
 }
 #components .content section >>> .ant-tabs .ant-tabs-content {
   height: calc(100% - 40px);
-  overflow: auto;
-}
-#components .content section >>> .ant-tabs-tabpane-active{
-  height: 100%;
 }
 </style>
 <style>

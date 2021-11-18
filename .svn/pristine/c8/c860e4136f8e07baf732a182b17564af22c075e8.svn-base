@@ -197,7 +197,7 @@
       </a-form-item>
 
       <a-form-item :wrapper-col="{ span: 12, offset: 6 }">
-        <a-button type="primary" @click="getBr" class="request">
+        <a-button type="primary" @click="test">
           Submit
         </a-button>
       </a-form-item>
@@ -238,9 +238,9 @@ export default {
       return e && e.fileList;
     },
     getBr() {
-      this.$axios
+      this.axios
         .get("https://api.apiopen.top/getJoke?page=1&count=120&type=video", {
-          data: {date:new Date()},
+          data: {},
           headers: {
             Authorization: "Bearer " + sessionStorage.getItem("tk")
           }
@@ -249,21 +249,19 @@ export default {
           console.log(res);
         })
         .catch(err => {
-          //console.log(err);
+          console.log(err);
         });
     }
   },
   created() {
     var query = this.$route.query;
-    //console.log(query);
-    //this.getBr();
-    //console.log(this.dayjs().format('YYYY-MM-DD hh:mm:ss'));
-    //console.log(this.dayjs('2021/2/24').format('YYYY-MM-DD hh:mm:ss'));
+    console.log(query);
+    this.getBr();
   }
 };
 </script>
 <style lang="less" scoped>
   .container{
-    overflow: auto;
+    border:1px solid red;
   }
 </style>

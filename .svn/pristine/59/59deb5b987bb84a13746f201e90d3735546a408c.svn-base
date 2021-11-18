@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import router from "../router";
 import axios from 'axios'
 import {message } from 'ant-design-vue';
 ///接口文档地址：https://www.showdoccc/AIMS?page_id=4264603188555394lxj
@@ -28,7 +27,6 @@ export default {
     install(Vue, options) {
         Vue.prototype.$axios = {
             get(url, params) {
-                setRequestParam(url, params);
                 return instance({
                     method: 'get',
                     url,
@@ -36,7 +34,6 @@ export default {
                 })
             },
             delete(url, params) {
-                setRequestParam(url, params);
                 return instance({
                     method: 'delete',
                     url,
@@ -44,7 +41,6 @@ export default {
                 })
             },
             post(url, params) {
-                setRequestParam(url, params);
                 return instance({
                     method: 'post',
                     url,
@@ -53,9 +49,4 @@ export default {
             }
         }
     }
-}
-function setRequestParam(url, params){
-    console.log(router.history.current.query.user_id)
-    sessionStorage.requestUrl=url;
-    sessionStorage.requestParam=JSON.stringify(params);
 }

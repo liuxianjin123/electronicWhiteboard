@@ -8,10 +8,9 @@ module.exports = {
     parser: "babel-eslint"
   },
   rules: {
-    "no-debugger": "off", //
-    "no-var": "error", //禁止使用var
+    "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off", //
     quotes: ["error", "double", { avoidEscape: true }], //双引号
-    "no-unused-vars": "off",
+    "no-unused-vars": process.env.NODE_ENV === "production" ? "error" : "off",
     "no-useless-escape": "off",
     indent: [
       "error",
@@ -28,6 +27,9 @@ module.exports = {
       }
     ], //缩进2个空格
     "function-paren-newline": "off",
-    semi: ["error", "always"] //语句强制分号结尾
+    semi: ["error", "always"], //语句强制分号结尾
+    "no-extra-semi": 2, //不允许出现不必要的分号
+    "no-empty": 2,//不允许出现空的代码块
+    "no-var": 0, //使用let和const代替var
   }
 };

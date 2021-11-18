@@ -90,22 +90,23 @@ export default {
           this.loading = true;
           //const res=await this.$axios.post('/Api/FormHandler.ashx/IsLogin',this.ruleForm)
           //if(res){
-            let routerPath ="";
-            this.loading = false; 
-            if (this.ruleForm.Account == 0) {
-              routerPath = "/Board";
-            } else if (this.ruleForm.Account == 1) {
-              routerPath = "/jjbIndex";
-            }else{
-              routerPath = "/index";
+          let routerPath = "";
+          this.loading = false;
+          if (this.ruleForm.Account == 0) {
+            routerPath = "/Board";
+          } else if (this.ruleForm.Account == 1) {
+            routerPath = "/jjbIndex";
+          } else {
+            routerPath = "/index";
+          }
+          this.$router.push({
+            path: "/index",
+            query: {
+              user_id:1000+parseInt(Math.random()*6666),
+              bqdm: "0001",
+              lc: 1
             }
-            this.$router.push({
-              path: routerPath,
-              query: {
-                bqdm: "0001",
-                lc: 1,
-              }
-            });  
+          });
           //}
           //   console.log(res)
           //   sessionStorage.zyh='0823202105159233',
@@ -113,7 +114,7 @@ export default {
           //   sessionStorage.user='0225'
           //   sessionStorage.keys=res.result.key;
           //   sessionStorage.value=res.result.value;
-          //   
+          //
         } else {
           return false;
         }
@@ -122,6 +123,15 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     }
+  },
+  mounted() {
+    console.log("我在login输出")
+    console.log(
+      "%c  ",
+      `background: url('http://112.74.79.50:999/Themes/Images/product.png') no-repeat;
+      font-size:500px;
+      line-height: 60px`
+    );
   }
 };
 </script>

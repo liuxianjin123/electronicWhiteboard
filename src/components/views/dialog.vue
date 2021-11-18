@@ -15,7 +15,7 @@
       <p>some contents...</p>
     </a-modal>
     <br /><br />
-    <a-button type="primary" @click="() => (modal2Visible = true)">
+    <a-button type="primary" @click="() => (modal2Visible = true)" class="request">
       Vertically centered modal dialog
     </a-button>
     <a-modal

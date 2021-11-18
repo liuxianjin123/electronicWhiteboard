@@ -39,13 +39,6 @@ var routerConfig = {
             require(["@/components/views/testPrint"], resolve)
         },
         {
-          path: "/testEcharts",
-          name: "测试Echarts",
-          icon: "aliwangwang",
-          component: resolve =>
-            require(["@/components/views/testEcharts"], resolve)
-        },
-        {
           path: "/less",
           name: "less",
           icon: "aliwangwang",
@@ -69,7 +62,7 @@ var routerConfig = {
         {
           path: "/ShiftSetting",
           name: "护理人员分组",
-          icon: "dingding",
+          lcon: "dingding",
           component: resolve =>
             require(["@/components/views/ChangeShifts/ShiftSetting"], resolve)
         }
