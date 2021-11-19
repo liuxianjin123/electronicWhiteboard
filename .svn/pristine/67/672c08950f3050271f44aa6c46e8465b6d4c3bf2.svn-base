@@ -22,8 +22,13 @@
                 <a-icon :type="items.icon" /><span>{{ items.name }}</span>
               </a-menu-item>
             </a-sub-menu>
-            <a-menu-item :key="item.path" v-else @click="handelClickLink">
-              <a-icon :type="item.icon" /><span>{{ item.name }}</span>
+            <a-menu-item
+              :key="item.path"
+              v-else-if="item.path != '/' && item.path != '*'"
+              @click="handelClickLink"
+            >
+              <a-icon :type="item.icon" />
+              <span>{{ item.name }}</span>
             </a-menu-item>
           </template>
         </a-menu>
@@ -32,7 +37,7 @@
         <a-button
           type="primary"
           :icon="collapsed ? 'menu-unfold' : 'menu-fold'"
-          @click="operationMian"
+          @click="changeCollapsed()"
         >
         </a-button>
       </div>
@@ -41,6 +46,7 @@
       class="content"
       :style="{ width: collapsed ? 'calc(100% - 80px)' : 'calc(100% - 200px)' }"
     >
+      <header></header>
       <section>
         <a-tabs
           v-model="activeKey"
@@ -48,7 +54,6 @@
           tabPosition="top"
           @tabClick="tabClick"
           @edit="onEdit"
-          animated
           hideAdd
         >
           <template v-if="panes">
@@ -57,63 +62,42 @@
               :key="pane.key"
               :tab="pane.title"
               :closable="pane.closable"
-            >
-              <router-view></router-view>
+              ><transition
+                enter-active-class="animate__animated animate__fadeIn"
+              >
+                <keep-alive>
+                  <router-view />
+                </keep-alive>
+              </transition>
             </a-tab-pane>
           </template>
         </a-tabs>
       </section>
+      <footer>{{ $store.state.router }}1111</footer>
     </div>
   </div>
 </template>
 
 <script>
+import routerConfig from "@/config/routerConfig";
+import { mapState, mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   name: "index",
   data() {
     return {
-      collapsed: false,
-      activeKey: "/nuxreChangeShifts", //打开页面默认加载这个界面
-      active: ["/nuxreChangeShifts"], //左边的下拉框默认选中item
-      lj: ["/jjbIndex"], //左边的下拉框默认展开的分组
-      panes: [{ title: "交接班", key: "/nuxreChangeShifts", closable: false }], //默认渲染tabs的数据
-      leftSolde: [
-        {
-          path: "/jjbIndex",
-          name: "护理交接班",
-          icon: "calendar",
-          component: resolve =>
-            require(["@/components/views/jjbIndex"], resolve),
-          children: [
-            {
-              path: "/nuxreChangeShifts",
-              name: "交接班",
-              icon: "solution",
-              component: resolve =>
-                require([
-                  "@/components/views/ChangeShifts/nuxreChangeShifts"
-                ], resolve)
-            },
-            {
-              path: "/ChangeShifts",
-              name: "护理人员分组",
-              icon: "dingding",
-              component: resolve =>
-                require([
-                  "@/components/views/ChangeShifts/ChangeShifts"
-                ], resolve)
-            }
-          ]
-        }
-      ]
+      routerConfig,
+      activeKey: "/form", //打开页面默认加载这个界面
+      active: ["/form"], //左边的下拉框默认选中item
+      lj: ["/index"], //左边的下拉框默认展开的分组
+      panes: [{ title: "表单", key: "/form", closable: false }], //默认渲染tabs的数据
+      leftSolde: routerConfig.router
     };
   },
   methods: {
-    operationMian() {
-      this.collapsed = !this.collapsed;
-    },
+    ...mapMutations({
+      changeCollapsed: "index/updateCollapsed" //收起或展开菜单 clickTotal 是mutation 里的方法，totalAlise是重新定义的一个别名方法，本组件直接调用这个方法
+    }),
     handelClickLink(item) {
-      console.log(item);
       //左边列表item的选中事件
       var isYou = true;
       if (item.keyPath.length > 1) {
@@ -125,8 +109,7 @@ export default {
         if (isYou) {
           this.panes.push({
             title: item.item.$el.childNodes[1].childNodes[0].data,
-            key: item.key,
-            closable: item.key == "/button" ? false : true
+            key: item.key
           });
         }
         this.active.length = 0; //将默认选中的item去掉，赋值上当前的key，这样左边选中的就会有样式
@@ -170,8 +153,18 @@ export default {
   },
   created() {
     var query = this.$route.query;
-    console.log(query);
-    this.$router.push({ path: "/nuxreChangeShifts" });
+    //console.log(query);
+    this.$router.push({ path: "/form" });
+    this.$eventBus.$on("test", function(e) {
+      this.$message.info("eventBus监听到的参数是" + e);
+      //this.$eventBus.$off("test")
+    });
+  },
+  computed: {
+    ...mapState({
+      //获取state.index下的变量
+      collapsed: state => state.index.collapsed
+    })
   }
 };
 </script>
@@ -194,8 +187,20 @@ export default {
   height: 100%;
   transition: all 0.3s;
 }
+#components .content header,
+footer {
+  height: 60px;
+  background: #1e9fff;
+  line-height: 60px;
+  text-align: right;
+  padding-right: 10px;
+}
+footer {
+  height: 30px;
+  line-height: 30px;
+}
 #components .content section {
-  height: calc(100%);
+  height: calc(100% - 90px);
   overflow: auto;
   padding: 3px;
 }
@@ -219,8 +224,18 @@ export default {
 #components .content section >>> .ant-tabs {
   height: 100%;
 }
+#components .content section >>> .ant-tabs-bar {
+  margin: 0;
+}
+#components .content section >>> .ant-tabs-tabpane {
+  overflow: auto;
+}
 #components .content section >>> .ant-tabs .ant-tabs-content {
-  height: calc(100% - 44px);
+  height: calc(100% - 40px);
+  overflow: auto;
+}
+#components .content section >>> .ant-tabs-tabpane-active{
+  height: 100%;
 }
 </style>
 <style>

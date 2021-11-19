@@ -1,0 +1,6 @@
+# 忽略eslint检测的文件或者文件目录下的所有文件
+/node_modules
+/src/iconfont
+package-lock.json
+/public
+.DS_Store

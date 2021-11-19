@@ -275,10 +275,12 @@ export default {
     async getHandoverdata() {
       //获取数据
       const res = await this.$axios.get("/han/handover/getShiftSetting", {});
-      this.p2_capacity = res.result.hlShioverContent;
-      this.p3_Outliers = res.result.hlShioverOutlier;
-      this.p1_Frequency = res.result.hlShioverOrderOfClass;
-      this.p1_Frequencydelete = []; //删除数组清空
+      if(res.code){
+        this.p2_capacity = res.result.hlShioverContent;
+        this.p3_Outliers = res.result.hlShioverOutlier;
+        this.p1_Frequency = res.result.hlShioverOrderOfClass;
+        this.p1_Frequencydelete = []; //删除数组清空
+      }
     },
     async preservation() {
       //点击保存

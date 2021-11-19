@@ -58,7 +58,9 @@
               :tab="pane.title"
               :closable="pane.closable"
             >
-              <router-view></router-view>
+              <keep-alive>
+                <router-view></router-view>
+              </keep-alive>
             </a-tab-pane>
           </template>
         </a-tabs>

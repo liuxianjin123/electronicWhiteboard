@@ -11,8 +11,6 @@
           type="text"
           autocomplete="off"
           size="large"
-          ref="Account"
-          autofocus="autofocus"
         >
           <a-icon slot="prefix" type="user" style="color:#1e9fff" />
         </a-input>
@@ -23,7 +21,6 @@
           :type="pwdType"
           autocomplete="off"
           size="large"
-          ref="Password"
         >
           <a-icon slot="prefix" type="lock" style="color:#1e9fff" />
           <a-tooltip slot="suffix">
@@ -42,7 +39,7 @@
         <a-button
           :loading="loading"
           type="primary"
-          @click="submitForm()"
+          @click="submitForm('ruleForm')"
           block
           style="height:40px"
         >
@@ -87,8 +84,8 @@ export default {
   },
 
   methods: {
-    submitForm() {
-      this.$refs.ruleForm.validate(async valid => {
+    submitForm(formName) {
+      this.$refs[formName].validate(async valid => {
         if (valid) {
           this.loading = true;
           //const res=await this.$axios.post('/Api/FormHandler.ashx/IsLogin',this.ruleForm)
@@ -123,22 +120,12 @@ export default {
         }
       });
     },
-    handleWatchEnter(e) {
-      var key = window.event ? e.keyCode : e.which;
-      if(key === 13){
-        if( this.ruleForm.Account==""){
-          this.$refs.Account.focus()
-        }
-        else if(this.ruleForm.Password==""){
-          this.$refs.Password.focus()
-        }else{
-          this.submitForm();
-        }
-      }
-    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    }
   },
   mounted() {
-    document.addEventListener('keydown', this.handleWatchEnter);
+    console.log("我在login输出")
     console.log(
       "%c  ",
       `background: url('http://112.74.79.50:999/Themes/Images/product.png') no-repeat;
