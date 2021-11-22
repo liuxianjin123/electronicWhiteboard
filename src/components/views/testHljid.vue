@@ -22,57 +22,41 @@
       <a-table
         :columns="columns"
         :data-source="data"
-        size='small'
-        :rowKey="record => record.key"
+        size="small"
+        :rowKey="(record) => record.key"
         bordered
         :customRow="rowClick"
         :pagination="false"
-        :scroll="{ x: '100%', y: 'calc(100vh - '+tableBodyHeight+'px)' }"
+        :scroll="{ x: '100%', y: 'calc(100vh - ' + tableBodyHeight + 'px)' }"
         :defaultExpandAllRows="false"
-        :expandRowByClick="true" 
+        :expandRowByClick="true"
         :expandedRowKeys="curExpandedRowKeys"
       >
         <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
-         <a-form :form="form" >
+          <a-form :form="form">
             <a-form-item label="record.tw">
-              <a-input
-                v-model="record.tw"
-              />
+              <a-input v-model="record.tw" />
             </a-form-item>
             <a-form-item label="record.tw">
-              <a-input
-                v-model="record.tw"
-              />
+              <a-input v-model="record.tw" />
             </a-form-item>
             <a-form-item label="record.tw">
-              <a-input
-                v-model="record.tw"
-              />
+              <a-input v-model="record.tw" />
             </a-form-item>
             <a-form-item label="record.tw">
-              <a-input
-                v-model="record.tw"
-              />
+              <a-input v-model="record.tw" />
             </a-form-item>
             <a-form-item label="record.tw">
-              <a-input
-                v-model="record.tw"
-              />
+              <a-input v-model="record.tw" />
             </a-form-item>
             <a-form-item label="record.tw">
-              <a-input
-                v-model="record.tw"
-              />
+              <a-input v-model="record.tw" />
             </a-form-item>
             <a-form-item label="record.tw">
-              <a-input
-                v-model="record.tw"
-              />
+              <a-input v-model="record.tw" />
             </a-form-item>
             <a-form-item>
-              <a-button type="primary" html-type="submit">
-                Submit
-              </a-button>
+              <a-button type="primary" html-type="submit"> Submit </a-button>
             </a-form-item>
           </a-form>
         </div>
@@ -94,7 +78,7 @@ const columns = [
     title: "时间日期",
     dataIndex: "date",
     key: "date",
-    width: 120
+    width: 120,
   },
   {
     title: "体温",
@@ -216,7 +200,7 @@ const columns = [
     dataIndex: "gd",
     key: "gd",
     width: 120,
-    type:'input'
+    type: "input",
   },
   {
     title: "病情观察",
@@ -229,7 +213,7 @@ const columns = [
     dataIndex: "hsqm",
     key: "hsqm",
     width: 120,
-  }
+  },
 ];
 
 const data = [];
@@ -263,9 +247,7 @@ export default {
   data() {
     this.cacheData = data.map((item) => ({ ...item }));
     return {
-      form:[
-
-      ],
+      form: [],
       data,
       columns,
       rowData: [
@@ -293,7 +275,7 @@ export default {
       rowName: "",
       rowIndex: "",
       curExpandedRowKeys: [],
-      tableBodyHeight:167,
+      tableBodyHeight: 167,
       menuVisible: false,
       menuStyle: {
         position: "absolute",
@@ -301,7 +283,7 @@ export default {
         left: "0",
         zIndex: 1,
         borderRadius: "5px",
-        border: "1px solid #eee"
+        border: "1px solid #eee",
       },
       recordRow: [],
     };
@@ -312,22 +294,22 @@ export default {
       this.menuVisible = false;
       document.body.removeEventListener("click", this.cancelClick);
     },
-    rowClick(record,index){
+    rowClick(record, index) {
       return {
         on: {
           click: () => {
             this.foldRow(index);
             this.cancelClick;
           },
-          contextmenu: e => {
+          contextmenu: (e) => {
             e.preventDefault();
             this.menuVisible = true;
             this.recordRow = record;
-            console.log(record)
+            console.log(record);
             this.menuStyle.top = e.clientY + "px";
             this.menuStyle.left = e.clientX + "px";
             document.addEventListener("click", this.cancelClick);
-          }
+          },
         },
       };
     },

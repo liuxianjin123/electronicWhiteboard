@@ -1,5 +1,8 @@
 <template>
-  <div class="container" :style="[{pointerEvents:($store.state.isjj==true?'auto':'none')}]">
+  <div
+    class="container"
+    :style="[{ pointerEvents: $store.state.isjj == true ? 'auto' : 'none' }]"
+  >
     <a-form-model :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
       <div class="tops">
         <div class="tops-left">
@@ -22,12 +25,12 @@
                 <template slot="title">
                   <span>增加到白板显示</span>
                 </template>
-                <a-switch default-checked v-model="form.whiteboardDisplay"/>
+                <a-switch default-checked v-model="form.whiteboardDisplay" />
               </a-tooltip>
             </li>
           </ul>
         </div>
-        <div class="tops-item tops-item-last" @click="xzhzAll(1,7,'')" v-else>
+        <div class="tops-item tops-item-last" @click="xzhzAll(1, 7, '')" v-else>
           <a-button>选择患者</a-button>
         </div>
       </div>
@@ -42,12 +45,16 @@
           <a-select-option value="特级护理">特级护理</a-select-option>
         </a-select>
       </a-form-model-item>
-      <div class="tprbm" @dblclick="xzhzAll(0,7,form.zyh)">
-        T：<label><a-input type="number" v-model="form.t" /></label> 
-        P：<label><a-input type="number" v-model="form.p"/></label>
-        R：<label><a-input type="number" v-model="form.r" /></label>
-        BP：<label><a-input type="text" v-model="form.bp"/></label>
-        Spo2：<label><a-input type="text" v-model="form.oxygenSaturation"/></label>
+      <div class="tprbm" @dblclick="xzhzAll(0, 7, form.zyh)">
+        T：<label><a-input type="number" v-model="form.t" /></label> P：<label
+          ><a-input type="number" v-model="form.p"
+        /></label>
+        R：<label><a-input type="number" v-model="form.r" /></label> BP：<label
+          ><a-input type="text" v-model="form.bp"
+        /></label>
+        Spo2：<label
+          ><a-input type="text" v-model="form.oxygenSaturation"
+        /></label>
       </div>
       <a-form-model-item label="输入量">
         <a-input v-model="form.input" />
@@ -91,8 +98,8 @@ export default {
         id: null,
         tmh: null,
         zyh: null,
-        brxb:null,
-        orderOfClassesId:localStorage.orderOfClassesId,
+        brxb: null,
+        orderOfClassesId: localStorage.orderOfClassesId,
         handoverTime: localStorage.handoverTime,
         confirmTheShiftTime: null,
         succeedTime: null,
@@ -118,13 +125,13 @@ export default {
         whiteboardDisplay: false,
         whetherToGenerate: false,
         idBeforeGeneration: null,
-      }
+      },
     };
   },
   props: obj.props,
   watch: obj.watch,
-  mounted(){
-    if(this.isEdit) {
+  mounted() {
+    if (this.isEdit) {
       this.form = JSON.parse(JSON.stringify(this.editRowData));
     }
   },
@@ -132,19 +139,20 @@ export default {
     onSubmit() {
       this.$emit("ruquestData", this.form);
     },
-    dataChanges(i, v ,r) {
+    dataChanges(i, v, r) {
       this.form[r] = v;
     },
     //7.8胖纸
-    xzhzAll(type,dataType,zyh){
-      this.$emit('openxrbr',type,dataType,zyh);
-    },esdd(val){
+    xzhzAll(type, dataType, zyh) {
+      this.$emit("openxrbr", type, dataType, zyh);
+    },
+    esdd(val) {
       this.$refs.mychild.parentHandleclick(val);
-    }
+    },
   },
   components: {
     brIcon,
-  }
+  },
 };
 </script>
 <style scoped>

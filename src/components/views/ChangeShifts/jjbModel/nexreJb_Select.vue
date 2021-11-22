@@ -2,12 +2,12 @@
   <div>
     <template>
       <a-table
-        :columns="BrOrDatail?selectBr:selectBrDetail"
-        :data-source="BrOrDatail?selectBrData:selectBrDetailData"
+        :columns="BrOrDatail ? selectBr : selectBrDetail"
+        :data-source="BrOrDatail ? selectBrData : selectBrDetailData"
         bordered
         :pagination="false"
         size="small"
-        :scroll="{ x: '100%',y: 'calc(100vh - 300px)' }"
+        :scroll="{ x: '100%', y: 'calc(100vh - 300px)' }"
         :customRow="rowClick"
         :rowKey="
           (record, index) => {
@@ -26,72 +26,72 @@
 export default {
   data() {
     return {
-      selectBr:[
+      selectBr: [
         {
           title: "床号",
           dataIndex: "bcmc",
-          align:'center',
+          align: "center",
           width: "100px",
         },
         {
           title: "姓名",
           dataIndex: "brxm",
-          align:'center',
+          align: "center",
           width: "100px",
         },
         {
           title: "性别",
           dataIndex: "brxb",
-          align:'center',
+          align: "center",
           width: "100px",
         },
         {
           title: "年龄",
           dataIndex: "brnl",
-          align:'center',
+          align: "center",
           width: "100px",
         },
         {
           title: "条码号",
           dataIndex: "tmh",
-          align:'center',
+          align: "center",
           width: "100px",
         },
         {
           title: "住院号",
           dataIndex: "zyh",
-          align:'left',
-        }
+          align: "left",
+        },
       ],
-      selectBrDetail:[
+      selectBrDetail: [
         {
           title: "条码号",
           dataIndex: "tmh",
-          align:'center',
+          align: "center",
           width: "90px",
         },
         {
           title: "住院号",
           dataIndex: "zyh",
-          align:'left',
+          align: "left",
           width: "90px",
         },
         {
           title: "体温(℃)",
           dataIndex: "tw",
-          align:'center',
+          align: "center",
           width: "70px",
         },
         {
           title: "呼吸(次分)",
           dataIndex: "hx",
-          align:'center',
+          align: "center",
           width: "90px",
         },
         {
           title: "脉搏(次分)",
           dataIndex: "mb",
-          align:'center',
+          align: "center",
           width: "90px",
         },
         {
@@ -102,48 +102,44 @@ export default {
         {
           title: "血氧饱和度(%)",
           dataIndex: "ybhd",
-          align:'center',
+          align: "center",
           width: "90px",
         },
         {
           title: "病情观察",
           dataIndex: "bqgc",
-          align:'left',
+          align: "left",
           width: "120px",
         },
         {
           title: "病人诊断",
           dataIndex: "brzd",
-          align:'left',
-        }
+          align: "left",
+        },
       ],
-      selectBrData:[
-       
-      ],
-      selectBrDetailData:[
-        
-      ]
+      selectBrData: [],
+      selectBrDetailData: [],
     };
   },
   props: {
     BrOrDatail: {
-      type: Number
+      type: Number,
     },
-    brDataType:{
-      type: Number
+    brDataType: {
+      type: Number,
     },
-    brZyh:{
-      type:String
-    }
+    brZyh: {
+      type: String,
+    },
   },
   watch: {
-    BrOrDatail:function(n, o){
-      if(n){
-        this.getBrlist(this.brDataType)
-      }else{
-        this.getBrSmtz(this.brZyh)
+    BrOrDatail: function (n, o) {
+      if (n) {
+        this.getBrlist(this.brDataType);
+      } else {
+        this.getBrSmtz(this.brZyh);
       }
-    }
+    },
   },
   methods: {
     rowClick(record, index) {
@@ -152,39 +148,47 @@ export default {
         on: {
           // 鼠标单击行
           click: (event) => {
-            if(this.BrOrDatail){
-              this.$emit("closexrbr", this.selectBrData[index]); 
-            }else{
-              this.$emit("closexrbr", this.selectBrDetailData[index]); 
+            if (this.BrOrDatail) {
+              this.$emit("closexrbr", this.selectBrData[index]);
+            } else {
+              this.$emit("closexrbr", this.selectBrDetailData[index]);
             }
           },
         },
       };
     },
-    async getBrlist(brDataType){
-      const res = await this.$axios.get('/han/PatientRelated/GetPatients/'+brDataType);
-      if(res.result){
-        this.selectBrData = res.result
+    async getBrlist(brDataType) {
+      const res = await this.$axios.get(
+        "/han/PatientRelated/GetPatients/" + brDataType
+      );
+      if (res.result) {
+        this.selectBrData = res.result;
       }
     },
-    async getBrSmtz(brZyh){
+    async getBrSmtz(brZyh) {
       let sTime = localStorage.sTime;
       let eTime = localStorage.eTime;
-      const res = await this.$axios.get('/han/PatientRelated/GetPatientSignData?zyh='+brZyh+'&stime='+sTime+'&etime='+eTime);
+      const res = await this.$axios.get(
+        "/han/PatientRelated/GetPatientSignData?zyh=" +
+          brZyh +
+          "&stime=" +
+          sTime +
+          "&etime=" +
+          eTime
+      );
       console.log(res);
-      if(res.result){
-        this.selectBrDetailData = res.result
+      if (res.result) {
+        this.selectBrDetailData = res.result;
       }
+    },
+  },
+  mounted() {
+    if (this.BrOrDatail) {
+      this.getBrlist(this.brDataType);
+    } else {
+      this.getBrSmtz(this.brZyh);
     }
   },
-  mounted(){
-    if(this.BrOrDatail){
-      this.getBrlist(this.brDataType)
-    }else{
-      this.getBrSmtz(this.brZyh)
-    }
-  }
 };
 </script>
-<style scoped>
-</style>
+<style scoped></style>

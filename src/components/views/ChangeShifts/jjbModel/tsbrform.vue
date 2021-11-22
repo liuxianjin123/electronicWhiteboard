@@ -58,15 +58,18 @@
           <div class="dict">
             <span v-for="i in dicts" :key="i">
               <label
-              class="tssx"
-              :class="[
-                form.specialProperty.indexOf(''+i+'') != -1 ? 'tssxCheck' : '',
-              ]"
-              ><input
-                type="checkbox"
-                v-model="form.specialProperty"
-                :value="i"
-              />{{i}}</label>
+                class="tssx"
+                :class="[
+                  form.specialProperty.indexOf('' + i + '') != -1
+                    ? 'tssxCheck'
+                    : '',
+                ]"
+                ><input
+                  type="checkbox"
+                  v-model="form.specialProperty"
+                  :value="i"
+                />{{ i }}</label
+              >
             </span>
           </div>
           <span>
@@ -92,42 +95,42 @@
         <a-input v-model="form.nextNightCondition" type="textarea" />
       </a-form-model-item>
     </a-form-model>
-     <a-modal
+    <a-modal
       v-model="dictShow"
       width="500px"
       title="编辑特殊属性字典"
       okText="添加属性"
-      @ok="handleOk">
-        <a-table
-          :columns="selectBr"
-          :data-source="selectBrDetailData"
-          bordered
-          :pagination="false"
-          size="small"
-          :rowKey="
-            (record, index) => {
-              return index;
-            }
-          "
-        >
-          <template slot="address" slot-scope="text, record,index">
-              <a  style="color: red"
-                @click.stop="submintClass(text,record,index)">删除</a
-              >
-          </template>
-        </a-table>
+      @ok="handleOk"
+    >
+      <a-table
+        :columns="selectBr"
+        :data-source="selectBrDetailData"
+        bordered
+        :pagination="false"
+        size="small"
+        :rowKey="
+          (record, index) => {
+            return index;
+          }
+        "
+      >
+        <template slot="address" slot-scope="text, record, index">
+          <a style="color: red" @click.stop="submintClass(text, record, index)"
+            >删除</a
+          >
+        </template>
+      </a-table>
     </a-modal>
     <a-modal
       v-model="addDict"
       width="300px"
       title="添加特殊属性字典"
       okText="确定"
-      @ok="addOk">
-         <a-form-item label="属性名称">
-            <a-input
-              v-model="sxmc"
-            />
-          </a-form-item>
+      @ok="addOk"
+    >
+      <a-form-item label="属性名称">
+        <a-input v-model="sxmc" />
+      </a-form-item>
     </a-modal>
   </div>
 </template>
@@ -139,46 +142,46 @@ export default {
     return {
       labelCol: { span: 7 },
       wrapperCol: { span: 17 },
-      dicts:[],
-      dictShow:false,
-      addDict:false,
-      sxmc:null,
-      selectBrDetailData:[
-          {name:'跌倒'},
-          {name:'压疮'},
-          {name:'意外'},
-          {name:'难产'},
-          {name:'好吃'},
-          {name:'可怜兮兮'},
-          {name:'不思进取'},
-          {name:'勇敢牛牛'},
-          {name:'不怕困难'},
-        ],
-      selectBr:[
+      dicts: [],
+      dictShow: false,
+      addDict: false,
+      sxmc: null,
+      selectBrDetailData: [
+        { name: "跌倒" },
+        { name: "压疮" },
+        { name: "意外" },
+        { name: "难产" },
+        { name: "好吃" },
+        { name: "可怜兮兮" },
+        { name: "不思进取" },
+        { name: "勇敢牛牛" },
+        { name: "不怕困难" },
+      ],
+      selectBr: [
         {
-          title: '序号',
-          dataIndex: 'index',
-          key: 'index',
-          align: 'center',
+          title: "序号",
+          dataIndex: "index",
+          key: "index",
+          align: "center",
           width: 50,
-          customRender: (text,record,index) => {
+          customRender: (text, record, index) => {
             const obj = {
-              children: index+1,
+              children: index + 1,
               attrs: {},
             };
             return obj;
-          }
+          },
         },
         {
           title: "属性名称",
           dataIndex: "name",
-          align:'center',
+          align: "center",
           width: "100px",
         },
         {
           title: "操作",
           width: "120px",
-          align: 'center',
+          align: "center",
           scopedSlots: { customRender: "address" },
         },
       ],
@@ -238,32 +241,32 @@ export default {
     esdd(val) {
       this.$refs.mychild.parentHandleclick(val);
     },
-    handleOk(){
-      this.addDict= true;
+    handleOk() {
+      this.addDict = true;
     },
-    showDict(){
+    showDict() {
       this.dictShow = true;
     },
-    submintClass(name,rowKey,idx){
-      console.log(name.name)
+    submintClass(name, rowKey, idx) {
+      console.log(name.name);
     },
-    addOk(){
-      if(this.sxmc){
-        this.selectBrDetailData.push({name:this.sxmc})
+    addOk() {
+      if (this.sxmc) {
+        this.selectBrDetailData.push({ name: this.sxmc });
         this.copyFlied();
         this.addDict = false;
-      }else{
-        this.$message.warning("未输入任何值!")
+      } else {
+        this.$message.warning("未输入任何值!");
       }
-      console.log(this.sxmc+456565656)
+      console.log(this.sxmc + 456565656);
     },
-    copyFlied(){
-      this.dicts=[];
-      for(var i of this.selectBrDetailData){
-        console.log(i.name)
-        this.dicts.push(i.name)
-      } 
-    }
+    copyFlied() {
+      this.dicts = [];
+      for (let i of this.selectBrDetailData) {
+        console.log(i.name);
+        this.dicts.push(i.name);
+      }
+    },
   },
   components: {
     brIcon,
@@ -290,18 +293,18 @@ export default {
   background-color: #1e9fff;
   color: #fff;
 }
-.dict-gruoup{
+.dict-gruoup {
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   align-items: center;
 }
-.dict{
+.dict {
   flex: 1;
 }
-.dict span{
+.dict span {
   display: inline-block;
 }
-.dict-gruoup>span{
-  width:40px;
+.dict-gruoup > span {
+  width: 40px;
 }
 </style>

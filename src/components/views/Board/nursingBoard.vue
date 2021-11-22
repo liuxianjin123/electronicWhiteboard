@@ -14,7 +14,7 @@
               : $store.state.board.whiteBg,
             boxShadow: $store.state.board.darkMode
               ? $store.state.board.darkModeShadow
-              : $store.state.board.whiteShadow
+              : $store.state.board.whiteShadow,
           }"
         >
           <template>
@@ -25,15 +25,13 @@
               :style="{
                 color: $store.state.board.darkMode
                   ? $store.state.board.darkModeColor
-                  : $store.state.board.whiteColor
+                  : $store.state.board.whiteColor,
               }"
             >
               <a-badge status="processing" />{{ item.title }}
-              <span
-                >{{
-                  item.childrenValue == "" ? "--" : item.childrenValue
-                }}</span
-              >
+              <span>{{
+                item.childrenValue == "" ? "--" : item.childrenValue
+              }}</span>
             </div>
           </template>
         </nav>
@@ -44,11 +42,13 @@
           <table>
             <tr>
               <template v-for="(_this, _idx) in sectionItem">
-                <td :key="_idx" v-if=" _idx < 4">
+                <td :key="_idx" v-if="_idx < 4">
                   <template>
                     <div
                       @dblclick="editThis($event)"
-                      @contextmenu="$event => EventContextmenu($event, _idx, i)"
+                      @contextmenu="
+                        ($event) => EventContextmenu($event, _idx, i)
+                      "
                       class="itemBox"
                       v-for="(item, i) in _this.item"
                       :data-id="_this.item[i].Id"
@@ -62,7 +62,7 @@
                           : $store.state.board.whiteBg,
                         boxShadow: $store.state.board.darkMode
                           ? $store.state.board.darkModeShadow
-                          : $store.state.board.whiteShadow
+                          : $store.state.board.whiteShadow,
                       }"
                     >
                       <template v-if="_this.item[i].children != null">
@@ -82,7 +82,7 @@
                               :style="{
                                 color: $store.state.board.darkMode
                                   ? '#fff'
-                                  : '#000'
+                                  : '#000',
                               }"
                             >
                               {{ _this.item[i].children[ii].childrenText }}
@@ -94,7 +94,9 @@
                                 v-if="isShear"
                               >
                                 <a-checkbox
-                                  @change="e => ConfirmTheShear(e, _idx, i, ii)"
+                                  @change="
+                                    (e) => ConfirmTheShear(e, _idx, i, ii)
+                                  "
                                 ></a-checkbox>
                               </a-row>
                               <a-row type="flex" justify="center" v-if="isSort">
@@ -111,19 +113,16 @@
                               </a-row>
                             </span>
                           </div>
-                          <div
-                            :style="_this.item[i].children[ii].contentStyle"
-                          >
-                            <div 
-                            class="texts"
-                            :style="{
-                                  color: $store.state.board.darkMode
-                                    ? $store.state.board.darkModeColor
-                                    : $store.state.board.whiteColor
-                                }"
-                                v-html="_this.item[i].children[ii].childrenValue"
-                                >
-                            </div>
+                          <div :style="_this.item[i].children[ii].contentStyle">
+                            <div
+                              class="texts"
+                              :style="{
+                                color: $store.state.board.darkMode
+                                  ? $store.state.board.darkModeColor
+                                  : $store.state.board.whiteColor,
+                              }"
+                              v-html="_this.item[i].children[ii].childrenValue"
+                            ></div>
                           </div>
                         </div>
                       </template>
@@ -192,7 +191,7 @@
             <span
               ><a-icon
                 type="exclamation-circle"
-                style="color:#1e9fff"
+                style="color: #1e9fff"
               />&nbsp;&nbsp;主模块</span
             >
             <a-tooltip placement="top">
@@ -203,7 +202,7 @@
               </template>
               <a-icon
                 type="delete"
-                style="color:red"
+                style="color: red"
                 data-type="0"
                 @click="del($event)"
                 :data-id="checckTemplate.Id"
@@ -224,35 +223,43 @@
                   <span
                     ><a-icon
                       type="exclamation-circle"
-                      style="color:#1e9fff"
+                      style="color: #1e9fff"
                     />&nbsp;&nbsp;{{ "子模块" + (i + 1) }}</span
                   >
-                    <a-icon
-                      type="delete"
-                      style="color:red"
-                      data-type="1"
-                      @click="del($event)"
-                      :data-id="item.Id"
-                    />
+                  <a-icon
+                    type="delete"
+                    style="color: red"
+                    data-type="1"
+                    @click="del($event)"
+                    :data-id="item.Id"
+                  />
                 </div>
                 <a-form-model-item label="模块标题">
-                  <a-input v-model="item.childrenText" style="width:150px;"/>
+                  <a-input v-model="item.childrenText" style="width: 150px" />
                 </a-form-model-item>
                 <a-form-model-item label="模块ID">
-                  <a-input v-model="item.Id" style="width:164px;"/>
+                  <a-input v-model="item.Id" style="width: 164px" />
                 </a-form-model-item>
                 <a-form-model-item label="模块样式">
-                  <a-input v-model="item.style" type="textarea" style="width:180px;"/>
+                  <a-input
+                    v-model="item.style"
+                    type="textarea"
+                    style="width: 180px"
+                  />
                 </a-form-model-item>
                 <a-form-model-item label="内容样式">
-                  <a-input v-model="item.contentStyle" type="textarea" style="width:150px;"/>
+                  <a-input
+                    v-model="item.contentStyle"
+                    type="textarea"
+                    style="width: 150px"
+                  />
                 </a-form-model-item>
                 <a-form-model-item label="数据字典">
                   <a-select
                     v-model="item.dictionaries"
                     optionFilterProp="label"
                     show-search
-                    style="width:150px;"
+                    style="width: 150px"
                   >
                     <a-select-option
                       v-for="i in dataDict"
@@ -265,7 +272,11 @@
                   </a-select>
                 </a-form-model-item>
                 <a-form-model-item label="图标样式">
-                  <a-input v-model="item.childrenStyle" type="textarea" style="width:180px;"/>
+                  <a-input
+                    v-model="item.childrenStyle"
+                    type="textarea"
+                    style="width: 180px"
+                  />
                 </a-form-model-item>
               </div>
             </template>
@@ -274,12 +285,12 @@
             <span
               ><a-icon
                 type="plus-circle"
-                style="color:#1e9fff"
+                style="color: #1e9fff"
               />&nbsp;&nbsp;添加子模块</span
             >
             <template>
               <a href="#" @click="addItem()">
-                <a-icon type="plus-circle" style="color:#1e9fff" />
+                <a-icon type="plus-circle" style="color: #1e9fff" />
               </a>
             </template>
           </div>
@@ -312,7 +323,12 @@
               show-search
               style="width: 100%"
             >
-              <a-select-option v-for="i in dataDict" :key="i.id" :value="i.id" :label="i.dictName">
+              <a-select-option
+                v-for="i in dataDict"
+                :key="i.id"
+                :value="i.id"
+                :label="i.dictName"
+              >
                 {{ i.dictName }}
               </a-select-option>
             </a-select>
@@ -362,11 +378,11 @@
   </div>
 </template>
 <script>
-import costomParentVue from '../costomParent.vue';
+import costomParentVue from "../costomParent.vue";
 function computedFontSize() {
   let nbs = document.getElementsByClassName("texts");
-  for (var i = 0; i < nbs.length; i++) {
-    var fontw = 20;
+  for (let i = 0; i < nbs.length; i++) {
+    let fontw = 20;
     while (nbs[i].scrollHeight > nbs[i].offsetHeight + 5 && fontw > 2) {
       fontw = fontw - 1;
       nbs[i].style.fontSize = fontw + "px";
@@ -409,62 +425,62 @@ export default {
           Id: "bqzhz",
           title: "当前病区总患者",
           dictionaries: "",
-          childrenValue: ""
+          childrenValue: "",
         },
         {
           Id: "jrry",
           title: "今日入院人数",
           dictionaries: "",
-          childrenValue: ""
+          childrenValue: "",
         },
         {
           Id: "jrcy",
           title: "今日出院人数",
           dictionaries: "",
-          childrenValue: ""
+          childrenValue: "",
         },
         {
           Id: "tjhl",
           title: "特级护理患者数",
           dictionaries: "",
-          childrenValue: ""
+          childrenValue: "",
         },
         {
           Id: "yjhl",
           title: "一级护理患者数",
           dictionaries: "",
-          childrenValue: ""
+          childrenValue: "",
         },
         {
           Id: "ejhl",
           title: "二级护理患者数",
           dictionaries: "",
-          childrenValue: ""
+          childrenValue: "",
         },
         {
           Id: "sjhl",
           title: "三级护理患者数",
           dictionaries: "",
-          childrenValue: ""
+          childrenValue: "",
         },
         {
           Id: "fm",
           title: "分娩病人",
           dictionaries: "",
-          childrenValue: ""
+          childrenValue: "",
         },
         {
           Id: "nc",
           title: "难产病人",
           dictionaries: "",
-          childrenValue: ""
+          childrenValue: "",
         },
         {
           Id: "fp",
           title: "肥胖病人",
           dictionaries: "",
-          childrenValue: ""
-        }
+          childrenValue: "",
+        },
       ],
       menuStyle: {
         //右键菜单style
@@ -476,14 +492,14 @@ export default {
         textAlign: "center",
         borderRadius: "5px",
         border: "1px solid #eee",
-        boxShadow: "rgb(214 208 208) 6px 6px 7px -3px"
+        boxShadow: "rgb(214 208 208) 6px 6px 7px -3px",
       },
       dialogStyle: {
-        left: ""
+        left: "",
       },
       form: {
         fzname: "",
-        heights: ""
+        heights: "",
       },
       sectionItem: [
         {
@@ -498,25 +514,25 @@ export default {
                   childrenText: "预设子模块",
                   childrenValue: "<span>6666</span>",
                   contentStyle: "height:30px",
-                  dictionaries: ""
-                }
-              ]
-            }
-          ]
+                  dictionaries: "",
+                },
+              ],
+            },
+          ],
         },
         {
-          item: []
+          item: [],
         },
         {
-          item: []
+          item: [],
         },
         {
-          item: []
+          item: [],
         },
         {
-          item: []
-        }
-      ]
+          item: [],
+        },
+      ],
     };
   },
   methods: {
@@ -536,25 +552,25 @@ export default {
         this.sectionItem[0].item.push({
           Id: "item" + parseInt(Math.random() * 99999),
           height: this.form.heights,
-          children: []
+          children: [],
         });
       } else if (this.form.fzname == "fz2") {
         this.sectionItem[1].item.push({
           Id: "item" + parseInt(Math.random() * 99999),
           height: this.form.heights,
-          children: []
+          children: [],
         });
       } else if (this.form.fzname == "fz3") {
         this.sectionItem[2].item.push({
           Id: "item" + parseInt(Math.random() * 99999),
           height: this.form.heights,
-          children: []
+          children: [],
         });
       } else if (this.form.fzname == "fz4") {
         this.sectionItem[3].item.push({
           Id: "item" + parseInt(Math.random() * 99999),
           height: this.form.heights,
-          children: []
+          children: [],
         });
       }
       this.form.heights = "";
@@ -578,20 +594,20 @@ export default {
         case "1":
           this.dialogStyle.left = "550px";
           break;
-          case "2":
+        case "2":
           this.dialogStyle.left = "550px";
           break;
-          case "3":
+        case "3":
           this.dialogStyle.left = "-550px";
           break;
-          case "4":
+        case "4":
           this.dialogStyle.left = "-550px";
           break;
       }
       this.delVisible = true;
       this.checckId = e.currentTarget.getAttribute("data-id");
-      for (var i = 0; i < 4; i++) {
-        for (var f = 0; f < this.sectionItem[i].item.length; f++) {
+      for (let i = 0; i < 4; i++) {
+        for (let f = 0; f < this.sectionItem[i].item.length; f++) {
           if (this.sectionItem[i].item[f].Id == this.checckId) {
             this.checckTemplate = this.sectionItem[i].item[f];
           }
@@ -612,17 +628,17 @@ export default {
     del(e) {
       //删除子模块
       let types = e.currentTarget.getAttribute("data-type");
-      var _thisId = e.currentTarget.getAttribute("data-id");
+      let _thisId = e.currentTarget.getAttribute("data-id");
       if (types == 0) {
-        for (var i = 0; i < 4; i++) {
-          for (var f = 0; f < this.sectionItem[i].item.length; f++) {
+        for (let i = 0; i < 4; i++) {
+          for (let f = 0; f < this.sectionItem[i].item.length; f++) {
             if (this.sectionItem[i].item[f].Id == this.checckId) {
               this.sectionItem[i].item.splice(f, 1);
             }
           }
         }
       } else {
-        for (var i = 0; i < this.checckTemplate.children.length; i++) {
+        for (let i = 0; i < this.checckTemplate.children.length; i++) {
           if (this.checckTemplate.children[i].Id == _thisId) {
             this.checckTemplate.children.splice(i, 1);
           }
@@ -638,7 +654,7 @@ export default {
         childrenText: "子模块",
         contentStyle: "min-height:30px",
         dictionaries: "",
-        childrenValue: ""
+        childrenValue: "",
       });
     },
     topItemClick(index) {
@@ -662,8 +678,8 @@ export default {
             ，主要还是用于保留有已经配置项中的sql语句，
             否则需要全部重新配置
           */
-          for (var i in this.topItemTmplate) {
-            for (var f in this.sectionItem[4].item) {
+          for (let i in this.topItemTmplate) {
+            for (let f in this.sectionItem[4].item) {
               if (this.topItemTmplate[i].Id == this.sectionItem[4].item[f].Id) {
                 this.topItemTmplate[i] = this.sectionItem[4].item[f];
               }
@@ -675,17 +691,17 @@ export default {
             最后再给this.sectionItem[4].other，
             排序配置就ok了。
           */
-          for (var j in this.topSortIndex) {
-            for (var f in this.topItemTmplate) {
+          for (let j in this.topSortIndex) {
+            for (let f in this.topItemTmplate) {
               if (this.topSortIndex[j] == this.topItemTmplate[f].Id) {
                 newArr.push(this.topItemTmplate[f]);
               }
             }
           }
-          console.log(newArr)
+          console.log(newArr);
           this.sectionItem[4].item = newArr;
         }
-        console.log(this.sectionItem[4])
+        console.log(this.sectionItem[4]);
         this.topSort = false;
       }
     },
@@ -706,7 +722,7 @@ export default {
           "&lc=" +
           this.$route.query.lc
       );
-      console.log(res,"字典")
+      console.log(res, "字典");
       if (res.result) {
         this.dataDict = res.result;
       }
@@ -719,38 +735,44 @@ export default {
           "&lc=" +
           this.$route.query.lc
       );
-      console.log(res,"模板")
+      console.log(res, "模板");
       if (res.result.content) {
         this.sectionItem = JSON.parse(res.result.content);
       }
     },
     //获取全部数据
     async getDataAll() {
-      console.log(this.$Page.getDate().substring(0,10)+" 08:00:00",this.$Page.getNextDate(this.$Page.getDate().substring(0,10),1)+" 08:00:00")
-      var datas = {
+      console.log(
+        this.$Page.getDate().substring(0, 10) + " 08:00:00",
+        this.$Page.getNextDate(this.$Page.getDate().substring(0, 10), 1) +
+          " 08:00:00"
+      );
+      let datas = {
         bqdm: this.$route.query.bqdm,
         lc: this.$route.query.lc,
-        stime: this.$Page.getDate().substring(0,10)+" 08:00:00",
-        etime: this.$Page.getNextDate(this.$Page.getDate().substring(0,10),1)+" 08:00:00"
+        stime: this.$Page.getDate().substring(0, 10) + " 08:00:00",
+        etime:
+          this.$Page.getNextDate(this.$Page.getDate().substring(0, 10), 1) +
+          " 08:00:00",
       };
       const res = await this.$axios.get(
         "/api/WhiteBoardApi/GetWhiteBoardData",
         datas
       );
-      console.log(res,666)
-      if (res.result.length>1) {
-        var idx=0;
+      console.log(res, 666);
+      if (res.result.length > 1) {
+        let idx = 0;
         this.$emit("changeIsLoad");
-        for (var i of this.sectionItem) {
+        for (let i of this.sectionItem) {
           idx++;
-          for (var j of i.item) {
-            if(idx>3){
-                 j.childrenValue = this.forValue(j.Id, res.result)
-                  ? this.forValue(j.Id, res.result)
-                  : "";
-              }
+          for (let j of i.item) {
+            if (idx > 3) {
+              j.childrenValue = this.forValue(j.Id, res.result)
+                ? this.forValue(j.Id, res.result)
+                : "";
+            }
             if (j.children) {
-              for (var k of j.children) {
+              for (let k of j.children) {
                 k.childrenValue = this.forValue(k.Id, res.result)
                   ? this.forValue(k.Id, res.result)
                   : "";
@@ -759,15 +781,15 @@ export default {
           }
         }
         this.TimeToLoad();
-        this.$nextTick(function() {
+        this.$nextTick(function () {
           this.computedFontSize();
         });
       }
     },
     forValue(e, obj) {
       //根据id取值
-      var isMatching = "";
-      for (var d of obj) {
+      let isMatching = "";
+      for (let d of obj) {
         if (e == d.id) {
           isMatching = d.val;
         }
@@ -776,29 +798,29 @@ export default {
     },
     /*保存数据*/
     async save() {
-      var dictXml = "<root>";
-      var idx=0;
-      for (var i of this.sectionItem) {
+      let dictXml = "<root>";
+      let idx = 0;
+      for (let i of this.sectionItem) {
         idx++;
-        for (var j of i.item) {
-          if(idx>3){
+        for (let j of i.item) {
+          if (idx > 3) {
             dictXml += `<data><id>${j.Id}</id><did>${j.dictionaries}</did><val></val></data>`;
           }
           if (j.children) {
-            for (var k of j.children) {
+            for (let k of j.children) {
               dictXml += `<data><id>${k.Id}</id><did>${k.dictionaries}</did><val></val></data>`;
             }
           }
         }
       }
       dictXml += "</root>";
-      console.log(dictXml)
-      var obj = {
+      console.log(dictXml);
+      let obj = {
         bqdm: this.$route.query.bqdm,
         lc: this.$route.query.lc,
         dictval: dictXml, //xml
         content: JSON.stringify(this.sectionItem), //JSON模板
-        uptime: ""
+        uptime: "",
       };
       const res = await this.$axios.post(
         "/api/WhiteBoardApi/SaveWhiteBoard",
@@ -848,7 +870,7 @@ export default {
       if (e.target.checked) {
         this.shearPlate.push(parameter);
       } else {
-        this.shearPlate = this.shearPlate.filter(function(item) {
+        this.shearPlate = this.shearPlate.filter(function (item) {
           return item != parameter;
         });
       }
@@ -876,7 +898,7 @@ export default {
         this.sectionItem[y[0]].item[y[1]].children.splice(y[2], 1);
       }
       this.shearPlate = [];
-      this.$nextTick(function() {
+      this.$nextTick(function () {
         this.computedFontSize();
       });
     },
@@ -892,18 +914,16 @@ export default {
         //先把需要上移的当前位置的前一个存储下来，
         tmp = this.sectionItem[grandpaIdx].item[parentIdx].children[idx - 1];
         //当前位置的前一个复制为被上移的成员
-        this.sectionItem[grandpaIdx].item[parentIdx].children[
-          idx - 1
-        ] = this.sectionItem[grandpaIdx].item[parentIdx].children[idx];
+        this.sectionItem[grandpaIdx].item[parentIdx].children[idx - 1] =
+          this.sectionItem[grandpaIdx].item[parentIdx].children[idx];
         //把上一个赋值为当前
         this.sectionItem[grandpaIdx].item[parentIdx].children[idx] = tmp;
       } else {
         //先把需要上移的当前位置的后一个存储下来，
         tmp = this.sectionItem[grandpaIdx].item[parentIdx].children[idx + 1];
         //当前位置的后一个复制为被下移的成员
-        this.sectionItem[grandpaIdx].item[parentIdx].children[
-          idx + 1
-        ] = this.sectionItem[grandpaIdx].item[parentIdx].children[idx];
+        this.sectionItem[grandpaIdx].item[parentIdx].children[idx + 1] =
+          this.sectionItem[grandpaIdx].item[parentIdx].children[idx];
         //把后一个赋值为当前
         this.sectionItem[grandpaIdx].item[parentIdx].children[idx] = tmp;
       }
@@ -917,7 +937,7 @@ export default {
       this.displayMode = !this.displayMode;
     },
     getScrollTop() {
-      var scrollPos;
+      let scrollPos;
       if (window.pageYOffset) {
         scrollPos = window.pageYOffset;
       } else if (document.compatMode && document.compatMode != "BackCompat") {
@@ -926,13 +946,13 @@ export default {
         scrollPos = document.body.scrollTop;
       }
       return scrollPos;
-    }
+    },
   },
   mounted() {
     this.getDict();
     this.getTemplate();
     this.getDataAll();
-  }
+  },
 };
 </script>
 

@@ -90,18 +90,18 @@ export default {
       active: ["/form"], //左边的下拉框默认选中item
       lj: ["/index"], //左边的下拉框默认展开的分组
       panes: [{ title: "表单", key: "/form", closable: false }], //默认渲染tabs的数据
-      leftSolde: routerConfig.router
+      leftSolde: routerConfig.router,
     };
   },
   methods: {
     ...mapMutations({
-      changeCollapsed: "index/updateCollapsed" //收起或展开菜单 clickTotal 是mutation 里的方法，totalAlise是重新定义的一个别名方法，本组件直接调用这个方法
+      changeCollapsed: "index/updateCollapsed", //收起或展开菜单 clickTotal 是mutation 里的方法，totalAlise是重新定义的一个别名方法，本组件直接调用这个方法
     }),
     handelClickLink(item) {
       //左边列表item的选中事件
-      var isYou = true;
+      let isYou = true;
       if (item.keyPath.length > 1) {
-        for (var f in this.panes) {
+        for (let f in this.panes) {
           if (this.panes[f].key == item.key) {
             isYou = false;
           }
@@ -109,7 +109,7 @@ export default {
         if (isYou) {
           this.panes.push({
             title: item.item.$el.childNodes[1].childNodes[0].data,
-            key: item.key
+            key: item.key,
           });
         }
         this.active.length = 0; //将默认选中的item去掉，赋值上当前的key，这样左边选中的就会有样式
@@ -136,7 +136,7 @@ export default {
           lastIndex = i - 1;
         }
       });
-      const panes = this.panes.filter(pane => pane.key !== targetKey);
+      const panes = this.panes.filter((pane) => pane.key !== targetKey);
       if (panes.length && activeKey === targetKey) {
         if (lastIndex > 0) {
           activeKey = panes[lastIndex].key;
@@ -149,13 +149,13 @@ export default {
       this.active.push(activeKey); //这里的控制页面切换
       this.activeKey = activeKey;
       this.$router.push({ path: activeKey });
-    }
+    },
   },
   created() {
-    var query = this.$route.query;
+    let query = this.$route.query;
     //console.log(query);
     this.$router.push({ path: "/form" });
-    this.$eventBus.$on("test", function(e) {
+    this.$eventBus.$on("test", function (e) {
       this.$message.info("eventBus监听到的参数是" + e);
       //this.$eventBus.$off("test")
     });
@@ -163,9 +163,9 @@ export default {
   computed: {
     ...mapState({
       //获取state.index下的变量
-      collapsed: state => state.index.collapsed
-    })
-  }
+      collapsed: (state) => state.index.collapsed,
+    }),
+  },
 };
 </script>
 <style scoped>
@@ -234,7 +234,7 @@ footer {
   height: calc(100% - 40px);
   overflow: auto;
 }
-#components .content section >>> .ant-tabs-tabpane-active{
+#components .content section >>> .ant-tabs-tabpane-active {
   height: 100%;
 }
 </style>

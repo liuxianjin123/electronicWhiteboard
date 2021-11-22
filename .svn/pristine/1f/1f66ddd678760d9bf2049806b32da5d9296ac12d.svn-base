@@ -66,6 +66,8 @@ export default {
   },
   methods: {},
   mounted() {
+    var d = "666";
+    var ds = '777';
   }
 };
 </script>

@@ -10,7 +10,15 @@
     </div>
     <div class="container-bottom">
       <div><a-icon type="left" @click="toHZ" /> 患者评估趋势图</div>
-      <div>{{ brch }}床 &nbsp;&nbsp;&nbsp;{{brxm.length==2?"*"+brxm.substr(1,1):brxm.length==3?"**"+brxm.substr(2,1):"**"+brxm.substr(2,2)}}&nbsp;&nbsp;&nbsp;</div>
+      <div>
+        {{ brch }}床 &nbsp;&nbsp;&nbsp;{{
+          brxm.length == 2
+            ? "*" + brxm.substr(1, 1)
+            : brxm.length == 3
+            ? "**" + brxm.substr(2, 1)
+            : "**" + brxm.substr(2, 2)
+        }}&nbsp;&nbsp;&nbsp;
+      </div>
     </div>
   </div>
 </template>
@@ -21,7 +29,7 @@ export default {
     return {
       hospitalName: "绵阳市三台县人民医院", //医院名称
       bqdm: "", //医院所属病区
-      item:"",//同病区不同楼层分组
+      item: "", //同病区不同楼层分组
       wardName: "XXX病区", //病区名称
       dates: "8888-88-88 88:88 星期一", //当前时间
       zyh: "",
@@ -42,20 +50,23 @@ export default {
         },
       });
     },
-    
+
     async getDataAll() {
       //获取全部数据&html架构JSON
-      const res=await this.$axios.get('/WhiteBoard/WBApi.ashx/GetPatientTrendData',{zyh:this.zyh})
-      console.log(res)
+      const res = await this.$axios.get(
+        "/WhiteBoard/WBApi.ashx/GetPatientTrendData",
+        { zyh: this.zyh }
+      );
+      console.log(res);
     },
     //患者评估趋势图
     qst() {
       const chart = this.$refs.smtz;
-      var myChart = this.$echarts.init(qst);
-      var option = {
+      let myChart = this.$echarts.init(qst);
+      let option = {
         title: {
-          top:'20',
-          left:'20',
+          top: "20",
+          left: "20",
           text: "患者评估趋势图",
           textAlign: "left",
           textStyle: {
@@ -70,7 +81,7 @@ export default {
         legend: {
           type: "plain",
           data: ["压疮", "跌倒", "疼痛", "导管", "ADL"],
-          top:'20',
+          top: "20",
           right: "50",
           itemHeight: 13, //没个iten图标的大小。
           symbolKeepAspect: true,
@@ -82,29 +93,32 @@ export default {
           bottom: "3%",
           containLabel: true,
         },
-        grid: { //canvas中的图表绘制。就是网格区域 。
-            show: true,
-            top: '8%', //可以是数值，也可以是百分比。
-            left: '3%',
-            right: '2%',
-            bottom: '2%',
-            borderWidth: '0.5',
-            borderColor: "#fff",
-            containLabel: true, //是否包含刻度标尺，不包含的话Y轴在全屏状态下就会显示在屏幕之外。
+        grid: {
+          //canvas中的图表绘制。就是网格区域 。
+          show: true,
+          top: "8%", //可以是数值，也可以是百分比。
+          left: "3%",
+          right: "2%",
+          bottom: "2%",
+          borderWidth: "0.5",
+          borderColor: "#fff",
+          containLabel: true, //是否包含刻度标尺，不包含的话Y轴在全屏状态下就会显示在屏幕之外。
         },
         xAxis: {
           type: "category",
           //boundaryGap: false,
           data: ["4-12", "4-12", "4-12", "4-12", "4-12", "4-12", "4-12"],
-          axisTick: { //控制x轴刻度。
-                    show: true, //不显示刻度。
-                    inside: true, //代表刻度的小尖尖朝内还是朝外。
-                },
-            axisLabel: { //坐标轴刻度标签的相关设置。
-                show: true,
-                color: '#000', //刻度名称的字体颜色。
-                fontSize: 13,
-            },
+          axisTick: {
+            //控制x轴刻度。
+            show: true, //不显示刻度。
+            inside: true, //代表刻度的小尖尖朝内还是朝外。
+          },
+          axisLabel: {
+            //坐标轴刻度标签的相关设置。
+            show: true,
+            color: "#000", //刻度名称的字体颜色。
+            fontSize: 13,
+          },
         },
         yAxis: [
           {
@@ -121,7 +135,7 @@ export default {
                 color: "#000",
               },
             },
-            splitLine:{show: false}
+            splitLine: { show: false },
           },
           {
             show: true,
@@ -139,12 +153,12 @@ export default {
             },
             axisLabel: {
               formatter: function (value) {
-                var texts = [];
-                texts.push(value+"℃");
+                let texts = [];
+                texts.push(value + "℃");
                 return texts;
               },
             },
-            splitLine:{show: false}
+            splitLine: { show: false },
           },
         ],
         series: [
@@ -153,56 +167,56 @@ export default {
             type: "line",
             yAxisIndex: 1,
             data: [36.8, 36, 37.6, 38.7, 36.5, 35.9, 35.5],
-            lineStyle:{
-                normal:{
-                    width:1.5
-                }
-            }
+            lineStyle: {
+              normal: {
+                width: 1.5,
+              },
+            },
           },
           {
             name: "跌倒",
             type: "line",
             yAxisIndex: 0,
             data: [70, 65, 75, 65, 55, 90, 80],
-            lineStyle:{
-                normal:{
-                    width:1.5
-                }
-            }
+            lineStyle: {
+              normal: {
+                width: 1.5,
+              },
+            },
           },
           {
             name: "疼痛",
             type: "line",
-            yAxisIndex: 0,  
+            yAxisIndex: 0,
             data: [50, 32, 20, 54, 90, 33, 41],
-            lineStyle:{
-                normal:{
-                    width:1.5
-                }
-            }
+            lineStyle: {
+              normal: {
+                width: 1.5,
+              },
+            },
           },
           {
             name: "导管",
             type: "line",
             yAxisIndex: 1,
             data: [115, , 102, 95, , 90, 124],
-            lineStyle:{
-                normal:{
-                    width:1.5
-                }
+            lineStyle: {
+              normal: {
+                width: 1.5,
+              },
             },
-            connectNulls:true,
+            connectNulls: true,
           },
           {
             name: "ADL",
             type: "line",
             yAxisIndex: 1,
             data: [80, 98, 77, 89, 84, 91, 79],
-            lineStyle:{
-                normal:{
-                    width:1.5
-                }
-            }
+            lineStyle: {
+              normal: {
+                width: 1.5,
+              },
+            },
           },
         ],
       };
@@ -215,11 +229,11 @@ export default {
     },
     smtz() {
       const chart = this.$refs.smtz;
-      var myChart = this.$echarts.init(smtz);
-      var option = {
+      let myChart = this.$echarts.init(smtz);
+      let option = {
         title: {
-          top:'20',
-          left:'20',
+          top: "20",
+          left: "20",
           text: "患者生命体征趋势图",
           textAlign: "left",
           textStyle: {
@@ -234,7 +248,7 @@ export default {
         legend: {
           type: "plain",
           data: ["体温", "呼吸", "脉搏", "收缩压", "舒张压"],
-          top:'20',
+          top: "20",
           right: "50",
           itemHeight: 13, //没个iten图标的大小。
           symbolKeepAspect: true,
@@ -246,29 +260,32 @@ export default {
           bottom: "3%",
           containLabel: true,
         },
-        grid: { //canvas中的图表绘制。就是网格区域 。
-            show: true,
-            top: '8%', //可以是数值，也可以是百分比。
-            left: '3%',
-            right: '2%',
-            bottom: '2%',
-            borderWidth: '0.5',
-            borderColor: "#fff",
-            containLabel: true, //是否包含刻度标尺，不包含的话Y轴在全屏状态下就会显示在屏幕之外。
+        grid: {
+          //canvas中的图表绘制。就是网格区域 。
+          show: true,
+          top: "8%", //可以是数值，也可以是百分比。
+          left: "3%",
+          right: "2%",
+          bottom: "2%",
+          borderWidth: "0.5",
+          borderColor: "#fff",
+          containLabel: true, //是否包含刻度标尺，不包含的话Y轴在全屏状态下就会显示在屏幕之外。
         },
         xAxis: {
           type: "category",
           //boundaryGap: false,
           data: ["4-12", "4-12", "4-12", "4-12", "4-12", "4-12", "4-12"],
-          axisTick: { //控制x轴刻度。
-                    show: true, //不显示刻度。
-                    inside: true, //代表刻度的小尖尖朝内还是朝外。
-                },
-            axisLabel: { //坐标轴刻度标签的相关设置。
-                show: true,
-                color: '#000', //刻度名称的字体颜色。
-                fontSize: 13,
-            },
+          axisTick: {
+            //控制x轴刻度。
+            show: true, //不显示刻度。
+            inside: true, //代表刻度的小尖尖朝内还是朝外。
+          },
+          axisLabel: {
+            //坐标轴刻度标签的相关设置。
+            show: true,
+            color: "#000", //刻度名称的字体颜色。
+            fontSize: 13,
+          },
         },
         yAxis: [
           {
@@ -286,7 +303,7 @@ export default {
                 color: "#000",
               },
             },
-            splitLine:{show: false}
+            splitLine: { show: false },
           },
           {
             show: true,
@@ -302,7 +319,7 @@ export default {
                 color: "#000",
               },
             },
-            splitLine:{show: false}
+            splitLine: { show: false },
           },
           {
             show: true,
@@ -320,12 +337,12 @@ export default {
             },
             axisLabel: {
               formatter: function (value) {
-                var texts = [];
-                texts.push(value+"℃");
+                let texts = [];
+                texts.push(value + "℃");
                 return texts;
               },
             },
-            splitLine:{show: false}
+            splitLine: { show: false },
           },
         ],
         series: [
@@ -334,56 +351,56 @@ export default {
             type: "line",
             yAxisIndex: 2,
             data: [36.8, 36, 37.6, 38.7, 36.5, 35.9, 35.5],
-            lineStyle:{
-                normal:{
-                    width:1.5
-                }
-            }
+            lineStyle: {
+              normal: {
+                width: 1.5,
+              },
+            },
           },
           {
             name: "呼吸",
             type: "line",
             yAxisIndex: 0,
             data: [70, 65, 75, 65, 55, 90, 80],
-            lineStyle:{
-                normal:{
-                    width:1.5
-                }
-            }
+            lineStyle: {
+              normal: {
+                width: 1.5,
+              },
+            },
           },
           {
             name: "脉搏",
             type: "line",
-            yAxisIndex: 0,  
+            yAxisIndex: 0,
             data: [50, 32, 20, 54, 90, 33, 41],
-            lineStyle:{
-                normal:{
-                    width:1.5
-                }
-            }
+            lineStyle: {
+              normal: {
+                width: 1.5,
+              },
+            },
           },
           {
             name: "收缩压",
             type: "line",
             yAxisIndex: 1,
             data: [115, , 102, 95, , 90, 124],
-            lineStyle:{
-                normal:{
-                    width:1.5
-                }
+            lineStyle: {
+              normal: {
+                width: 1.5,
+              },
             },
-            connectNulls:true,
+            connectNulls: true,
           },
           {
             name: "舒张压",
             type: "line",
             yAxisIndex: 1,
             data: [80, 98, 77, 89, 84, 91, 79],
-            lineStyle:{
-                normal:{
-                    width:1.5
-                }
-            }
+            lineStyle: {
+              normal: {
+                width: 1.5,
+              },
+            },
           },
         ],
       };
@@ -403,12 +420,12 @@ export default {
     fullScreen();
     this.qst();
     this.smtz();
-    var query = this.$route.query;
+    let query = this.$route.query;
     this.zyh = query.zyh;
     this.brch = query.brch;
     this.brxm = query.brxm;
-    this.bqdm=query.bqdm;
-    this.item= query.item;
+    this.bqdm = query.bqdm;
+    this.item = query.item;
     this.wardName = query.wardName;
     this.getDataAll();
     setInterval(() => {
@@ -419,7 +436,7 @@ export default {
 };
 </script>
 
-<style  scoped>
+<style scoped>
 @import url("../../../../static/css/Board.css");
 .container-item-right header {
   height: 90px;

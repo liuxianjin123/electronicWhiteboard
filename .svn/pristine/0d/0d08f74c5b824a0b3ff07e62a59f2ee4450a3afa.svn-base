@@ -1,12 +1,7 @@
 <template>
   <a-form-model :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
     <a-form-model-item label="字典分类" v-if="indexOfs('zdfl')">
-      <a-select
-        v-model="form.zdfl"
-        placeholder="选择类别"
-        allowClear
-        @change="selectCategory"
-      >
+      <a-select v-model="form.zdfl" placeholder="选择类别" allowClear @change="selectCategory">
         <a-select-option
           v-for="item of classificationofdictionary"
           :key="item.value"
@@ -31,7 +26,7 @@
       <a-input v-model="form.yzpc" allowClear />
     </a-form-model-item>
     <a-form-model-item label="本组床号" v-if="indexOfs('bzch')">
-      <a-select v-model="form.bzch" placeholder="选择类别" allowClear>
+      <a-select v-model="form.bzch" placeholder="选择类别" allowClear >
         <a-select-option
           v-for="item of classificationofdictionary"
           :key="item.value"
@@ -53,7 +48,7 @@
     <a-form-model-item label="关键字" v-if="indexOfs('gjz')">
       <a-input v-model="form.gjz" allowClear />
     </a-form-model-item>
-    <a-form-model-item label="TABLE" v-if="indexOfs('table')">
+     <a-form-model-item label="TABLE" v-if="indexOfs('table')">
       <a-input v-model="form.table" allowClear />
     </a-form-model-item>
     <a-form-model-item label="病人标识字段" v-if="indexOfs('brbszd')">
@@ -66,7 +61,7 @@
       <a-input v-model="form.where" allowClear />
     </a-form-model-item>
     <a-form-model-item label="特殊标记" v-if="indexOfs('tsbj')">
-      <a-select v-model="form.tsbj" placeholder="选择类别" allowClear>
+      <a-select v-model="form.tsbj" placeholder="选择类别" allowClear >
         <a-select-option
           v-for="item of classificationofdictionary"
           :key="item.value"
@@ -76,7 +71,7 @@
       </a-select>
     </a-form-model-item>
     <a-form-model-item label="输出类型" v-if="indexOfs('sclx')">
-      <a-select v-model="form.sclx" placeholder="选择类别" allowClear>
+      <a-select v-model="form.sclx" placeholder="选择类别" allowClear >
         <a-select-option
           v-for="item of classificationofdictionary"
           :key="item.value"
@@ -92,7 +87,7 @@
       <a-input v-model="form.zdsm" type="textarea" />
     </a-form-model-item>
     <a-form-model-item label="停用" v-if="indexOfs('ty')">
-      <a-select v-model="form.ty" placeholder="选择类别" allowClear>
+      <a-select v-model="form.ty" placeholder="选择类别" allowClear >
         <a-select-option
           v-for="item of classificationofdictionary"
           :key="item.value"
@@ -112,20 +107,7 @@ export default {
     return {
       labelCol: { span: 4 },
       wrapperCol: { span: 20 },
-      isShowList: [
-        "zdfl",
-        "zdmc",
-        "yzgjz",
-        "yzlb",
-        "yztj",
-        "yzpc",
-        "yzsx",
-        "sclx",
-        "zhyzys",
-        "zdsm",
-        "ty",
-        "xh",
-      ],
+      isShowList: ["zdfl", "zdmc","yzgjz","yzlb","yztj","yzpc","yzsx","sclx","zhyzys","zdsm","ty","xh"],
       classificationofdictionary: [
         //分类字典
         { value: "", label: "请选择" },
@@ -134,129 +116,79 @@ export default {
         { value: "3", label: "排班信息" },
         { value: "4", label: "病区录入" },
         { value: "5", label: "护理表单" },
-        { value: "6", label: "医嘱分组" },
+        { value: "6", label: "医嘱分组" }
       ],
       form: {
-        id: "",
+        id:"",
         zdfl: "",
         zdmc: "",
-        yzgjz: "",
-        yzlb: "",
-        yzpc: "",
-        yzsx: "",
-        sclx: "",
-        zhyzys: "",
-        zdsm: "",
-        ty: "",
-        xh: "",
-        gjz: "",
-        table: "",
-        brbszd: "",
-        orderby: "",
-        where: "",
-        tsbj: "",
-        where: "",
-        bzch: "",
-      },
+        yzgjz: "", 
+        yzlb: "", 
+        yzpc: "", 
+        yzsx: "", 
+        sclx: "", 
+        zhyzys: "", 
+        zdsm: "", 
+        ty: "", 
+        xh: "", 
+        gjz: "", 
+        table: "", 
+        brbszd: "", 
+        orderby: "", 
+        where: "", 
+        tsbj: "", 
+        where: "", 
+        bzch: ""
+      }
     };
   },
-  props: {
-    editRowId: String,
+  props:{
+    editRowId:String
   },
   methods: {
     onSubmit() {
       this.$message.success(JSON.stringify(this.form));
       console.log("submit!", this.form);
     },
-    selectCategory(value, option) {
-      console.log(value, option);
-      this.isShowList.length = 0;
-      switch (value) {
-        case "" || undefined:
-          this.isShowList = [
-            "zdfl",
-            "zdmc",
-            "yzgjz",
-            "yzlb",
-            "yztj",
-            "yzpc",
-            "yzsx",
-            "sclx",
-            "zhyzys",
-            "zdsm",
-            "ty",
-            "xh",
-          ];
-          break;
-        case "1":
-          this.isShowList = [
-            "zdfl",
-            "zdmc",
-            "yzgjz",
-            "yzlb",
-            "yztj",
-            "yzpc",
-            "yzsx",
-            "sclx",
-            "zhyzys",
-            "zdsm",
-            "ty",
-            "xh",
-          ];
-          break;
-        case "2":
-          this.isShowList = ["zdfl", "zdmc", "gjz", "sclx", "zdsm", "ty", "xh"];
-          break;
-        case "3":
-          this.isShowList = ["zdfl", "zdmc", "gjz", "sclx", "zdsm", "ty", "xh"];
-          break;
-        case "4":
-          this.isShowList = ["zdfl", "zdmc", "sclx", "zdsm", "ty", "xh"];
-          break;
-        case "5":
-          this.isShowList = [
-            "zdfl",
-            "zdmc",
-            "table",
-            "brbszd",
-            "orderby",
-            "where",
-            "tsbj",
-            "sclx",
-            "zdsm",
-            "ty",
-            "xh",
-          ];
-          break;
-        case "6":
-          this.isShowList = [
-            "zdfl",
-            "zdmc",
-            "yzgjz",
-            "yzlb",
-            "yztj",
-            "bzch",
-            "yzsx",
-            "sclx",
-            "zdsm",
-            "ty",
-            "xh",
-          ];
-          break;
+    selectCategory(value, option){
+      console.log(value, option)
+      this.isShowList.length=0;
+      switch(value){
+        case '' || undefined:
+          this.isShowList=["zdfl", "zdmc","yzgjz","yzlb","yztj","yzpc","yzsx","sclx","zhyzys","zdsm","ty","xh"];
+        break;
+        case '1':
+          this.isShowList=["zdfl", "zdmc","yzgjz","yzlb","yztj","yzpc","yzsx","sclx","zhyzys","zdsm","ty","xh"];
+        break;
+        case '2':
+          this.isShowList=["zdfl", "zdmc","gjz","sclx","zdsm","ty","xh"];
+        break;
+        case '3':
+          this.isShowList=["zdfl", "zdmc","gjz","sclx","zdsm","ty","xh"];
+        break;
+        case '4':
+          this.isShowList=["zdfl", "zdmc","sclx","zdsm","ty","xh"];
+        break;
+        case '5':
+          this.isShowList=["zdfl", "zdmc","table","brbszd","orderby","where","tsbj","sclx","zdsm","ty","xh"];
+        break;
+        case '6':
+          this.isShowList=["zdfl", "zdmc","yzgjz","yzlb","yztj","bzch","yzsx","sclx","zdsm","ty","xh"];
+        break;
       }
-    },
+    }
   },
   computed: {
     indexOfs() {
-      return function (msg) {
-        return this.isShowList.indexOf("" + msg + "") != -1 ? true : false;
+      return function(msg) {
+       return this.isShowList.indexOf("" + msg + "") != -1 ? true : false;
       };
-    },
+    }
   },
-  watch: {
-    editRowId(n, t) {
-      this.form.id = n;
-    },
-  },
+  watch:{
+    editRowId(n,t){
+      this.form.id=n;
+    }
+  }
 };
 </script>

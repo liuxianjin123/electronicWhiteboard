@@ -4,19 +4,27 @@
       <header>
         <div>
           <span
-            ><img src="../../../../static/images/ChangeShifts/jb3.png" alt="护理交接班" class="header-img" title='护理交接班'> 护理交接班
+            ><img
+              src="../../../../static/images/ChangeShifts/jb3.png"
+              alt="护理交接班"
+              class="header-img"
+              title="护理交接班"
+            />
+            护理交接班
           </span>
           <span>
             <a-popover trigger="click" placement="bottomLeft">
               <template slot="content">
-                <a-button type="primary"  @click="addJb('Ptjb')">
+                <a-button type="primary" @click="addJb('Ptjb')">
                   普通交班
                 </a-button>
-                <a-button type="danger"  @click="addJb('Tsjb')">
+                <a-button type="danger" @click="addJb('Tsjb')">
                   特殊交班
                 </a-button>
               </template>
-              <a-button type="primary"  size="large"  icon="plus-circle"> 新增交班</a-button>
+              <a-button type="primary" size="large" icon="plus-circle">
+                新增交班</a-button
+              >
             </a-popover>
           </span>
         </div>
@@ -36,21 +44,25 @@
             :pagination="false"
             :scroll="{ x: '100%', y: 'calc(100vh - 260px)' }"
             :rowKey="
-                  (record, index) => {
-                    return index;
-                  }
-                "
+              (record, index) => {
+                return index;
+              }
+            "
           >
-            <template slot="address" slot-scope="text, record,index">
-              <a @click="editThis(record,index)"><a-icon type="edit" theme="filled" /> 编辑</a>
+            <template slot="address" slot-scope="text, record, index">
+              <a @click="editThis(record, index)"
+                ><a-icon type="edit" theme="filled" /> 编辑</a
+              >
               <a-divider type="vertical" />
               <template>
-                <a-popconfirm title="确认删除?"  ok-text="确认" cancel-text="取消" @confirm="delThis(record)">
-                  <a
-                    style="color: red"
-                    @click.stop=""
-                    >
-                  <a-icon type="delete" theme="filled" /> 刪除</a
+                <a-popconfirm
+                  title="确认删除?"
+                  ok-text="确认"
+                  cancel-text="取消"
+                  @confirm="delThis(record)"
+                >
+                  <a style="color: red" @click.stop="">
+                    <a-icon type="delete" theme="filled" /> 刪除</a
                   >
                 </a-popconfirm>
               </template>
@@ -61,7 +73,7 @@
       <a-modal
         v-model="visible"
         :width="400"
-        :title="jbType=='Tsjb'?'特殊交班':'普通交班'"
+        :title="jbType == 'Tsjb' ? '特殊交班' : '普通交班'"
         ok-text="确认"
         cancel-text="取消"
         :closable="false"
@@ -69,18 +81,27 @@
         @ok="hideModal"
       >
         <template>
-          <a-form :form="form" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
+          <a-form
+            :form="form"
+            :label-col="{ span: 8 }"
+            :wrapper-col="{ span: 16 }"
+          >
             <a-form-item label="创建时间">
               <a-date-picker
-              style="width:234px"
-              show-time
-              format="YYYY-MM-DD HH:mm"
-              @change="jjbbData"
-            />
+                style="width: 234px"
+                show-time
+                format="YYYY-MM-DD HH:mm"
+                @change="jjbbData"
+              />
             </a-form-item>
-            <a-form-item label="选择班次" v-if="jbType=='Ptjb'">
+            <a-form-item label="选择班次" v-if="jbType == 'Ptjb'">
               <a-select v-model="form.Ptbc">
-                <a-select-option v-for="i in PtbcList" :key="i.id" :value="i.id">{{i.name}}</a-select-option>
+                <a-select-option
+                  v-for="i in PtbcList"
+                  :key="i.id"
+                  :value="i.id"
+                  >{{ i.name }}</a-select-option
+                >
               </a-select>
             </a-form-item>
           </a-form>
@@ -90,49 +111,58 @@
   </div>
 </template>
 <script>
-import jwtDecode from 'jwt-decode'
-import moment from 'moment';
-function getNextDate(date, day) { //当前时间+1或者-1
-　　var dd = new Date(date);
-　　dd.setDate(dd.getDate() + day);
-　　var y = dd.getFullYear();
-　　var m = dd.getMonth() + 1 < 10 ? "0" + (dd.getMonth() + 1) : dd.getMonth() + 1;
-　　var d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
-　　return y + "-" + m + "-" + d;
-};
-function GetDateTime() {
-    var d, s;
-    d = new Date();
-    s = d.getFullYear() + "-";             //取年份  
-    s = s + ((d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1) : (d.getMonth() + 1)) + "-";//取月份  
-    s += (d.getDate() < 10 ? "0" + d.getDate() : d.getDate()) + " ";         //取日期  
-    s += (d.getHours() < 10 ? "0" + d.getHours() : d.getHours()) + ":";       //取小时  
-    s += (d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes()) + ":";    //取分  
-    s += (d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds());         //取秒  
-    return (s);
+import jwtDecode from "jwt-decode";
+import moment from "moment";
+function getNextDate(date, day) {
+  //当前时间+1或者-1
+  let dd = new Date(date);
+  dd.setDate(dd.getDate() + day);
+  let y = dd.getFullYear();
+  let m =
+    dd.getMonth() + 1 < 10 ? "0" + (dd.getMonth() + 1) : dd.getMonth() + 1;
+  let d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
+  return y + "-" + m + "-" + d;
 }
-let nowDate =  getNextDate(GetDateTime(), +1);
+function GetDateTime() {
+  let d, s;
+  d = new Date();
+  s = d.getFullYear() + "-"; //取年份
+  s =
+    s +
+    (d.getMonth() + 1 < 10 ? "0" + (d.getMonth() + 1) : d.getMonth() + 1) +
+    "-"; //取月份
+  s += (d.getDate() < 10 ? "0" + d.getDate() : d.getDate()) + " "; //取日期
+  s += (d.getHours() < 10 ? "0" + d.getHours() : d.getHours()) + ":"; //取小时
+  s += (d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes()) + ":"; //取分
+  s += d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds(); //取秒
+  return s;
+}
+let nowDate = getNextDate(GetDateTime(), +1);
 let nowDateJ = getNextDate(nowDate, -5);
 export default {
   name: "ChangeShifts",
   data() {
     const columns = [
       {
-        title: '序号',
-        dataIndex: 'index',
-        key: 'index',
-        align: 'center',
+        title: "序号",
+        dataIndex: "index",
+        key: "index",
+        align: "center",
         width: 50,
-        customRender: (text,record,index) => {
+        customRender: (text, record, index) => {
           const obj = {
             children: null,
             attrs: {},
           };
-          for(var i in this.groupDatas){
-            if(index==this.groupDatas[i].xb){//找到对应的字段
-              obj.attrs.rowSpan = this.groupDatas[i].numbers;//该字段对应的跨行数刚好是numbers
-              obj.children=this.groupDatas[i].idx;//由于这里主要显示的是序号，最终的显示字符串是已经计算好的
-            }else if(index>this.groupDatas[i].xb && index<(this.groupDatas[i].numbers+this.groupDatas[i].xb)){
+          for (let i in this.groupDatas) {
+            if (index == this.groupDatas[i].xb) {
+              //找到对应的字段
+              obj.attrs.rowSpan = this.groupDatas[i].numbers; //该字段对应的跨行数刚好是numbers
+              obj.children = this.groupDatas[i].idx; //由于这里主要显示的是序号，最终的显示字符串是已经计算好的
+            } else if (
+              index > this.groupDatas[i].xb &&
+              index < this.groupDatas[i].numbers + this.groupDatas[i].xb
+            ) {
               //如果是从第二行开始垮5行，那么就要将>2,<5的行设置rowSpan=0；否则会错乱
               obj.attrs.rowSpan = 0;
             }
@@ -150,10 +180,13 @@ export default {
             children: text,
             attrs: {},
           };
-          for(var i in this.groupDatas){
-            if(index==this.groupDatas[i].xb){
+          for (let i in this.groupDatas) {
+            if (index == this.groupDatas[i].xb) {
               obj.attrs.rowSpan = this.groupDatas[i].numbers;
-            }else if(index>this.groupDatas[i].xb && index<(this.groupDatas[i].numbers+this.groupDatas[i].xb)){
+            } else if (
+              index > this.groupDatas[i].xb &&
+              index < this.groupDatas[i].numbers + this.groupDatas[i].xb
+            ) {
               obj.attrs.rowSpan = 0;
             }
           }
@@ -249,161 +282,179 @@ export default {
         dataIndex: "",
         width: "160px",
         align: "center",
-        fixed:"right",
+        fixed: "right",
         scopedSlots: { customRender: "address" },
       },
     ];
-    
+
     return {
       visible: false,
-      tableData:null,
+      tableData: null,
       columns,
-      dataRange:null,
-      jjbb:'', 
+      dataRange: null,
+      jjbb: "",
       nowDate,
       nowDateJ,
-      groupDatas:[],
-      jbType:null,
-      form:{
-        Ptbc:null,
-        Ptsj:null,
+      groupDatas: [],
+      jbType: null,
+      form: {
+        Ptbc: null,
+        Ptsj: null,
       },
-      PtbcList:[
-      ]
+      PtbcList: [],
     };
   },
   methods: {
     moment,
     selectDateRange(date, dateString) {
-      this.dataRange=dateString;
-      if(this.dataRange){
+      this.dataRange = dateString;
+      if (this.dataRange) {
         this.getJbData();
       }
     },
-    jjbbData(date, dateString){
-      this.form.Ptsj=dateString;
+    jjbbData(date, dateString) {
+      this.form.Ptsj = dateString;
     },
     addJb(msg) {
-      this.jbType=msg
+      this.jbType = msg;
       this.visible = !this.visible;
     },
     async getBc() {
-      const res = await this.$axios.get('/han/Handover/GetOrderOfClasss');
+      const res = await this.$axios.get("/han/Handover/GetOrderOfClasss");
       console.log(res);
-      if(res.result){
-        this.PtbcList=res.result
-      }else{
-        this.$message.error(res.msg)
+      if (res.result) {
+        this.PtbcList = res.result;
+      } else {
+        this.$message.error(res.msg);
       }
     },
     async hideModal() {
-      if(this.form.Ptsj){
+      if (this.form.Ptsj) {
         let res;
-        if(this.jbType=="Tsjb"){
-          res = await this.$axios.post('/han/HandoverProc/AddSpecialShift?handoverTime='+this.form.Ptsj);
-        }else{
-          res = await this.$axios.post('/han/HandoverProc/CreateShift?handoverTime='+this.form.Ptsj+'&orderOfClassesId='+this.form.Ptbc);
+        if (this.jbType == "Tsjb") {
+          res = await this.$axios.post(
+            "/han/HandoverProc/AddSpecialShift?handoverTime=" + this.form.Ptsj
+          );
+        } else {
+          res = await this.$axios.post(
+            "/han/HandoverProc/CreateShift?handoverTime=" +
+              this.form.Ptsj +
+              "&orderOfClassesId=" +
+              this.form.Ptbc
+          );
         }
-        if(res.result){
-          this.$message.success(res.msg)
-          this.getJbData()
-        }else{
-          this.$message.error(res.msg)
+        if (res.result) {
+          this.$message.success(res.msg);
+          this.getJbData();
+        } else {
+          this.$message.error(res.msg);
         }
         this.visible = false;
-      }else{
-        this.$message.warning("请填写完整信息!")
+      } else {
+        this.$message.warning("请填写完整信息!");
       }
     },
     //编辑
-    editThis(record,index){
-      console.log(record,index)
-      if(index!=this.tableData.length-1){
-        localStorage.sTime=record.handoverTimes;
-        localStorage.eTime=this.tableData[index+1].handoverTimes
-      }else{
-        localStorage.sTime=record.handoverTimes;
-        localStorage.eTime=null;
+    editThis(record, index) {
+      console.log(record, index);
+      if (index != this.tableData.length - 1) {
+        localStorage.sTime = record.handoverTimes;
+        localStorage.eTime = this.tableData[index + 1].handoverTimes;
+      } else {
+        localStorage.sTime = record.handoverTimes;
+        localStorage.eTime = null;
       }
-      localStorage.handoverTime=record.handoverTimes,//交班时间
-      localStorage.orderOfClassesId=record.orderOfClassesId,//班次ID
-      this.$router.push({path: "/feelUnhappy"});
+      (localStorage.handoverTime = record.handoverTimes), //交班时间
+      (localStorage.orderOfClassesId = record.orderOfClassesId), //班次ID
+      this.$router.push({ path: "/feelUnhappy" });
     },
-    async delThis(e){
-      const res = await this.$axios.delete('/han/HandoverProc/DeleteHandoverData/'+e.id);
-      if(res.result){
+    async delThis(e) {
+      const res = await this.$axios.delete(
+        "/han/HandoverProc/DeleteHandoverData/" + e.id
+      );
+      if (res.result) {
         this.$message.success(res.msg);
-        this.getJbData()
-      }else{
-        this.$message.success(res.msg)
+        this.getJbData();
+      } else {
+        this.$message.success(res.msg);
       }
     },
-    async denglu(){//登录获取token
-      var obj ={
-      "account": "0299",
-      "passWord": "1",
-      "macAddress": "Duis culpa laboris"
-      }
-      const res = await this.$axios.post('/auth/authorization/loging', obj);
-      sessionStorage.setItem("token", 'Bearer '+ res.result);
-      const decode =  jwtDecode(res.result);
-      this.$store.commit('updateOperatorMsg',decode);
+    async denglu() {
+      //登录获取token
+      let obj = {
+        account: "0299",
+        passWord: "1",
+        macAddress: "Duis culpa laboris",
+      };
+      const res = await this.$axios.post("/auth/authorization/loging", obj);
+      sessionStorage.setItem("token", "Bearer " + res.result);
+      const decode = jwtDecode(res.result);
+      this.$store.commit("updateOperatorMsg", decode);
     },
-    async getJbData(){
-      this.groupDatas=[];
-      var obj ={
-        "startTime": this.dataRange?this.dataRange[0]:this.nowDateJ,
-        "endTime": this.dataRange?this.dataRange[1]:this.nowDate,
-        "pageIndex": 1,
-        "pageSize":1000
-      }
-      const res = await this.$axios.get('/han/HandoverProc/GetHandoverData', obj);
-      if(res.result){
-        var data = res.result;
-        for(var i in data){
-          data[i]["rq"]=data[i].handoverTime.substr(5,5);
-          data[i]["handoverTimes"]=data[i].handoverTime;
-          data[i].handoverTime=data[i].handoverTime.substr(10,6);
+    async getJbData() {
+      this.groupDatas = [];
+      let obj = {
+        startTime: this.dataRange ? this.dataRange[0] : this.nowDateJ,
+        endTime: this.dataRange ? this.dataRange[1] : this.nowDate,
+        pageIndex: 1,
+        pageSize: 1000,
+      };
+      const res = await this.$axios.get(
+        "/han/HandoverProc/GetHandoverData",
+        obj
+      );
+      if (res.result) {
+        let data = res.result;
+        for (let i in data) {
+          data[i]["rq"] = data[i].handoverTime.substr(5, 5);
+          data[i]["handoverTimes"] = data[i].handoverTime;
+          data[i].handoverTime = data[i].handoverTime.substr(10, 6);
         }
-        var num=1;//循环对比当前下标的rq如果和下一条的rq相同，
-        var index=0;
-        for(var i = 0;i<data.length;i++){
-          if(i<data.length-1){
-            console.log(123)
-            if(data[i].rq==data[i+1].rq){//相同就+1
-              num+=1;
-            }else{
-              this.groupDatas.push({name:data[i].rq,numbers:num,xb:i})//else就表示和下一条数据不一致，push进去，再从新计算
-              num=1;
-              index=i;//index会一直记录到最后一组不一样数据的下标
+        let num = 1; //循环对比当前下标的rq如果和下一条的rq相同，
+        let index = 0;
+        for (let i = 0; i < data.length; i++) {
+          if (i < data.length - 1) {
+            console.log(123);
+            if (data[i].rq == data[i + 1].rq) {
+              //相同就+1
+              num += 1;
+            } else {
+              this.groupDatas.push({ name: data[i].rq, numbers: num, xb: i }); //else就表示和下一条数据不一致，push进去，再从新计算
+              num = 1;
+              index = i; //index会一直记录到最后一组不一样数据的下标
             }
-          }else{
-            if(data.length>1){
-              this.groupDatas.push({name:data[index+1].rq,numbers:(data.length-1)-index,xb:index+1})//获取最后一组第一条的rq，          //再减去最后对比不一致的位置，得到还剩几条数据，那最后这几条数据一定是一致的
-            }else{
-              this.groupDatas.push({name:data[index].rq,numbers:1,xb:0})
+          } else {
+            if (data.length > 1) {
+              this.groupDatas.push({
+                name: data[index + 1].rq,
+                numbers: data.length - 1 - index,
+                xb: index + 1,
+              }); //获取最后一组第一条的rq，          //再减去最后对比不一致的位置，得到还剩几条数据，那最后这几条数据一定是一致的
+            } else {
+              this.groupDatas.push({ name: data[index].rq, numbers: 1, xb: 0 });
             }
           }
         }
-        for(var n in this.groupDatas){
-          if(n==0){
-            this.groupDatas[n].xb=0;
-          }else if(n!=this.groupDatas.length-1){
-            this.groupDatas[n].xb=this.groupDatas[n].xb-this.groupDatas[n].numbers+1
+        for (let n in this.groupDatas) {
+          if (n == 0) {
+            this.groupDatas[n].xb = 0;
+          } else if (n != this.groupDatas.length - 1) {
+            this.groupDatas[n].xb =
+              this.groupDatas[n].xb - this.groupDatas[n].numbers + 1;
           }
-          this.groupDatas[n]["idx"]=parseInt(n)+1;
+          this.groupDatas[n]["idx"] = parseInt(n) + 1;
         }
-        this.tableData=res.result;
-      }else{
+        this.tableData = res.result;
+      } else {
         this.$message.error(res.msg);
       }
     },
   },
-  mounted(){
-    this.denglu();//获取登录
-    this.getBc();//获取班次
-    this.getJbData();//加载排班数据
-  }
+  mounted() {
+    this.denglu(); //获取登录
+    this.getBc(); //获取班次
+    this.getJbData(); //加载排班数据
+  },
 };
 </script>
 <style scoped>
@@ -419,7 +470,7 @@ export default {
   border-radius: 5px;
   padding: 10px;
 }
-.box section{
+.box section {
   width: 100%;
   height: calc(100% - 120px);
 }
@@ -430,7 +481,7 @@ export default {
   padding: 0;
   justify-content: space-between;
 }
-.box .header-img{
+.box .header-img {
   width: 33px;
   vertical-align: top;
 }
@@ -449,12 +500,12 @@ section >>> .ant-table-thead > tr > th {
 .box header >>> .ant-calendar-picker {
   width: 240px;
 }
-section >>> .ant-table-body{
+section >>> .ant-table-body {
   height: calc(100vh - 260px);
 }
-section >>>.ant-table-placeholder{
-    position: absolute;
-    top: 50px;
-    width: calc(100% - 18px);
+section >>> .ant-table-placeholder {
+  position: absolute;
+  top: 50px;
+  width: calc(100% - 18px);
 }
 </style>

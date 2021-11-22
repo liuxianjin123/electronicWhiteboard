@@ -9,29 +9,36 @@
               :class-option="classOption"
               class="seamless-warp"
             >
-            <div v-for="(item, index) in sshz" :key="index" class="shp1">
-               <div class="top"><img :src="item.brxb=='男'?boytx:girltx" width="65px" alt=""></div>
-               <div class="middle">
-                   <h3>
-                       <span>{{item.brxm}}</span>&nbsp;&nbsp;
-                       <span>{{item.brxb}}</span>&nbsp;&nbsp;
-                       <span>{{item.brnl}}</span>&nbsp;&nbsp;
-                       <span>{{item.bcmc}}床</span>
-                   </h3>
-                   <div>
-                       <span class="ssname">手术名称：{{item.ssmc}}</span>
-                   </div>
-                   <div>
-                       麻醉方式：<span>{{item.mzfs}}</span>
-                   </div>
-                   <div>
-                       术前准备：<span>{{item.sqzb}}</span>
-                   </div>
-               </div>
-               <div class="time">
-                   <p>{{item.nssrq}}</p>
-               </div>
-            </div>
+              <div v-for="(item, index) in sshz" :key="index" class="shp1">
+                <div class="top">
+                  <img
+                    :src="item.brxb == '男' ? boytx : girltx"
+                    width="65px"
+                    alt=""
+                  />
+                </div>
+                <div class="middle">
+                  <h3>
+                    <span>{{ item.brxm }}</span
+                    >&nbsp;&nbsp; <span>{{ item.brxb }}</span
+                    >&nbsp;&nbsp; <span>{{ item.brnl }}</span
+                    >&nbsp;&nbsp;
+                    <span>{{ item.bcmc }}床</span>
+                  </h3>
+                  <div>
+                    <span class="ssname">手术名称：{{ item.ssmc }}</span>
+                  </div>
+                  <div>
+                    麻醉方式：<span>{{ item.mzfs }}</span>
+                  </div>
+                  <div>
+                    术前准备：<span>{{ item.sqzb }}</span>
+                  </div>
+                </div>
+                <div class="time">
+                  <p>{{ item.nssrq }}</p>
+                </div>
+              </div>
             </vue-seamless-scroll>
           </template>
         </div>
@@ -59,8 +66,8 @@ export default {
   components: {
     vueSeamlessScroll,
   },
-  props:{
-    sshz:{},
+  props: {
+    sshz: {},
   },
   computed: {
     classOption() {
@@ -79,9 +86,9 @@ export default {
   methods: {
     ycxm(str, frontLen, endLen) {
       //隐藏关键信息 frontLen: 前面需要保留几位    endLen: 后面需要保留几位
-      var len = str.length - frontLen - endLen;
-      var xing = "";
-      for (var i = 0; i < len; i++) {
+      let len = str.length - frontLen - endLen;
+      let xing = "";
+      for (let i = 0; i < len; i++) {
         xing += "*";
       }
       return (
@@ -101,7 +108,7 @@ export default {
   watch: {
     sshz() {
       this.getDataAll();
-    }
+    },
   },
   mounted() {
     this.getDataAll();
@@ -109,44 +116,44 @@ export default {
 };
 </script>
 
-<style  scoped>
-.item-config{
-    height: 380px;
-    overflow: hidden;
-    margin-top: 10px;
+<style scoped>
+.item-config {
+  height: 380px;
+  overflow: hidden;
+  margin-top: 10px;
 }
-.shp1{
-    /* border:1px solid red; */
-    /* height: 1rem; */
-    display: flex;
-    justify-content:space-between;
-    padding: 10px;
+.shp1 {
+  /* border:1px solid red; */
+  /* height: 1rem; */
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
 }
-.top{
-    flex: 1;
-    text-align: center;
+.top {
+  flex: 1;
+  text-align: center;
 }
-.top>img{
-    margin-top: 10%;
+.top > img {
+  margin-top: 10%;
 }
-.middle{
-    flex: 3;
-    /* overflow: auto; */
+.middle {
+  flex: 3;
+  /* overflow: auto; */
 }
-.time{
-    flex: 1;
-    text-align: center;
-    font-size: 12px;
+.time {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
 }
 /* .shp1>div{
     border:1px solid red;
 
 } */
-.ssname{
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 95%;
-    display: inline-block;
+.ssname {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 95%;
+  display: inline-block;
 }
 </style>

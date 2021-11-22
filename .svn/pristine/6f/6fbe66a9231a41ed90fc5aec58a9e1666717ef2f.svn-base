@@ -6,7 +6,7 @@
       :customRow="rowClick"
       size="small"
       :scroll="{ x: '100%', y: 'calc(100vh - 170px)' }"
-      @change="tableChange"
+      @change="tableChange" 
       bordered
       :pagination="pagination"
       :loading="loading"
@@ -18,18 +18,16 @@
           selectedKeys,
           confirm,
           clearFilters,
-          column,
+          column
         }"
         style="padding: 8px"
       >
         <a-input
-          v-ant-ref="(c) => (searchInput = c)"
+          v-ant-ref="c => (searchInput = c)"
           :placeholder="`Search ${column.dataIndex}`"
           :value="selectedKeys[0]"
-          style="width: 188px; margin-bottom: 8px; display: block"
-          @change="
-            (e) => setSelectedKeys(e.target.value ? [e.target.value] : [])
-          "
+          style="width: 188px; margin-bottom: 8px; display: block;"
+          @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
           @pressEnter="
             () => handleSearch(selectedKeys, confirm, column.dataIndex)
           "
@@ -57,14 +55,11 @@
         type="search"
         :style="{ color: filtered ? '#108ee9' : undefined }"
       />
-      <template slot="title">
+      <template slot="title" >
         <a-button
           icon="plus-circle"
           class="editable-add-btn"
-          @click="
-            visible = !visible;
-            editRowId = 'normal';
-          "
+          @click="visible = !visible;editRowId='normal'"
           type="primary"
         >
           新 增
@@ -113,10 +108,7 @@
       @ok="handleOk"
       @cancel="isEdit = false"
     >
-      <dict-cofing-form
-        ref="dictcofingform"
-        :editRowId="editRowId"
-      ></dict-cofing-form>
+      <dict-cofing-form ref="dictcofingform" :editRowId="editRowId"></dict-cofing-form>
     </a-modal>
   </div>
 </template>
@@ -142,39 +134,34 @@ for (let i = 0; i < 406; i++) {
 }
 export default {
   components: {
-    dictCofingForm,
+    dictCofingForm
   },
   data() {
     return {
       data,
-      isEdit: false, //是否编辑状态
-      visible: false, //控制子组件dialog的显隐
-      searchText: "", //搜索字符串
-      editRowId: "", //点击的行数据的ID
+      isEdit: false,//是否编辑状态
+      visible: false,//控制子组件dialog的显隐
+      searchText: "",//搜索字符串
+      editRowId:"",//点击的行数据的ID
       searchInput: null,
       searchedColumn: "",
-      loading: false, //表格loading
-      pagination: {
-        //表格分页组件
-        total: data.length, //数据总数
-        current: 1, //当前页数
-        defaultPageSize: 20, //默认每页显示10条数据
-        showTotal: (total) => `共 ${total} 条数据`, // 展示总共有几条数据
+      loading: false,//表格loading
+      pagination: {//表格分页组件
+        total: data.length,  //数据总数
+        current: 1,//当前页数
+        defaultPageSize: 20,//默认每页显示10条数据
+        showTotal: total => `共 ${total} 条数据`, // 展示总共有几条数据
         showSizeChanger: false, //显示修改pageSize的下拉框
-        pageSizeOptions: ["20", "50"], //设置pageSize的可选值，页面啊可以通过下拉框进行选择
-        onShowSizeChange: (current, pageSize) => (this.pageSize = pageSize),
+        pageSizeOptions: ['20', '50'], //设置pageSize的可选值，页面啊可以通过下拉框进行选择
+        onShowSizeChange: (current, pageSize) => this.pageSize = pageSize
       },
       columns: [
         {
           title: "序号",
           align: "center",
           width: 60,
-          customRender: (text, record, index) =>
-            `${
-              (this.pagination.current - 1) * this.pagination.defaultPageSize +
-              (index + 1)
-            }`,
-          fixed: "left",
+          customRender:(text,record,index)=>`${(this.pagination.current-1)*this.pagination.defaultPageSize + (index+1)}`,
+          fixed:"left"
         },
         {
           title: "字典分类",
@@ -184,95 +171,95 @@ export default {
           scopedSlots: {
             filterDropdown: "filterDropdown",
             filterIcon: "filterIcon",
-            customRender: "customRender",
+            customRender: "customRender"
           },
           onFilter: (value, record) =>
             record.zdfl
               .toString()
               .toLowerCase()
               .includes(value.trim().toLowerCase()),
-          onFilterDropdownVisibleChange: (visible) => {
+          onFilterDropdownVisibleChange: visible => {
             if (visible) {
               setTimeout(() => {
                 this.searchInput.focus();
               }, 0);
             }
-          },
+          }
         },
         {
           title: "字典名称",
           dataIndex: "zdmc",
           key: "zdmc",
-          width: 200,
+          width: 200
         },
         {
           title: "医嘱关键字(LIKE)",
           dataIndex: "yzgjz",
           key: "yzgjz",
-          width: 200,
+          width: 200
         },
         {
           title: "医嘱类别(=)",
           dataIndex: "yzlb",
           key: "yzlb",
-          width: 200,
+          width: 200
         },
         {
           title: "医嘱途径(=)",
           dataIndex: "yztj",
           key: "yztj",
-          width: 200,
+          width: 200
         },
         {
           title: "医嘱频次(=)",
           dataIndex: "yzpc",
           key: "yzpc",
-          width: 200,
+          width: 200
         },
         {
           title: "医嘱属性",
           dataIndex: "yzsx",
           key: "yzsx",
-          width: 200,
+          width: 200
         },
         {
           title: "输出类型",
           dataIndex: "sclx",
           key: "sclx",
-          width: 200,
+          width: 200
         },
         {
           title: "字典说明",
           dataIndex: "zdsm",
           key: "zdsm",
-          width: 200,
+          width: 200
         },
         {
           title: "创建时间",
           dataIndex: "cjsj",
           key: "cjsj",
-          width: 200,
+          width: 200
         },
         {
           title: "序号",
           dataIndex: "xh",
           key: "xh",
-          width: 200,
+          width: 200
         },
         {
           title: "停止",
           dataIndex: "tz",
           key: "tz",
-          width: 200,
+          width: 200
         },
         {
           title: "操作",
           width: 80,
           align: "center",
           fixed: "right",
-          scopedSlots: { customRender: "address" },
-        },
-      ],
+          scopedSlots: { customRender: "address" }
+        }
+      ]
     };
   },
   methods: {
@@ -281,13 +268,13 @@ export default {
       return {
         on: {
           // 鼠标双击行
-          dblclick: (event) => {
+          dblclick: event => {
             this.visible = true;
             this.isEdit = true;
-            this.editRowId = record.cjsj;
-            this.$message.info(record.cjsj);
-          },
-        },
+            this.editRowId =record.cjsj;
+            this.$message.info(record.cjsj)
+          }
+        }
       };
     },
     //表格内部筛选
@@ -319,10 +306,10 @@ export default {
       this.$refs.dictcofingform.onSubmit();
     },
     //table绑定change事件，方便页码组件进行分页
-    tableChange(pagination, filters, sorter) {
+    tableChange(pagination, filters, sorter){
       this.pagination = pagination;
     },
-  },
+  }
 };
 </script>
 <style scoped>

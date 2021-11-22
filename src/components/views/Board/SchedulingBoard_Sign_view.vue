@@ -21,12 +21,12 @@ export default {
       szy: [],
       ssy: [],
       mb: [],
-      hx: []
+      hx: [],
     };
   },
   props: {
     datazyh: String,
-    dataname: String
+    dataname: String,
   },
   watch: {
     datazyh() {
@@ -35,7 +35,7 @@ export default {
     },
     dataname() {
       this.brxm = this.dataname;
-    }
+    },
   },
   computed: {},
   methods: {
@@ -46,14 +46,14 @@ export default {
         path: "/patientBoard",
         query: {
           bqdm: this.bqdm,
-          item: this.item
-        }
+          item: this.item,
+        },
       });
     },
 
     async getDataAll() {
       //获取全部数据&html架构JSON
-      var obj = { zyh: this.datazyh };
+      let obj = { zyh: this.datazyh };
       const res = await this.$axios.get(
         "/han/PatientRelated/getPatientVitalSignData",
         obj
@@ -75,7 +75,7 @@ export default {
       this.szy = [];
       this.tw = [];
       this.time = [];
-      for (var i = 0; i < labels.length; i++) {
+      for (let i = 0; i < labels.length; i++) {
         this.hx.push(labels[i].hx);
         this.mb.push(labels[i].mb);
         this.ssy.push(labels[i].ssy);
@@ -87,8 +87,8 @@ export default {
     },
     smtz() {
       const chart = this.$refs.smtz;
-      var myChart = this.$echarts.init(smtz);
-      var option = {
+      let myChart = this.$echarts.init(smtz);
+      let option = {
         title: {
           top: "20",
           left: "20",
@@ -97,11 +97,11 @@ export default {
           textStyle: {
             //这里就是设置ttile文本的样式。
             color: "#000",
-            fontSize: 18
-          }
+            fontSize: 18,
+          },
         },
         tooltip: {
-          trigger: "axis"
+          trigger: "axis",
         },
         legend: {
           type: "plain",
@@ -110,13 +110,13 @@ export default {
           right: "50",
           itemHeight: 13, //没个iten图标的大小。
           symbolKeepAspect: true,
-          icon: "rect"
+          icon: "rect",
         },
         grid: {
           left: "4%",
           right: "4%",
           bottom: "3%",
-          containLabel: true
+          containLabel: true,
         },
         grid: {
           //canvas中的图表绘制。就是网格区域 。
@@ -127,7 +127,7 @@ export default {
           bottom: "2%",
           borderWidth: "0.5",
           borderColor: "#fff",
-          containLabel: true //是否包含刻度标尺，不包含的话Y轴在全屏状态下就会显示在屏幕之外。
+          containLabel: true, //是否包含刻度标尺，不包含的话Y轴在全屏状态下就会显示在屏幕之外。
         },
         xAxis: {
           type: "category",
@@ -137,14 +137,14 @@ export default {
           axisTick: {
             //控制x轴刻度。
             show: true, //不显示刻度。
-            inside: true //代表刻度的小尖尖朝内还是朝外。
+            inside: true, //代表刻度的小尖尖朝内还是朝外。
           },
           axisLabel: {
             //坐标轴刻度标签的相关设置。
             show: true,
             color: "#000", //刻度名称的字体颜色。
-            fontSize: 13
-          }
+            fontSize: 13,
+          },
         },
         yAxis: [
           {
@@ -159,10 +159,10 @@ export default {
               show: true,
               color: "#000",
               lineStyle: {
-                color: "#000"
-              }
+                color: "#000",
+              },
             },
-            splitLine: { show: false }
+            splitLine: { show: false },
           },
           {
             show: true,
@@ -175,10 +175,10 @@ export default {
               show: true,
               color: "#000",
               lineStyle: {
-                color: "#000"
-              }
+                color: "#000",
+              },
             },
-            splitLine: { show: false }
+            splitLine: { show: false },
           },
           {
             show: true,
@@ -191,18 +191,18 @@ export default {
               show: true,
               color: "#000",
               lineStyle: {
-                color: "#000"
-              }
+                color: "#000",
+              },
             },
             axisLabel: {
-              formatter: function(value) {
-                var texts = [];
+              formatter: function (value) {
+                let texts = [];
                 texts.push(value + "℃");
                 return texts;
-              }
+              },
             },
-            splitLine: { show: false }
-          }
+            splitLine: { show: false },
+          },
         ],
         series: [
           {
@@ -213,9 +213,9 @@ export default {
             data: this.tw,
             lineStyle: {
               normal: {
-                width: 1.5
-              }
-            }
+                width: 1.5,
+              },
+            },
           },
           {
             name: "呼吸",
@@ -225,9 +225,9 @@ export default {
             data: this.hx,
             lineStyle: {
               normal: {
-                width: 1.5
-              }
-            }
+                width: 1.5,
+              },
+            },
           },
           {
             name: "脉搏",
@@ -237,9 +237,9 @@ export default {
             data: this.mb,
             lineStyle: {
               normal: {
-                width: 1.5
-              }
-            }
+                width: 1.5,
+              },
+            },
           },
           {
             name: "收缩压",
@@ -249,10 +249,10 @@ export default {
             data: this.ssy,
             lineStyle: {
               normal: {
-                width: 1.5
-              }
+                width: 1.5,
+              },
             },
-            connectNulls: true
+            connectNulls: true,
           },
           {
             name: "舒张压",
@@ -262,19 +262,19 @@ export default {
             data: this.szy,
             lineStyle: {
               normal: {
-                width: 1.5
-              }
-            }
-          }
-        ]
+                width: 1.5,
+              },
+            },
+          },
+        ],
       };
       if (option && typeof option === "object") {
         myChart.setOption(option, true);
       }
-      window.onresize = function() {
+      window.onresize = function () {
         myChart.resize();
       };
-    }
+    },
   },
   mounted() {
     this.brxm = this.dataname;
@@ -284,7 +284,7 @@ export default {
     fullScreen();
     // this.qst();
     this.smtz();
-  }
+  },
 };
 </script>
 

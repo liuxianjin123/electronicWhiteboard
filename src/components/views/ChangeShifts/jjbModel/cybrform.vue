@@ -1,5 +1,8 @@
 <template>
-  <div class="container" :style="[{pointerEvents:($store.state.isjj==true?'auto':'none')}]">
+  <div
+    class="container"
+    :style="[{ pointerEvents: $store.state.isjj == true ? 'auto' : 'none' }]"
+  >
     <a-form-model :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
       <div class="tops">
         <div class="tops-left">
@@ -22,24 +25,24 @@
                 <template slot="title">
                   <span>增加到白板显示</span>
                 </template>
-                <a-switch default-checked v-model="form.whiteboardDisplay"/>
+                <a-switch default-checked v-model="form.whiteboardDisplay" />
               </a-tooltip>
             </li>
           </ul>
         </div>
-        <div class="tops-item tops-item-last" @click="xzhzAll(1,7,'')" v-else>
+        <div class="tops-item tops-item-last" @click="xzhzAll(1, 7, '')" v-else>
           <a-button>选择患者</a-button>
         </div>
       </div>
       <a-form-model-item label="出院诊断">
         <a-input v-model="form.diagnosis" />
       </a-form-model-item>
-       <a-form-model-item label="出院时间">
+      <a-form-model-item label="出院时间">
         <a-date-picker
           v-model="form.dischargeTime"
           :format="dateFormat"
           show-time
-          @change="(i,v)=>dataChanges(i,v,'dischargeTime')"
+          @change="(i, v) => dataChanges(i, v, 'dischargeTime')"
         />
       </a-form-model-item>
       <a-form-model-item label="转科时间">
@@ -47,7 +50,7 @@
           v-model="form.transferTime"
           :format="dateFormat"
           show-time
-         @change="(i,v)=>dataChanges(i,v,'transferTime')"
+          @change="(i, v) => dataChanges(i, v, 'transferTime')"
         />
       </a-form-model-item>
       <a-form-model-item label="死亡时间">
@@ -55,18 +58,18 @@
           v-model="form.timeOfDeath"
           :format="dateFormat"
           show-time
-          @change="(i,v)=>dataChanges(i,v,'timeOfDeath')"
+          @change="(i, v) => dataChanges(i, v, 'timeOfDeath')"
         />
       </a-form-model-item>
       <a-form-model-item label="转往科室">
-        <a-select 
-        v-model="form.transferInDepartmentId" 
-        show-search 
-        option-filter-prop="children"
-        :filter-option="filterOption"
+        <a-select
+          v-model="form.transferInDepartmentId"
+          show-search
+          option-filter-prop="children"
+          :filter-option="filterOption"
         >
           <a-select-option v-for="ks in Administrative" :key="ks.code">
-            {{ ks.fullName}}
+            {{ ks.fullName }}
           </a-select-option>
         </a-select>
       </a-form-model-item>
@@ -82,18 +85,18 @@ export default {
       dateFormat: "YYYY-MM-DD HH:mm",
       labelCol: { span: 5 },
       wrapperCol: { span: 19 },
-      Administrative:null,
+      Administrative: null,
       form: {
         type: "hlShioverDischargedPatientDtos",
         title: "出院患者",
         id: null,
         tmh: null,
         zyh: null,
-        brxb:null,
-        orderOfClassesId:localStorage.orderOfClassesId,
+        brxb: null,
+        orderOfClassesId: localStorage.orderOfClassesId,
         handoverTime: localStorage.handoverTime,
-        confirmTheShiftTime:null,
-        succeedTime:null,
+        confirmTheShiftTime: null,
+        succeedTime: null,
         isHandover: false,
         isSucceed: false,
         bedNumber: null,
@@ -107,20 +110,18 @@ export default {
         whiteboardDisplay: false,
         whetherToGenerate: false,
         idBeforeGeneration: null,
-      }
+      },
     };
   },
   props: obj.props,
   watch: obj.watch,
   mounted() {
-    if(this.isEdit) {
+    if (this.isEdit) {
       this.form = JSON.parse(JSON.stringify(this.editRowData));
     }
   },
   methods: {
-    handleOk(){
-
-    },
+    handleOk() {},
     onSubmit() {
       this.$emit("ruquestData", this.form);
     },
@@ -128,36 +129,38 @@ export default {
       this.form[r] = v;
     },
     //7.8胖纸
-    xzhzAll(type,dataType,zyh){
-      this.$emit('openxrbr',type,dataType,zyh);
+    xzhzAll(type, dataType, zyh) {
+      this.$emit("openxrbr", type, dataType, zyh);
     },
-    esdd(val){
+    esdd(val) {
       this.$refs.mychild.parentHandleclick(val);
     },
-    async getAdministrative(){
-      var obj={
-          key: "ksinfo"
-      }
-      const res = await this.$axios.post("/han/DICT/GetDict",obj)
-      console.log(res)
-      if(res.result){
+    async getAdministrative() {
+      let obj = {
+        key: "ksinfo",
+      };
+      const res = await this.$axios.post("/han/DICT/GetDict", obj);
+      console.log(res);
+      if (res.result) {
         this.Administrative = res.result;
-      }else{
-        this.$message.error(res.msg)
+      } else {
+        this.$message.error(res.msg);
       }
     },
     filterOption(input, option) {
       return (
-        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        option.componentOptions.children[0].text
+          .toLowerCase()
+          .indexOf(input.toLowerCase()) >= 0
       );
     },
   },
-  created(){
+  created() {
     this.getAdministrative();
   },
   components: {
     brIcon,
-  }
+  },
 };
 </script>
 <style scoped>

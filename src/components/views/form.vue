@@ -7,9 +7,7 @@
       @submit="handleSubmit"
     >
       <a-form-item label="Plain Text">
-        <span class="ant-form-text">
-          China
-        </span>
+        <span class="ant-form-text"> China </span>
       </a-form-item>
       <a-form-item label="Select" has-feedback>
         <a-select
@@ -17,18 +15,14 @@
             'select',
             {
               rules: [
-                { required: true, message: 'Please select your country!' }
-              ]
-            }
+                { required: true, message: 'Please select your country!' },
+              ],
+            },
           ]"
           placeholder="Please select a country"
         >
-          <a-select-option value="china">
-            China
-          </a-select-option>
-          <a-select-option value="usa">
-            U.S.A
-          </a-select-option>
+          <a-select-option value="china"> China </a-select-option>
+          <a-select-option value="usa"> U.S.A </a-select-option>
         </a-select>
       </a-form-item>
 
@@ -41,23 +35,17 @@
                 {
                   required: true,
                   message: 'Please select your favourite colors!',
-                  type: 'array'
-                }
-              ]
-            }
+                  type: 'array',
+                },
+              ],
+            },
           ]"
           mode="multiple"
           placeholder="Please select favourite colors"
         >
-          <a-select-option value="red">
-            Red
-          </a-select-option>
-          <a-select-option value="green">
-            Green
-          </a-select-option>
-          <a-select-option value="blue">
-            Blue
-          </a-select-option>
+          <a-select-option value="red"> Red </a-select-option>
+          <a-select-option value="green"> Green </a-select-option>
+          <a-select-option value="blue"> Blue </a-select-option>
         </a-select>
       </a-form-item>
 
@@ -67,9 +55,7 @@
           :min="1"
           :max="10"
         />
-        <span class="ant-form-text">
-          machines
-        </span>
+        <span class="ant-form-text"> machines </span>
       </a-form-item>
 
       <a-form-item label="Switch">
@@ -85,62 +71,40 @@
 
       <a-form-item label="Radio.Group">
         <a-radio-group v-decorator="['radio-group']">
-          <a-radio value="a">
-            item 1
-          </a-radio>
-          <a-radio value="b">
-            item 2
-          </a-radio>
-          <a-radio value="c">
-            item 3
-          </a-radio>
+          <a-radio value="a"> item 1 </a-radio>
+          <a-radio value="b"> item 2 </a-radio>
+          <a-radio value="c"> item 3 </a-radio>
         </a-radio-group>
       </a-form-item>
 
       <a-form-item label="Radio.Button">
         <a-radio-group v-decorator="['radio-button']">
-          <a-radio-button value="a">
-            item 1
-          </a-radio-button>
-          <a-radio-button value="b">
-            item 2
-          </a-radio-button>
-          <a-radio-button value="c">
-            item 3
-          </a-radio-button>
+          <a-radio-button value="a"> item 1 </a-radio-button>
+          <a-radio-button value="b"> item 2 </a-radio-button>
+          <a-radio-button value="c"> item 3 </a-radio-button>
         </a-radio-group>
       </a-form-item>
 
       <a-form-item label="Checkbox.Group">
         <a-checkbox-group
           v-decorator="['checkbox-group', { initialValue: ['A', 'B'] }]"
-          style="width: 100%;"
+          style="width: 100%"
         >
           <a-row>
             <a-col :span="8">
-              <a-checkbox value="A">
-                A
-              </a-checkbox>
+              <a-checkbox value="A"> A </a-checkbox>
             </a-col>
             <a-col :span="8">
-              <a-checkbox disabled value="B">
-                B
-              </a-checkbox>
+              <a-checkbox disabled value="B"> B </a-checkbox>
             </a-col>
             <a-col :span="8">
-              <a-checkbox value="C">
-                C
-              </a-checkbox>
+              <a-checkbox value="C"> C </a-checkbox>
             </a-col>
             <a-col :span="8">
-              <a-checkbox value="D">
-                D
-              </a-checkbox>
+              <a-checkbox value="D"> D </a-checkbox>
             </a-col>
             <a-col :span="8">
-              <a-checkbox value="E">
-                E
-              </a-checkbox>
+              <a-checkbox value="E"> E </a-checkbox>
             </a-col>
           </a-row>
         </a-checkbox-group>
@@ -159,8 +123,8 @@
             'upload',
             {
               valuePropName: 'fileList',
-              getValueFromEvent: normFile
-            }
+              getValueFromEvent: normFile,
+            },
           ]"
           name="logo"
           action="/upload.do"
@@ -177,8 +141,8 @@
               'dragger',
               {
                 valuePropName: 'fileList',
-                getValueFromEvent: normFile
-              }
+                getValueFromEvent: normFile,
+              },
             ]"
             name="files"
             action="/upload.do"
@@ -189,9 +153,7 @@
             <p class="ant-upload-text">
               Click or drag file to this area to upload
             </p>
-            <p class="ant-upload-hint">
-              Support for a single or bulk upload.
-            </p>
+            <p class="ant-upload-hint">Support for a single or bulk upload.</p>
           </a-upload-dragger>
         </div>
       </a-form-item>
@@ -210,8 +172,8 @@ export default {
   data: () => ({
     formItemLayout: {
       labelCol: { span: 6 },
-      wrapperCol: { span: 14 }
-    }
+      wrapperCol: { span: 14 },
+    },
   }),
   beforeCreate() {
     this.form = this.$form.createForm(this, { name: "validate_other" });
@@ -240,30 +202,30 @@ export default {
     getBr() {
       this.$axios
         .get("https://api.apiopen.top/getJoke?page=1&count=120&type=video", {
-          data: {date:new Date()},
+          data: { date: new Date() },
           headers: {
-            Authorization: "Bearer " + sessionStorage.getItem("tk")
-          }
+            Authorization: "Bearer " + sessionStorage.getItem("tk"),
+          },
         })
-        .then(res => {
+        .then((res) => {
           console.log(res);
         })
-        .catch(err => {
+        .catch((err) => {
           //console.log(err);
         });
-    }
+    },
   },
   created() {
-    var query = this.$route.query;
+    let query = this.$route.query;
     //console.log(query);
     //this.getBr();
     //console.log(this.dayjs().format('YYYY-MM-DD hh:mm:ss'));
     //console.log(this.dayjs('2021/2/24').format('YYYY-MM-DD hh:mm:ss'));
-  }
+  },
 };
 </script>
 <style lang="less" scoped>
-  .container{
-    overflow: auto;
-  }
+.container {
+  overflow: auto;
+}
 </style>

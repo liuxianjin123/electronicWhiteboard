@@ -44,10 +44,10 @@ export default {
     },
   },
   created(){
-    console.log("----------------------------------------------")
-    var query=this.$route.query;
-    console.log(query)
-    console.log("----------------------------------------------")
+    console.log("----------------------------------------------");
+    let query=this.$route.query;
+    console.log(query);
+    console.log("----------------------------------------------");
   }
 };
 </script>

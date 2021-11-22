@@ -3,7 +3,7 @@ export default {
     Vue.prototype.$Page = {
       getDate() {
         //获取当前时间
-        var d, s;
+        let d, s;
         d = new Date();
         s = d.getFullYear() + "-"; //取年份
         s =
@@ -18,22 +18,22 @@ export default {
           (d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes()) + ":"; //取分
         s +=
           (d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds()) + " ";
-        var myddy = d.getDay();
-        var weekday = [
+        let myddy = d.getDay();
+        let weekday = [
           "星期日",
           "星期一",
           "星期二",
           "星期三",
           "星期四",
           "星期五",
-          "星期六"
+          "星期六",
         ]; //取秒
         s += weekday[myddy];
         return s;
       },
       fullScreen() {
         //进入全屏
-        var el = document.documentElement,
+        let el = document.documentElement,
           rfs =
             el.requestFullScreen ||
             el.webkitRequestFullScreen ||
@@ -55,7 +55,7 @@ export default {
       },
       exitFull() {
         //退出全屏
-        var el = document,
+        let el = document,
           cfs =
             el.cancelFullScreen ||
             el.webkitCancelFullScreen ||
@@ -93,16 +93,16 @@ export default {
       },
       getNextDate(date, day) {
         //当前时间+1或者-1
-        var dd = new Date(date);
+        let dd = new Date(date);
         dd.setDate(dd.getDate() + day);
-        var y = dd.getFullYear();
-        var m =
+        let y = dd.getFullYear();
+        let m =
           dd.getMonth() + 1 < 10
             ? "0" + (dd.getMonth() + 1)
             : dd.getMonth() + 1;
-        var d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
+        let d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
         return y + "-" + m + "-" + d;
-      }
+      },
     };
-  }
+  },
 };

@@ -82,30 +82,30 @@ export default {
           path: "/jjbIndex",
           name: "护理交接班",
           icon: "calendar",
-          component: (resolve) =>
+          component: resolve =>
             require(["@/components/views/jjbIndex"], resolve),
           children: [
             {
               path: "/nuxreChangeShifts",
               name: "交接班",
               icon: "solution",
-              component: (resolve) =>
+              component: resolve =>
                 require([
-                  "@/components/views/ChangeShifts/nuxreChangeShifts",
-                ], resolve),
+                  "@/components/views/ChangeShifts/nuxreChangeShifts"
+                ], resolve)
             },
             {
               path: "/ChangeShifts",
               name: "护理人员分组",
               icon: "dingding",
-              component: (resolve) =>
+              component: resolve =>
                 require([
-                  "@/components/views/ChangeShifts/ChangeShifts",
-                ], resolve),
-            },
-          ],
-        },
-      ],
+                  "@/components/views/ChangeShifts/ChangeShifts"
+                ], resolve)
+            }
+          ]
+        }
+      ]
     };
   },
   methods: {
@@ -115,9 +115,9 @@ export default {
     handelClickLink(item) {
       console.log(item);
       //左边列表item的选中事件
-      let isYou = true;
+      var isYou = true;
       if (item.keyPath.length > 1) {
-        for (let f in this.panes) {
+        for (var f in this.panes) {
           if (this.panes[f].key == item.key) {
             isYou = false;
           }
@@ -126,7 +126,7 @@ export default {
           this.panes.push({
             title: item.item.$el.childNodes[1].childNodes[0].data,
             key: item.key,
-            closable: item.key == "/button" ? false : true,
+            closable: item.key == "/button" ? false : true
           });
         }
         this.active.length = 0; //将默认选中的item去掉，赋值上当前的key，这样左边选中的就会有样式
@@ -153,7 +153,7 @@ export default {
           lastIndex = i - 1;
         }
       });
-      const panes = this.panes.filter((pane) => pane.key !== targetKey);
+      const panes = this.panes.filter(pane => pane.key !== targetKey);
       if (panes.length && activeKey === targetKey) {
         if (lastIndex > 0) {
           activeKey = panes[lastIndex].key;
@@ -166,13 +166,13 @@ export default {
       this.active.push(activeKey); //这里的控制页面切换
       this.activeKey = activeKey;
       this.$router.push({ path: activeKey });
-    },
+    }
   },
   created() {
-    let query = this.$route.query;
+    var query = this.$route.query;
     console.log(query);
     this.$router.push({ path: "/nuxreChangeShifts" });
-  },
+  }
 };
 </script>
 <style scoped>

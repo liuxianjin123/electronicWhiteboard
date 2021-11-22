@@ -1,13 +1,22 @@
 <template>
-    <div>
-        <a-form-model :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-form-model-item label="Activity zone">
-                <a-select v-model="form.region" placeholder="please select your zone" @change="choseValue">
-                    <a-select-option v-for="item in searchList" :key="item"  :value="item">{{item}}</a-select-option>
-                </a-select>
-            </a-form-model-item>
-        </a-form-model>
-    </div>
+  <div>
+    <a-form-model :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
+      <a-form-model-item label="Activity zone">
+        <a-select
+          v-model="form.region"
+          placeholder="please select your zone"
+          @change="choseValue"
+        >
+          <a-select-option
+            v-for="item in searchList"
+            :key="item"
+            :value="item"
+            >{{ item }}</a-select-option
+          >
+        </a-select>
+      </a-form-model-item>
+    </a-form-model>
+  </div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -41,7 +50,7 @@ export default {
     },
   },
   created(){
-      console.log(111)
+    console.log(111);
   }
 };
 </script>

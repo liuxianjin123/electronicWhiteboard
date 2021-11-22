@@ -1,25 +1,13 @@
 <template>
-    <div>
-
-    </div>
+  <div></div>
 </template>
 <script>
 export default {
-    name: "PersonnelGrouping",
-    data() {
-        return {
-
-        };
-    },
-    methods: {
-
-
-    }
-
-}
+  name: "PersonnelGrouping",
+  data() {
+    return {};
+  },
+  methods: {},
+};
 </script>
-<style>
-
-
-
-</style>
+<style></style>

@@ -24,7 +24,7 @@
                             ? 'PatientlabelRed'
                             : item.bzbz
                             ? 'PatientlabelOrange'
-                            : ''
+                            : '',
                         ]"
                         :style="{
                           background: $store.state.board.darkMode
@@ -32,7 +32,7 @@
                             : $store.state.board.whiteBg,
                           boxShadow: $store.state.board.darkMode
                             ? $store.state.board.darkModeShadow
-                            : $store.state.board.whiteShadow
+                            : $store.state.board.whiteShadow,
                         }"
                       >
                         <i
@@ -45,7 +45,7 @@
                           :style="{
                             color: $store.state.board.darkMode
                               ? $store.state.board.darkModeColor
-                              : $store.state.board.whiteColor
+                              : $store.state.board.whiteColor,
                           }"
                         >
                           <div class="row1">
@@ -56,7 +56,7 @@
                                   ? 'color-IconRed'
                                   : item.bzbz
                                   ? 'color-IconOrange'
-                                  : ''
+                                  : '',
                               ]"
                             ></span
                             ><span
@@ -65,7 +65,7 @@
                                   ? 'red'
                                   : item.bzbz
                                   ? '#F6BA1C'
-                                  : ''
+                                  : '',
                               }"
                               >{{ item.bwbz ? "重" : ""
                               }}{{ item.bzbz ? "危" : "" }}</span
@@ -97,7 +97,7 @@
                                       item.ycdf >= 13 &&
                                       item.ycdf <= 15
                                     ? 'cl_2'
-                                    : ''
+                                    : '',
                                 ]"
                               >
                                 疮
@@ -110,7 +110,7 @@
                                       item.dddf > 40 &&
                                       item.dddf <= 61
                                     ? 'cl_2'
-                                    : ''
+                                    : '',
                                 ]"
                               >
                                 跌
@@ -119,7 +119,7 @@
                                 :class="[
                                   item.gddf != '' && item.gddf >= 11
                                     ? 'cl_1'
-                                    : ''
+                                    : '',
                                 ]"
                               >
                                 管
@@ -132,7 +132,7 @@
                                       item.ttdf >= 3 &&
                                       item.ttdf <= 6
                                     ? 'cl_2'
-                                    : ''
+                                    : '',
                                 ]"
                               >
                                 疼
@@ -145,7 +145,7 @@
                                       item.adldf > 40 &&
                                       item.adldf <= 61
                                     ? 'cl_2'
-                                    : ''
+                                    : '',
                                 ]"
                               >
                                 ADL
@@ -168,7 +168,7 @@
               : $store.state.board.whiteBg,
             boxShadow: $store.state.board.darkMode
               ? $store.state.board.darkModeShadow
-              : $store.state.board.whiteShadow
+              : $store.state.board.whiteShadow,
           }"
         >
           <div>
@@ -177,7 +177,7 @@
               :style="{
                 borderColor: item.style[0],
                 color: item.style[1],
-                background: item.style[2]
+                background: item.style[2],
               }"
               v-for="item in other[0]"
               :key="item.Id"
@@ -192,7 +192,7 @@
               :style="{
                 borderColor: item.style[0],
                 color: item.style[1],
-                background: item.style[2]
+                background: item.style[2],
               }"
               v-for="item in other[1]"
               :key="item.Id"
@@ -223,64 +223,64 @@ export default {
             Id: "btn_tjhl",
             title: "特级护理",
             childrenValue: 0,
-            style: ["#F24040", "#F24040", ""]
+            style: ["#F24040", "#F24040", ""],
           },
           {
             Id: "btn_yjhl",
             title: "一级护理",
             childrenValue: 0,
-            style: ["#FFB5DD", "#FFB5DD", ""]
+            style: ["#FFB5DD", "#FFB5DD", ""],
           },
           {
             Id: "btn_ejhl",
             title: "二级护理",
             childrenValue: 0,
-            style: ["#196D9D", "#ffffff", "#196D9D"]
+            style: ["#196D9D", "#ffffff", "#196D9D"],
           },
           {
             Id: "btn_sjhl",
             title: "三级护理",
             childrenValue: 0,
-            style: ["#18B073", "#18B073", ""]
+            style: ["#18B073", "#18B073", ""],
           },
           {
             Id: "btn_bz",
             title: "病重",
             childrenValue: 0,
-            style: ["#F7BA2B", "#F7BA2B", ""]
+            style: ["#F7BA2B", "#F7BA2B", ""],
           },
           {
             Id: "btn_bw",
             title: "病危",
             childrenValue: 0,
-            style: ["#F40000", "#F40000", ""]
-          }
+            style: ["#F40000", "#F40000", ""],
+          },
         ],
         [
           {
             Id: "btn_qbcw",
             title: "全部床位",
             childrenValue: 0,
-            style: ["#196D9D", "#196D9D", ""]
+            style: ["#196D9D", "#196D9D", ""],
           },
           {
             Id: "btn_zc",
             title: "在床",
             childrenValue: 0,
-            style: ["#196D9D", "#196D9D", ""]
+            style: ["#196D9D", "#196D9D", ""],
           },
           {
             Id: "btn_kc",
             title: "空床",
             childrenValue: 0,
-            style: ["#196D9D", "#196D9D", ""]
-          }
-        ]
-      ]
+            style: ["#196D9D", "#196D9D", ""],
+          },
+        ],
+      ],
     };
   },
   components: {
-    vueSeamlessScroll
+    vueSeamlessScroll,
   },
   computed: {
     classOption() {
@@ -292,45 +292,47 @@ export default {
         openWatch: true, // 开启数据实时监控刷新dom
         singleHeight: 0, // 单步运动停止的高度(默认值0是无缝不停止的滚动) direction => 0/1
         singleWidth: 0, // 单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
-        waitTime: 500 // 单步运动停止的时间(默认值1000ms)
+        waitTime: 500, // 单步运动停止的时间(默认值1000ms)
       };
-    }
+    },
   },
   methods: {
     async getDataAll() {
       const res = await this.$axios.get("/api/WhiteBoardApi/GetBrxxList", {
         bqdm: this.$route.query.bqdm,
-        lx:0
+        lx: 0,
       });
       this.$emit("changeIsLoad");
-      console.log(res)
+      console.log(res);
       if (res.result != null) {
         this.brxxData = res.result;
       }
       this.TimeToLoad();
     },
     async getDataTopAll() {
-      var datas = {
+      let datas = {
         bqdm: this.$route.query.bqdm,
         lc: this.$route.query.lc,
-        stime: this.$Page.getDate().substring(0,10)+" 08:00:00",
-        etime: this.$Page.getNextDate(this.$Page.getDate().substring(0,10),1)+" 08:00:00",
-        userCode:"",
-        utype:1
+        stime: this.$Page.getDate().substring(0, 10) + " 08:00:00",
+        etime:
+          this.$Page.getNextDate(this.$Page.getDate().substring(0, 10), 1) +
+          " 08:00:00",
+        userCode: "",
+        utype: 1,
       };
       const res = await this.$axios.get(
         "/api/WhiteBoardApi/GetWhiteBoardData",
         datas
       );
-      console.log(res,666)
-      if (res.result.length>1) {
-        for (var i = 0; i < this.other[0].length; i++) {
+      console.log(res, 666);
+      if (res.result.length > 1) {
+        for (let i = 0; i < this.other[0].length; i++) {
           this.other[0][i].childrenValue = this.otherVal(
             this.other[0][i].Id,
             res.result
           );
         }
-        for (var ii = 0; ii < this.other[1].length; ii++) {
+        for (let ii = 0; ii < this.other[1].length; ii++) {
           this.other[1][ii].childrenValue = this.otherVal(
             this.other[1][ii].Id,
             res.result
@@ -339,8 +341,8 @@ export default {
       }
     },
     otherVal(name, obj) {
-      var msg = "";
-      for (var i of obj) {
+      let msg = "";
+      for (let i of obj) {
         if (i.id == name) {
           msg = i.val;
         }
@@ -358,7 +360,7 @@ export default {
   mounted() {
     this.getDataAll();
     this.getDataTopAll();
-  }
+  },
 };
 </script>
 

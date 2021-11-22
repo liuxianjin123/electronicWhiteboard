@@ -105,7 +105,7 @@ export default {
         colbwhz: { name: "病危患者", capacity: obj.colbwhz },
         colyjhz: { name: "一级护理", capacity: obj.coltshz },
         colsshz: { name: "手术患者", capacity: obj.colsshz },
-        coltshz: { name: "特殊患者", capacity: obj.colyjhz }
+        coltshz: { name: "特殊患者", capacity: obj.colyjhz },
       },
       xujia: [
         {
@@ -137,19 +137,19 @@ export default {
           whetherToGenerate: false,
           whiteboardDisplay: false,
           zyh: "0045201902147680",
-          category: "colbwhz"
-        }
+          category: "colbwhz",
+        },
       ],
       visible: false,
       datazyh: "",
       dataname: "",
-      datacd: 0 //获取展示到白版的数组长度
+      datacd: 0, //获取展示到白版的数组长度
     };
   },
   components: {
     vueSeamlessScroll,
     brIcon,
-    yesterday
+    yesterday,
   },
   computed: {
     classOption() {
@@ -161,16 +161,16 @@ export default {
         openWatch: true, // 开启数据实时监控刷新dom
         singleHeight: 0, // 单步运动停止的高度(默认值0是无缝不停止的滚动) direction => 0/1
         singleWidth: 0, // 单步运动停止的宽度(默认值0是无缝不停止的滚动) direction => 2/3
-        waitTime: 200 // 单步运动停止的时间(默认值1000ms)
+        waitTime: 200, // 单步运动停止的时间(默认值1000ms)
       };
-    }
+    },
   },
   methods: {
     ycxm(str, frontLen, endLen) {
       //隐藏关键信息 frontLen: 前面需要保留几位    endLen: 后面需要保留几位
-      var len = str.length - frontLen - endLen;
-      var xing = "";
-      for (var i = 0; i < len; i++) {
+      let len = str.length - frontLen - endLen;
+      let xing = "";
+      for (let i = 0; i < len; i++) {
         xing += "*";
       }
       return (
@@ -181,8 +181,8 @@ export default {
     tabletop(arr1) {
       //当前表头数组
       let arr = [...arr1];
-      var reg = /[a-z]/i;
-      for (var i = 0; i < arr.length; i++) {
+      let reg = /[a-z]/i;
+      for (let i = 0; i < arr.length; i++) {
         if (
           arr[i].title == "床号" ||
           arr[i].title == "姓名" ||
@@ -205,7 +205,7 @@ export default {
       this.spinning = true;
       const res1 = await this.$axios.get("/han/HandoverProc/GetMarkPatients");
       if (res1.result) {
-        for (var i = 0; i < res1.result.length; i++) {
+        for (let i = 0; i < res1.result.length; i++) {
           if (res1.result[i].whiteboardDisplay) {
             this.datacd++;
           }
@@ -223,7 +223,7 @@ export default {
     },
     showModal(e) {
       console.log(e);
-      var target = e.target;
+      let target = e.target;
       if (target.className == "ckzr") {
         this.visible = true;
         this.datazyh = target.getAttribute("data-zyh");
@@ -234,10 +234,10 @@ export default {
     handleOk(e) {
       console.log(e);
       this.visible = false;
-    }
+    },
   },
   mounted() {
-    var query = this.$route.query;
+    let query = this.$route.query;
     this.bqdm = query.bqdm;
     this.item = query.item;
     this.wardName = query.wardName;
@@ -246,7 +246,7 @@ export default {
       //没1H刷新一系整体数据
       this.getDataAll();
     }, 60 * 1000 * 60);
-  }
+  },
 };
 </script>
 

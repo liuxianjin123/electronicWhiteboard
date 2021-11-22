@@ -10,16 +10,16 @@ export default {
       Specialhl: "",
       Onehl: "",
       Twohl: "",
-      Threehl: ""
+      Threehl: "",
     };
   },
   props: {
-    hljb: {}
+    hljb: {},
   },
   watch: {
     hljb() {
       this.getDataAll();
-    }
+    },
   },
   mounted() {
     this.getDataAll();
@@ -30,20 +30,20 @@ export default {
       // console.log(this.hljb,1);
       if (this.hljb.count) {
         (this.Specialhl = this.hljb.levelSpecial),
-          (this.Onehl = this.hljb.levelOne),
-          (this.Twohl = this.hljb.levelTwo),
-          (this.Threehl = this.hljb.levelThree),
-          this.hijb1();
+        (this.Onehl = this.hljb.levelOne),
+        (this.Twohl = this.hljb.levelTwo),
+        (this.Threehl = this.hljb.levelThree),
+        this.hijb1();
         // console.log( this.Specialhl,this.Onehl,this.Twohl,this.Threehl);
       }
     },
     hijb1() {
       const chart = this.$refs.hijb;
-      var myChart = this.$echarts.init(hijb);
-      var than = this;
-      var option = {
+      let myChart = this.$echarts.init(hijb);
+      let than = this;
+      let option = {
         tooltip: {
-          trigger: "item"
+          trigger: "item",
         },
         color: ["#FF7676", "#FFDEF0", "#8BC9ED", "#5FB878"],
         series: [
@@ -55,26 +55,26 @@ export default {
               { value: than.Specialhl, name: "特级护理" },
               { value: than.Onehl, name: "一级护理" },
               { value: than.Twohl, name: "二级护理" },
-              { value: than.Threehl, name: "三级护理" }
+              { value: than.Threehl, name: "三级护理" },
             ],
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)"
-              }
-            }
-          }
-        ]
+                shadowColor: "rgba(0, 0, 0, 0.5)",
+              },
+            },
+          },
+        ],
       };
       if (option && typeof option === "object") {
         myChart.setOption(option, true);
       }
-      window.onresize = function() {
+      window.onresize = function () {
         myChart.resize();
       };
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

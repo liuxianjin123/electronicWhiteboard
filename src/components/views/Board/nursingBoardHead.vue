@@ -4,7 +4,7 @@
     :style="{
       color: $store.state.board.darkMode
         ? $store.state.board.darkModeColor
-        : $store.state.board.whiteColor
+        : $store.state.board.whiteColor,
     }"
     @click="cancelShade"
   >
@@ -15,7 +15,7 @@
           color: $store.state.board.darkMode
             ? $store.state.board.darkModeColor
             : $store.state.board.whiteColor,
-          fontSize: '36px'
+          fontSize: '36px',
         }"
       >
         {{ yymc }}{{ bqmc }}
@@ -30,40 +30,40 @@
 export default {
   data() {
     return {
-      yymc:"绵阳市***人民医院",
+      yymc: "绵阳市***人民医院",
       bqmc: "****科病区",
-      dates: null
+      dates: null,
     };
   },
-  props:{
-    bqdm:String
+  props: {
+    bqdm: String,
   },
-  
+
   methods: {
     //获取医院基本信息
     async getYYms() {
       const res = await this.$axios.get(
-        "/api/WhiteBoardApi/GetOrgName/"+this.$route.query.bqdm
+        "/api/WhiteBoardApi/GetOrgName/" + this.$route.query.bqdm
       );
-      console.log(res,"YYXX")
-      this.yymc=res.result.yymc;
-      this.bqmc=res.result.bqmc;
+      console.log(res, "YYXX");
+      this.yymc = res.result.yymc;
+      this.bqmc = res.result.bqmc;
     },
-    cancelShade(){
-      this.$emit('cancelShade');
-    }
+    cancelShade() {
+      this.$emit("cancelShade");
+    },
   },
   watch: {
-    displayMode: function(newVal, oldVal) {
+    displayMode: function (newVal, oldVal) {
       newVal
         ? (this.darklyFontColor = "#44ffe5")
         : (this.darklyFontColor = "#196D9D");
-    }
+    },
   },
   computed: {
     NowDate() {
       return this.dates;
-    }
+    },
   },
   mounted() {
     this.getYYms();

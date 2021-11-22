@@ -57,25 +57,29 @@ export default {
     };
   },
   methods: {
-    onSubmit(form) {  
-    var query=this.$route.query;
-    this.form.brxm=query.user_id;
-    console.log(this.form);
-    var userId = this.form.brxm;
-    console.log(localStorage[userId])
-    this.axios
-      .post("http://benben.cn.utools.club/api/Forms/savePgTabYcpg", this.form,{
-         headers: {
-          "content-type": "application/json",
-          "Authorization":'Bearer '+ localStorage[userId] //token换成从缓存获取
-        }
-      }).then((res) => {
-        console.log(res);
-         
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    onSubmit(form) {
+      let query = this.$route.query;
+      this.form.brxm = query.user_id;
+      console.log(this.form);
+      let userId = this.form.brxm;
+      console.log(localStorage[userId]);
+      this.axios
+        .post(
+          "http://benben.cn.utools.club/api/Forms/savePgTabYcpg",
+          this.form,
+          {
+            headers: {
+              "content-type": "application/json",
+              Authorization: "Bearer " + localStorage[userId], //token换成从缓存获取
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
