@@ -113,15 +113,6 @@ export default {
                   "@/components/views/ChangeShifts/Change_Shifts_sz/index.vue",
                 ], resolve),
             },
-            {
-              path: "/rygl",
-              name: "人员管理",
-              icon: "solution",
-              component: (resolve) =>
-                require([
-                  "@/components/views/ChangeShifts/rygl/index.vue",
-                ], resolve),
-            },
           ],
         },
       ],

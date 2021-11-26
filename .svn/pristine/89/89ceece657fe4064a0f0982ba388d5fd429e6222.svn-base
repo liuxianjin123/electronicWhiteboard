@@ -68,7 +68,6 @@
 </template>
 
 <script>
-import jwtDecode from "jwt-decode";
 export default {
   name: "index",
   data() {
@@ -113,15 +112,6 @@ export default {
                   "@/components/views/ChangeShifts/Change_Shifts_sz/index.vue",
                 ], resolve),
             },
-            {
-              path: "/rygl",
-              name: "人员管理",
-              icon: "solution",
-              component: (resolve) =>
-                require([
-                  "@/components/views/ChangeShifts/rygl/index.vue",
-                ], resolve),
-            },
           ],
         },
       ],
@@ -132,6 +122,7 @@ export default {
       this.collapsed = !this.collapsed;
     },
     handelClickLink(item) {
+      console.log(item);
       //左边列表item的选中事件
       let isYou = true;
       if (item.keyPath.length > 1) {
@@ -162,33 +153,6 @@ export default {
       this.active.length = 0;
       this.active.push(targetKey); //将默认选中的item去掉，赋值上当前的key，这样左边选中的就会有样式
     },
-    async denglu() {
-      //登录获取token
-      let obj = {
-        account: "0299",
-        passWord: "1",
-        macAddress: "Duis culpa laboris",
-      };
-      const res = await this.$axios.post("/auth/authorization/loging", obj);
-      if (res.result) {
-        //存入token
-        sessionStorage.setItem("token", "Bearer " + res.result);
-        const decode = jwtDecode(res.result);
-        //存入操作员身份
-        sessionStorage.setItem("operatorType", decode.DutyId);
-        //操作员所在科室名称
-        sessionStorage.setItem("departmentName", decode.KSMC);
-        //操作员所在科室代码
-        sessionStorage.setItem("departmentCode", decode.KSDM);
-        //操作员姓名
-        sessionStorage.setItem("operatorName", decode.RealName);
-        //操作员代码
-        sessionStorage.setItem("operatorCode", decode.Account);
-        this.$store.commit("updateOperatorMsg", decode);
-      } else {
-        this.$message.error(res.msg);
-      }
-    },
     remove(targetKey) {
       //tabs的移除事件
       let activeKey = this.activeKey;
@@ -215,7 +179,7 @@ export default {
   },
   created() {
     let query = this.$route.query;
-    this.denglu(); //获取登录
+    console.log(query);
     this.$router.push({ path: "/nuxreChangeShifts" });
   },
 };

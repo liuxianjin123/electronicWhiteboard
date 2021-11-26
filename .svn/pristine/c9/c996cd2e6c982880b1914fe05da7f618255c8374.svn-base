@@ -136,15 +136,6 @@ let routerConfig = {
               "@/components/views/ChangeShifts/Change_Shifts_sz/index.vue",
             ], resolve),
         },
-        {
-          path: "/rygl",
-          name: "人员管理",
-          icon: "dingding",
-          component: (resolve) =>
-            require([
-              "@/components/views/ChangeShifts/rygl/index.vue",
-            ], resolve),
-        },
       ],
     },
     {

@@ -1,0 +1,163 @@
+<template>
+  <div class="container">
+    <div class="box">
+      <div class="header">
+        <span
+          ><img
+            src="../../../../../static/images/ChangeShifts_now/u367.png"
+            alt="交接班设置"
+            class="header-img"
+            title="交接班设置"
+          />
+          交接班设置
+        </span>
+      </div>
+      <div class="fgx"></div>
+      <div class="content">
+        <a-form :label-col="{ span: 1 }" :wrapper-col="{ span: 4 }">
+          <a-form-item label=" * 科室">
+            <a-select v-model="keshi" placeholder="请选择科室">
+              <!-- <a-select-option value="呼吸"> 呼吸道科 </a-select-option>
+              <a-select-option value="急诊"> 急诊科 </a-select-option> -->
+              <a-select-option
+                v-for="i in keshiarr"
+                :key="i.id"
+                :value="i.id"
+                >{{ i.name }}</a-select-option
+              >
+            </a-select>
+          </a-form-item>
+        </a-form>
+        <div v-for="i in titles" :key="i.id" v-show="i.isshow">
+          <div class="titles">
+            <a-row>
+              <a-col :span="23">
+                <i class="Subtitle"></i>
+                <span
+                  ><b> {{ i.name }} </b></span
+                >
+              </a-col>
+              <a-col :span="1">
+                <a-icon
+                  :type="i.isopen ? 'caret-down' : 'caret-right'"
+                  style="font-size: 33px; color: rgba(25, 109, 157, 1)"
+                  @click="onisopen(i.id)"
+                />
+              </a-col>
+            </a-row>
+          </div>
+          <div class="content_Subtitle" v-if="i.isopen"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import JjbBcsz from "../../../views/ChangeShifts/Change_Shifts_sz/JjbBcsz";
+import JjbSjsz from "../../../views/ChangeShifts/Change_Shifts_sz/JjbSjsz";
+import JjbZssjsz from "../../../views/ChangeShifts/Change_Shifts_sz/JjbZssjsz";
+import YczXssz from "../../../views/ChangeShifts/Change_Shifts_sz/YczXssz";
+import XzWzly from "../../../views/ChangeShifts/Change_Shifts_sz/XzWzly";
+export default {
+  data() {
+    return {
+      keshi: 2, //选中科室
+      keshiarr: [
+        { id: 1, name: "呼吸道科" },
+        { id: 2, name: "急诊科" },
+        { id: 3, name: "内科" },
+      ], //所有科室
+      titles: [
+        //小标题展示 名称 id 是否显示  是否展开
+        { name: "交接班班次设置", id: 0, isshow: true, isopen: true },
+        { name: "交接班展示数据设置", id: 1, isshow: true, isopen: false },
+        { name: "异常值显示设置", id: 2, isshow: true, isopen: true },
+        { name: "交接班时间设置", id: 3, isshow: true, isopen: true },
+        { name: "新增物资来源", id: 4, isshow: true, isopen: true },
+      ],
+    };
+  },
+  components: {
+    jjbBcsz,
+    jjbSjsz,
+    jjbZssjsz,
+    yczXssz,
+    xzWzly,
+  },
+  methods: {
+    onisopen(id) {
+      this.titles[id].isopen = !this.titles[id].isopen;
+    },
+  },
+};
+</script>
+
+<style scoped>
+.container {
+  padding: 10px;
+  box-sizing: border-box;
+  background: #f2f2f2;
+  height: 100%;
+}
+.box {
+  background: #fff;
+  height: 100%;
+  border-radius: 5px;
+  padding: 10px;
+}
+.header {
+  padding: 15px;
+  height: 60px;
+  align-items: center;
+  display: flex;
+  /* padding: 0; */
+  justify-content: space-between;
+}
+.box .header-img {
+  width: 36px;
+  vertical-align: top;
+}
+.box .header {
+  font-size: 18px;
+  font-weight: bold;
+}
+.fgx {
+  justify-content: flex-start;
+  border-top: 1px solid #d9d9d9;
+}
+.content {
+  margin: 10px 20px;
+  border: 1px solid #000;
+  height: calc(100vh - 160px);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.content::-webkit-scrollbar {
+  /*隐藏滚动条 */
+  display: none;
+}
+.titles {
+  /* display: flex; */
+  align-items: center;
+  /* justify-content: space-between; */
+  margin: 15px 0;
+}
+
+.titles .Subtitle {
+  display: inline-block;
+  width: 5px;
+  height: 28px;
+  background: rgba(25, 109, 157, 1);
+  vertical-align: middle;
+  border-radius: 3px;
+  margin-right: 15px;
+  margin-left: 5px;
+}
+.content_Subtitle {
+  height: 300px;
+  border: 1px solid red;
+}
+</style>

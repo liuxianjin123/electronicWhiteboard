@@ -11,7 +11,6 @@
               title="护理交接班"
             />
             {{ department }}交接班
-            <!-- {{operatorType.indexOf('护士')>-1?'护士':'医生'}} -->
           </span>
           <span>
             <a-button
@@ -60,10 +59,10 @@
             "
           >
             <template slot="address" slot-scope="text, record, index">
-              <a @click="editThis(record, index)"
+              <a @click="editThis(record, index)" v-if="record.name!='特殊'"
                 ><a-icon type="edit" theme="filled" /> 交接</a
               >
-              <a-divider type="vertical" v-if="record.name == '特殊'" />
+              <a-divider type="vertical" v-if="record.name!='特殊'"/>
               <template>
                 <a-popconfirm
                   title="确认删除?"
@@ -71,7 +70,7 @@
                   cancel-text="取消"
                   @confirm="delThis(record)"
                 >
-                  <a style="color: red" @click.stop="" v-if="record.name == '特殊'">
+                  <a style="color: red" @click.stop="">
                     <a-icon type="delete" theme="filled" /> 刪除</a
                   >
                 </a-popconfirm>
@@ -440,14 +439,9 @@ export default {
   },
   computed: {
     department: function () {
-      return window.sessionStorage.departmentName
-        ? window.sessionStorage.departmentName
+      return window.sessionStorage.operatorMsg
+        ? JSON.parse(window.sessionStorage.operatorMsg).KSMC
         : "";
-    },
-    operatorType: function(){
-      return window.sessionStorage.operatorType
-        ? window.sessionStorage.operatorType:
-        "";
     }
   },
 };
@@ -486,8 +480,8 @@ export default {
   width: 33px;
   vertical-align: top;
 }
-.box header div:first-child {
-  border-bottom: 1px solid #ddd;
+.box header div:first-child{
+  border-bottom:1px solid #ddd;
 }
 .box header div:first-child span:first-child {
   font-size: 23px;
