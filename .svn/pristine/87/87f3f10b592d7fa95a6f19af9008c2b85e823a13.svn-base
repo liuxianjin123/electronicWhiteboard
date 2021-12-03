@@ -1,0 +1,512 @@
+<template>
+  <div class="container">
+    <div class="box">
+      <header>
+        <div>
+          <span
+            ><img
+              src="static/images/ChangeShifts_now/u367.png"
+              alt="护理交接班"
+              class="header-img"
+              title="护理交接班"
+            />
+            {{ department }}交接班
+          </span>
+          <span>
+            <a-button
+              type="primary"
+              size="large"
+              icon="plus-circle"
+              @click="addJb"
+            >
+              新增特殊交班</a-button
+            >
+          </span>
+        </div>
+        <div>
+          类型：
+          <div class="PBType">
+            <a-select :allowClear="true">
+              <a-select-option
+                v-for="(i, index) in PBType"
+                :key="index"
+                :value="i.value"
+              >
+                {{ i.title }}
+              </a-select-option>
+            </a-select>
+          </div>
+          <div>
+            选择日期范围：<a-range-picker @change="selectDateRange">
+              <a-icon slot="suffixIcon" type="calendar" />
+            </a-range-picker>
+          </div>
+        </div>
+      </header>
+      <section>
+        <template>
+          <a-table
+            :columns="columns"
+            :data-source="tableData"
+            bordered
+            size="middle"
+            :pagination="false"
+            :scroll="{ x: '100%', y: 'calc(100vh - 260px)' }"
+            :rowKey="
+              (record, index) => {
+                return index;
+              }
+            "
+          >
+            <template slot="address" slot-scope="text, record, index">
+              <a @click="editThis(record, index)" v-if="record.name != '特殊'"
+                ><a-icon type="edit" theme="filled" /> 交接</a
+              >
+              <a-divider type="vertical" v-if="record.name != '特殊'" />
+              <template>
+                <a-popconfirm
+                  title="确认删除?"
+                  ok-text="确认"
+                  cancel-text="取消"
+                  @confirm="delThis(record)"
+                >
+                  <a style="color: red" @click.stop="">
+                    <a-icon type="delete" theme="filled" /> 刪除</a
+                  >
+                </a-popconfirm>
+              </template>
+            </template>
+          </a-table>
+        </template>
+      </section>
+      <a-modal
+        v-model="visible"
+        :width="400"
+        title="新增特殊交班"
+        ok-text="确认"
+        cancel-text="取消"
+        :closable="false"
+        :maskClosable="true"
+        @ok="hideModal"
+      >
+        <template>
+          <a-form
+            :form="form"
+            :label-col="{ span: 8 }"
+            :wrapper-col="{ span: 16 }"
+          >
+            <a-form-item label="选择班次">
+              <a-select v-model="form.Ptbc">
+                <a-select-option
+                  v-for="i in PtbcList"
+                  :key="i.id"
+                  :value="i.id"
+                  >{{ i.name }}</a-select-option
+                >
+              </a-select>
+            </a-form-item>
+            <a-form-item label="创建时间">
+              <a-date-picker
+                style="width: 234px"
+                show-time
+                format="YYYY-MM-DD HH:mm"
+                @change="jjbbData"
+              />
+            </a-form-item>
+          </a-form>
+        </template>
+      </a-modal>
+    </div>
+  </div>
+</template>
+<script>
+import moment from "moment";
+function getNextDate(date, day) {
+  //当前时间+1或者-1
+  let dd = new Date(date);
+  dd.setDate(dd.getDate() + day);
+  let y = dd.getFullYear();
+  let m =
+    dd.getMonth() + 1 < 10 ? "0" + (dd.getMonth() + 1) : dd.getMonth() + 1;
+  let d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
+  return y + "-" + m + "-" + d;
+}
+function GetDateTime() {
+  let d, s;
+  d = new Date();
+  s = d.getFullYear() + "-"; //取年份
+  s =
+    s +
+    (d.getMonth() + 1 < 10 ? "0" + (d.getMonth() + 1) : d.getMonth() + 1) +
+    "-"; //取月份
+  s += (d.getDate() < 10 ? "0" + d.getDate() : d.getDate()) + " "; //取日期
+  s += (d.getHours() < 10 ? "0" + d.getHours() : d.getHours()) + ":"; //取小时
+  s += (d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes()) + ":"; //取分
+  s += d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds(); //取秒
+  return s;
+}
+let nowDate = getNextDate(GetDateTime(), +1);
+let nowDateJ = getNextDate(nowDate, -5);
+export default {
+  name: "ChangeShifts",
+  data() {
+    const columns = [
+      {
+        title: "序号",
+        dataIndex: "index",
+        key: "index",
+        align: "center",
+        width: 50,
+        customRender: (text, record, index) => {
+          const obj = {
+            children: null,
+            attrs: {},
+          };
+          for (let i in this.groupDatas) {
+            if (index == this.groupDatas[i].xb) {
+              //找到对应的字段
+              obj.attrs.rowSpan = this.groupDatas[i].numbers; //该字段对应的跨行数刚好是numbers
+              obj.children = this.groupDatas[i].idx; //由于这里主要显示的是序号，最终的显示字符串是已经计算好的
+            } else if (
+              index > this.groupDatas[i].xb &&
+              index < this.groupDatas[i].numbers + this.groupDatas[i].xb
+            ) {
+              //如果是从第二行开始垮5行，那么就要将>2,<5的行设置rowSpan=0；否则会错乱
+              obj.attrs.rowSpan = 0;
+            }
+          }
+          return obj;
+        },
+      },
+      {
+        title: "交班日期",
+        dataIndex: "rq",
+        width: "80px",
+        align: "center",
+        customRender: (text, row, index) => {
+          const obj = {
+            children: text,
+            attrs: {},
+          };
+          for (let i in this.groupDatas) {
+            if (index == this.groupDatas[i].xb) {
+              obj.attrs.rowSpan = this.groupDatas[i].numbers;
+            } else if (
+              index > this.groupDatas[i].xb &&
+              index < this.groupDatas[i].numbers + this.groupDatas[i].xb
+            ) {
+              obj.attrs.rowSpan = 0;
+            }
+          }
+          return obj;
+        },
+      },
+      {
+        title: "交班时间",
+        dataIndex: "handoverTime",
+        width: "80px",
+        align: "center",
+      },
+      {
+        title: "交班班次",
+        dataIndex: "name",
+        width: "80px",
+        align: "center",
+      },
+      {
+        title: "患者总数",
+        dataIndex: "patientCount",
+        align: "center",
+        width: "80px",
+      },
+      {
+        title: "新入人数",
+        dataIndex: "newPatientCount",
+        align: "center",
+        width: "80px",
+      },
+      {
+        title: "转入人数",
+        dataIndex: "transferPatientCount",
+        align: "center",
+        width: "80px",
+      },
+      {
+        title: "转出人数",
+        dataIndex: "transferOutPatientCount",
+        align: "center",
+        width: "80px",
+      },
+      {
+        title: "出院人数",
+        dataIndex: "dischargedCount",
+        align: "center",
+        width: "80px",
+      },
+      {
+        title: "死亡人数",
+        dataIndex: "deadPatientCount",
+        align: "center",
+        width: "80px",
+      },
+      {
+        title: "一级护理人数",
+        dataIndex: "primaryCarePatientCount",
+        align: "center",
+        width: "130px",
+      },
+      {
+        title: "手术人数",
+        dataIndex: "surgicalPatientCount",
+        align: "center",
+        width: "80px",
+      },
+      {
+        title: "分娩人数",
+        dataIndex: "childbirthPatientCount",
+        align: "center",
+        width: "80px",
+      },
+      {
+        title: "病重人数",
+        dataIndex: "seriouslyIllPatientCount",
+        align: "center",
+        width: "80px",
+      },
+      {
+        title: "病危人数",
+        dataIndex: "criticallyIllPatientCount",
+        align: "center",
+        width: "80px",
+      },
+      {
+        title: "特殊患者",
+        dataIndex: "specialPatientCount",
+        align: "center",
+        width: "80px",
+      },
+      {
+        title: "操作",
+        dataIndex: "",
+        width: "160px",
+        align: "center",
+        fixed: "right",
+        scopedSlots: { customRender: "address" },
+      },
+    ];
+    return {
+      visible: false,
+      tableData: null,
+      columns,
+      dataRange: null,
+      jjbb: "",
+      nowDate,
+      nowDateJ,
+      groupDatas: [],
+      form: {
+        Ptbc: null,
+        Ptsj: null,
+      },
+      PtbcList: [],
+      PBType: [
+        { title: "患者交接班", value: "1" },
+        { title: "医生交接班", value: "2" },
+        { title: "物质交接班", value: "3" },
+        { title: "载具交接班", value: "4" },
+      ], //班次类型
+    };
+  },
+  methods: {
+    moment,
+    selectDateRange(date, dateString) {
+      this.dataRange = dateString;
+      if (this.dataRange) {
+        this.getJbData();
+      }
+    },
+    jjbbData(date, dateString) {
+      this.form.Ptsj = dateString;
+    },
+    addJb() {
+      this.visible = !this.visible;
+    },
+    //获取配置的班次字典
+    async getBc() {
+      const res = await this.$axios.get("/han/Handover/GetOrderOfClasss");
+      console.log(res);
+      if (res.result) {
+        this.PtbcList = res.result;
+      }
+    },
+    //获取已经存在的当前病区的班次
+    async hideModal() {
+      this.visible = false; //关闭提到前面 ，不然用户有可能会点两下生成两条相同数据
+      if (this.form.Ptsj) {
+        const res = await this.$axios.post(
+          "/han/HandoverProc/AddSpecialShift?handoverTime=" + this.form.Ptsj
+        );
+        if (res.result) {
+          this.$message.success(res.msg);
+          this.getJbData();
+        }
+        this.visible = false;
+      } else {
+        this.$message.warning("请填写完整信息!");
+      }
+    },
+    //编辑
+    editThis(record, index) {
+      console.log(record, index);
+      if (index != this.tableData.length - 1) {
+        localStorage.sTime = record.handoverTimes;
+        localStorage.eTime = this.tableData[index + 1].handoverTimes;
+      } else {
+        localStorage.sTime = record.handoverTimes;
+        localStorage.eTime = null;
+      }
+      (localStorage.handoverTime = record.handoverTimes), //交班时间
+        (localStorage.orderOfClassesId = record.orderOfClassesId), //班次ID
+        this.$router.push({ path: "/feelUnhappy" });
+    },
+    async delThis(e) {
+      const res = await this.$axios.delete(
+        "/han/HandoverProc/DeleteHandoverData/" + e.id
+      );
+      if (res.result) {
+        this.$message.success(res.msg);
+        this.getJbData();
+      }
+    },
+    async getJbData() {
+      this.groupDatas = [];
+      let obj = {
+        startTime: this.dataRange ? this.dataRange[0] : this.nowDateJ,
+        endTime: this.dataRange ? this.dataRange[1] : this.nowDate,
+        pageIndex: 1,
+        pageSize: 1000,
+      };
+      const res = await this.$axios.get(
+        "/han/HandoverProc/GetHandoverData",
+        obj
+      );
+      if (res.result) {
+        let data = res.result;
+        for (let i in data) {
+          data[i]["rq"] = data[i].handoverTime.substr(5, 5);
+          data[i]["handoverTimes"] = data[i].handoverTime;
+          data[i].handoverTime = data[i].handoverTime.substr(10, 6);
+        }
+        let num = 1; //循环对比当前下标的rq如果和下一条的rq相同，
+        let index = 0;
+        for (let i = 0; i < data.length; i++) {
+          if (i < data.length - 1) {
+            if (data[i].rq == data[i + 1].rq) {
+              //相同就+1
+              num += 1;
+            } else {
+              this.groupDatas.push({ name: data[i].rq, numbers: num, xb: i }); //else就表示和下一条数据不一致，push进去，再从新计算
+              num = 1;
+              index = i; //index会一直记录到最后一组不一样数据的下标
+            }
+          } else {
+            if (data.length > 1) {
+              this.groupDatas.push({
+                name: data[index + 1].rq,
+                numbers: data.length - 1 - index,
+                xb: index + 1,
+              }); //获取最后一组第一条的rq，          //再减去最后对比不一致的位置，得到还剩几条数据，那最后这几条数据一定是一致的
+            } else {
+              this.groupDatas.push({ name: data[index].rq, numbers: 1, xb: 0 });
+            }
+          }
+        }
+        for (let n in this.groupDatas) {
+          if (n == 0) {
+            this.groupDatas[n].xb = 0;
+          } else if (n != this.groupDatas.length - 1) {
+            this.groupDatas[n].xb =
+              this.groupDatas[n].xb - this.groupDatas[n].numbers + 1;
+          }
+          this.groupDatas[n]["idx"] = parseInt(n) + 1;
+        }
+        this.tableData = res.result;
+      }
+    },
+  },
+  mounted() {
+    this.getBc(); //获取班次
+    this.getJbData(); //加载排班数据
+  },
+  computed: {
+    department: function () {
+      return window.sessionStorage.operatorMsg
+        ? JSON.parse(window.sessionStorage.operatorMsg).KSMC
+        : "";
+    },
+  },
+};
+</script>
+<style lang="less" scoped>
+@width: 220px;
+.PBType {
+  width: @width;
+}
+</style>
+<style scoped>
+.container {
+  padding: 10px;
+  box-sizing: border-box;
+  background: #f2f2f2;
+  height: 100%;
+}
+.box {
+  background: #fff;
+  height: 100%;
+  border-radius: 5px;
+  padding: 10px;
+}
+.box section {
+  width: 100%;
+  height: calc(100% - 120px);
+}
+.box header div {
+  height: 60px;
+  align-items: center;
+  display: flex;
+  padding: 0;
+  justify-content: space-between;
+}
+.box .header-img {
+  width: 33px;
+  vertical-align: top;
+}
+.box header div:first-child {
+  border-bottom: 1px solid #ddd;
+}
+.box header div:first-child span:first-child {
+  font-size: 23px;
+  color: #000;
+}
+.box header div:last-child {
+  justify-content: flex-start;
+}
+section >>> .ant-table-thead > tr > th {
+  background: #1890ff;
+  color: #fff;
+  font-weight: bold;
+}
+.box header >>> .ant-calendar-picker {
+  width: 240px;
+}
+section >>> .ant-table-body {
+  height: calc(100vh - 260px);
+}
+section >>> .ant-table-placeholder {
+  position: absolute;
+  top: 50px;
+  width: calc(100% - 18px);
+}
+.PBType >>> .ant-select-selection {
+  width: 200px;
+}
+</style>

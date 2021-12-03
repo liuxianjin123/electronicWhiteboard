@@ -14,6 +14,7 @@ module.exports = {
   rules: {
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off", //
     "no-var": "error", //禁止使用var
+    "no-multiple-empty-lines": [1, {"max": 1}],//空行最多不能超过2行
     quotes: ["error", "double"], //双引号
     indent: [
       "error",
@@ -27,5 +28,5 @@ module.exports = {
     ], //缩进2个空格
     "function-paren-newline": "off",
     semi: ["error", "always"] //语句强制分号结尾
-  }
+  },
 };

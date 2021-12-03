@@ -26,6 +26,20 @@ let routerConfig = {
             require(["@/components/views/dialog"], resolve),
         },
         {
+          path: "/dragtable",
+          name: "拖拽",
+          icon: "aliwangwang",
+          component: (resolve) =>
+            require(["@/components/views/dragtable"], resolve),
+        },
+        {
+          path: "/dragTableAntd",
+          name: "拖拽表格",
+          icon: "aliwangwang",
+          component: (resolve) =>
+            require(["@/components/views/dragTableAntd"], resolve),
+        },
+        {
           path: "/testRequest",
           name: "测试请求",
           icon: "aliwangwang",
